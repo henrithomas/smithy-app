@@ -1,8 +1,7 @@
 from django.shortcuts import render
-from django.http import HttpResponse 
 
 def home(request):
-    return HttpResponse('<h1>Assembly Home</h1>')
+    return render(request, 'assembly/home.html')
 
 def about(request):
-    return HttpResponse('<h1>Assembly About</h1>')
+    return render(request, 'assembly/about.html', {'title': 'About'})
