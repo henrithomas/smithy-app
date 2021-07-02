@@ -25,7 +25,14 @@ SECRET_KEY = 'django-insecure-)&k^-yh_m+%g%$oyp4i43%ds0koe6fnfj_$wuoq1t2nv3!x90f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '10.10.11.135', 
+    '10.10.11.*',
+    'smithy.fungalgenomics.ca', 
+    'fungalgenomics.ca', 
+    'i.fungalgenomics.ca', 
+    'localhost'
+]
 
 
 # Application definition
