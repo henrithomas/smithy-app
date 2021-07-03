@@ -1,0 +1,31 @@
+body {
+    background: whitesmoke;
+  }
+
+.bg-steel {
+    background-color: #4f5d66;
+}
+
+.site-header .navbar-brand {
+    color: #cbd5db;
+}
+
+.site-header .navbar-brand:hover {
+    color: #ffffff;
+}
+
+.site-header .navbar-nav .nav-link {
+    color: #cbd5db;
+}
+  
+.site-header .navbar-nav .nav-link:hover {
+    color: #ffffff;
+}
+  
+.site-header .navbar-nav .nav-link.active {
+    font-weight: 500;
+}
+  
+.navbar-dark .navbar-text {
+    color: #ffffff;
+}
