@@ -18,7 +18,7 @@
         {% endif %}
     </head>
     <body>
-        <header class="site-header" id="siteheader">
+        <header class="site-header mb-2" id="siteheader">
             <nav class="navbar navbar-expand-lg navbar-dark bg-steel">
                 <div class="container-fluid">
                     <a class="navbar-brand mr-4" href="{% url 'site-home' %}">Smithy</a>
@@ -40,7 +40,7 @@
         </header>
 
         <main role="main" class="container">
-            <div class="row">
+            <div class="row mb-5">
                 <div class="col">
                     {% block content %}{% endblock %}
                 </div>

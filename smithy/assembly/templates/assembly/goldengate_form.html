@@ -1,0 +1,139 @@
+{% extends 'proj_site/base.html' %}
+{% block content %}
+    <form>
+        <h2>Golden Gate Assembly</h2>
+        <p class="lead">Generate a Golden Gate assembly design by providing the information below...</p>
+        <div class="row mb-5">
+            <h3>General Info</h3>
+            <div class="col">
+                <ul class="list-group">
+                    <li class="list-group-item">Restriction Enzyme: BsaI</li>
+                    <li class="list-group-item">Ligase: T4-DNA</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <h3>Insert & Backbone</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="formFile" class="form-label">Backbone:</label>
+                    <input class="form-control" type="file" id="formFile">
+                </div>
+                <div class="col-md-6">
+                    <label for="formFile" class="form-label">Insert:</label>
+                    <input class="form-control" type="file" id="formFile">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="multiCheck" value="">
+                        <label class="form-check-label" for="multiCheck">Multipart</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <label for="ovhngSelect" class="form-label">Overhang Set:</label>
+                    <select class="form-select" aria-label="overhang select" id="ovhngSelect">
+                        <option value="0" selected>15 overhangs</option>
+                        <option value="1">20 overhangs</option>
+                        <option value="2">25 overhangs</option>
+                        <option value="3">30 overhangs</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <h3>BLAST Query</h3>
+            <div class="col">
+                <label for="dbCheck" class="form-label">Databases:</label>
+                <div id="dbCheck">
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineCheck1" value="">
+                        <label class="form-check-label" for="inlineCheck1">AddGene</label>
+                    </div>
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineCheck2" value="">
+                        <label class="form-check-label" for="inlineCheck2">DNASU</label>
+                    </div>
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="inlineRadioOptions" id="inlineCheck2" value="opion2">
+                        <label class="form-check-label" for="inlineCheck3">iGEM</label>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        <label for="minSeq" class="form-label">Min BLAST seq:</label>
+                        <div class="input-group" id="minSeq">
+                            <input type="text" class="form-control" placeholder="250" aria-label="minseq" aria-describedby="minseq">
+                            <span class="input-group-text" id="minseq">nt</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="maxSeq" class="form-label">Max BLAST seq:</label>
+                        <div class="input-group" id="maxSeq">
+                            <input type="text" class="form-control" placeholder="1000" aria-label="maxseq" aria-describedby="maxseq">
+                            <span class="input-group-text" id="maxseq">nt</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="minSynth" class="form-label">Min synthetic seq:</label>
+                        <div class="input-group" id="minSynth">
+                            <input type="text" class="form-control" placeholder="100" aria-label="minsynth" aria-describedby="minsynth">
+                            <span class="input-group-text" id="minsynth">nt</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="maxSynth" class="form-label">Max synthetic seq:</label>
+                        <div class="input-group" id="maxSynth">
+                            <input type="text" class="form-control" placeholder="1000" aria-label="maxsynth" aria-describedby="maxsynth">
+                            <span class="input-group-text" id="maxsynth">nt</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-5">
+            <h3>Experiment</h3>
+            <div class="col">
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <label for="mvConc" class="form-label">Monovalent ion concentration:</label>
+                        <div class="input-group" id="mvConc">
+                            <input type="text" class="form-control" placeholder="1000" aria-label="mvconc" aria-describedby="mvconc">
+                            <span class="input-group-text" id="mvconc">mM</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="dvConc" class="form-label">Divalent ion concentration:</label>
+                        <div class="input-group" id="dvConc">
+                            <input type="text" class="form-control" placeholder="1000" aria-label="dvconc" aria-describedby="dvconc">
+                            <span class="input-group-text" id="dvconc">mM</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="dntpConc" class="form-label">dNTP concentration:</label>
+                        <div class="input-group" id="dntpConc">
+                            <input type="text" class="form-control" placeholder="1000" aria-label="dntpconc" aria-describedby="dntpconc">
+                            <span class="input-group-text" id="dntpconc">mM</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="dnaConc" class="form-label">DNA concentration:</label>
+                        <div class="input-group" id="dnaConc">
+                            <input type="text" class="form-control" placeholder="1000" aria-label="dnaconc" aria-describedby="dnaconc">
+                            <span class="input-group-text" id="dnaconc">nM</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="meltTemp" class="form-label">Melting temperature:</label>
+                        <div class="input-group" id="meltTemp">
+                            <input type="text" class="form-control" placeholder="1000" aria-label="melttemp" aria-describedby="melttemp">
+                            <span class="input-group-text" id="melttemp">C</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="btn btn-primary" href="#" role="button">Assemble</a>  
+    </form>
+{% endblock content %}
