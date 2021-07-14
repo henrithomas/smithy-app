@@ -33,6 +33,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'assembly-home' %}">Assembly</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'site-about' %}">About</a>
+                        </li>
                     </ul>
                     </div>
                 </div>
@@ -42,7 +45,29 @@
         <main role="main" class="container">
             <div class="row mb-5">
                 <div class="col">
-                    {% block content %}{% endblock %}
+
+                    <div class="alert alert-warning" role="alert">
+                        <p>
+                            <strong>This site is still in DEVELOPMENT.</strong> Complete info, functionality, and features are continually being added and verified. Most pages and forms are static. 
+                            In the meantime, enjoy!
+                        </p>
+                        <p>
+                            Feedback is welcome and can be sent by email.
+                        </p>
+                        <a href="mailto:henri.thomas@mail.concordia.ca" target="_blank" class="btn btn-outline-primary">Email Us</a>
+                    </div>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="card">
+                        <div class="card-body">
+                            {% block content %}{% endblock %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

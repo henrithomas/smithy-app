@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import GibsonAssembly, GoldenGateAssembly
 
-# Register your models here.
+admin.site.register([GibsonAssembly, GoldenGateAssembly])
+

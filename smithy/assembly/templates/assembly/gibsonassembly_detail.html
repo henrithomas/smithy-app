@@ -1,0 +1,50 @@
+{% extends 'proj_site/base.html' %}
+{% block content %}
+    <h2>{{ title }}</h2>
+    <div class="row mb-4">
+        <div class="col">
+            <h3>General Info</h3>
+            <ul class="list-group">
+                <li class="list-group-item">Created on {{ gibson.date_created|date:'F d, Y' }}</li>
+                <li class="list-group-item">Exonuclease: T5</li>
+                <li class="list-group-item">Ligase: Taq</li>
+                <li class="list-group-item">Polymerase: Phusion</li>
+                <li class="list-group-item">Overlap: {{ gibson.overlap }}nt</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Backbone</h3>
+            <p>{{ gibson.backbone }}</p>
+            <h3>Insert</h3>
+            <p>{{ gibson.insert }}</p>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h3>BLAST Query</h3>
+            <ul class="list-group">
+                <li class="list-group-item">AddGene: {{ gibson.addgene }}</li>
+                <li class="list-group-item">iGEM: {{ gibson.igem }}</li>
+                <li class="list-group-item">DNASU: {{ gibson.dnasu }}</li>
+                <li class="list-group-item">Min BLAST seq size: {{ gibson.min_blast }}nt</li>
+                <li class="list-group-item">Max BLAST seq size: {{ gibson.max_blast }}nt</li>
+                <li class="list-group-item">Min synthetic seq size: {{ gibson.min_synth }}nt</li>
+                <li class="list-group-item">Max synthetic seq size: {{ gibson.max_synth }}nt</li>
+            </ul>    
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Experiment</h3>
+            <ul class="list-group">
+                <li class="list-group-item">Monovalent ion concentration: {{ gibson.mv_conc }}mM</li>
+                <li class="list-group-item">Divalent ion concentration: {{ gibson.dv_conc }}mM</li>
+                <li class="list-group-item">dNTP concentration: {{ gibson.dntp_conc }}mM</li>
+                <li class="list-group-item">DNA concentration: {{ gibson.dna_conc }}nM</li>
+                <li class="list-group-item">Melting temperature: {{ gibson.tm }}C</li>
+            </ul>
+        </div>
+    </div>
+{% endblock content %}

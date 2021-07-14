@@ -1,11 +1,18 @@
+from collections import namedtuple
 from django.urls import path
 from . import views
+from .views import (
+    GibsonDetailView,
+    GibsonCreateView,
+    GoldenGateDetailView,
+    GoldenGateCreateView
+)
 
 urlpatterns = [
     path('', views.home, name='assembly-home'),
     path('about/', views.about, name='assembly-about'),
-    path('gibson/', views.gibson_form, name='gibson-form'),
-    path('goldengate/', views.goldengate_form, name='goldengate-form'),
-    path('goldengate_dev/', views.goldengate_dev, name='goldengate-dev'),
-    path('assembly_submit/', views.submission, name='assembly-submit'),
+    path('gibson/<int:pk>/', GibsonDetailView.as_view(), name='gibson-detail'),
+    path('gibson/new/', GibsonCreateView.as_view(), name='gibson-create'),
+    path('goldengate/<int:pk>/', GoldenGateDetailView.as_view(), name='goldengate-detail'),
+    path('goldengate/new/', GoldenGateCreateView.as_view(), name='goldengate-create'),
 ]

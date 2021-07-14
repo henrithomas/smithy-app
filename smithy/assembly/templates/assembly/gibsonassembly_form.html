@@ -1,0 +1,23 @@
+{% extends 'proj_site/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h2>{{ title }}</h2>
+    <p class="lead">Generate a Gibson assembly design by providing the information below...</p>
+        <div class="row mb-5">
+            <h3>General Info</h3>
+            <div class="col">
+                <ul class="list-group">
+                    <li class="list-group-item">Exonuclease: T5</li>
+                    <li class="list-group-item">Ligase: Taq</li>
+                    <li class="list-group-item">Polymerase: Phusion</li>
+                </ul>
+            </div>
+        </div>
+    <h2>Inputs</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        <button type="submit" class="btn btn-primary">Assemble</button>
+    </form>
+{% endblock content %}

@@ -3,6 +3,7 @@ from django import forms
 class AssemblyForm(forms.Form):
     insert = forms.CharField(label='insert', max_length=100, widget=forms.Textarea)
     backbone = forms.CharField(label='backbone', max_length=100, widget=forms.Textarea)
+    multipart = forms.BooleanField(label='multipart')
     addgene = forms.BooleanField(label='AddGene', required=False)
     dnasu = forms.BooleanField(label='DNASU', required=False)
     igem = forms.BooleanField(label='iGEM', required=False)

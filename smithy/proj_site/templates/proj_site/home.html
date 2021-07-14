@@ -49,12 +49,31 @@
         nucleotide query method and the results are used to create complete assembly-ready sets of 
         sequences for a cloning experiment.  
     </p>
-    <h3>Experimental Parameters</h3>
+    <h3>Assembly Parameters</h3>
     <p>
-        The essential parameters for a cloning experiment are gathered at the input. These parameters are 
-        mono-/di-valent ion concentrations, dNTP concentrations, DNA sequence concentrations, melting 
-        temperature, and overlap amount (for overlap-based assemblies only). Smithy uses these values 
-        for the thermodynamic analysis generated for primers of an experiment.    
+        The essential parameters for a cloning experiment are gathered at the input. These parameters are:
+        <ul>
+            <li>monovalent and divalent ion concentrations</li>
+            <li>dNTP concentrations</li>
+            <li>DNA sequence concentrations</li>
+            <li>melting temperature</li>
+        </ul> 
+        Smithy uses these values for the thermodynamic analysis generated for primers of an experiment.
+    </p>
+    <p>
+        Additional parameters used by Smithy are:
+        <ul>
+            <li>overlap amount (for overlap-based assemblies only)</li>
+            <li>overhang count (for Golden Gate cloning only)</li>
+            <li>user's selection of BLAST databases to use</li>
+            <li><em>minimum</em> size (in nucleotides) of BLAST query alignment results to use from each database</li>
+            <li><em>maximum</em> size (in nucleotides) of BLAST query alignment results to use from each database</li>
+            <li><em>minimum</em> size (in nucleotides) of synthetized sequences a user would purchase for an experiment</li>
+            <li><em>maximum</em> size (in nucleotides) of synthetized sequences a user would purchase for an experiment</li>
+        </ul> 
+    </p>
+    <p>
+        All of the parameters listed above will be asked for at the input stage for a new assembly.
     </p>
     <!-- <h2>Uses</h2>
     <h2>Workflow</h2> -->

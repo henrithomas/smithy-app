@@ -1,0 +1,49 @@
+{% extends 'proj_site/base.html' %}
+{% block content %}
+    <h2>{{ title }}</h2>
+    <div class="row mb-5">
+        <h3>General Info</h3>
+        <div class="col">
+            <ul class="list-group">
+                <li class="list-group-item">Created on {{ goldengate.date_created|date:'F d, Y' }}</li>
+                <li class="list-group-item">Restriction Enzyme: BsaI</li>
+                <li class="list-group-item">Ligase: T4-DNA</li>
+                <li class="list-group-item">Overhangs: {{ goldengate.overhangs }}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Backbone</h3>
+            <p>{{ goldengate.backbone }}</p>
+            <h3>Insert</h3>
+            <p>{{ goldengate.insert }}</p>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h3>BLAST Query</h3>
+            <ul class="list-group">
+                <li class="list-group-item">AddGene: {{ goldengate.addgene }}</li>
+                <li class="list-group-item">iGEM: {{ goldengate.igem }}</li>
+                <li class="list-group-item">DNASU: {{ goldengate.dnasu }}</li>
+                <li class="list-group-item">Min BLAST seq size: {{ goldengate.min_blast }}nt</li>
+                <li class="list-group-item">Max BLAST seq size: {{ goldengate.max_blast }}nt</li>
+                <li class="list-group-item">Min synthetic seq size: {{ goldengate.min_synth }}nt</li>
+                <li class="list-group-item">Max synthetic seq size: {{ goldengate.max_synth }}nt</li>
+            </ul>    
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Experiment</h3>
+            <ul class="list-group">
+                <li class="list-group-item">Monovalent ion concentration: {{ goldengate.mv_conc }}mM</li>
+                <li class="list-group-item">Divalent ion concentration: {{ goldengate.dv_conc }}mM</li>
+                <li class="list-group-item">dNTP concentration: {{ goldengate.dntp_conc }}mM</li>
+                <li class="list-group-item">DNA concentration: {{ goldengate.dna_conc }}nM</li>
+                <li class="list-group-item">Melting temperature: {{ goldengate.tm }}C</li>
+            </ul>
+        </div>
+    </div>
+{% endblock content %}
