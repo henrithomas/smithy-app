@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from time import sleep 
+
 def home(request):
     return render(request, 'proj_site/home.html')
 

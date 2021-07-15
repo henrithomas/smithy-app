@@ -1,0 +1,33 @@
+{
+    "enzyme1": "BpiI",
+    "enzyme2": "BsaI",
+    "level": "2i",
+    "L1E": {
+        "left": "GCAA",
+        "right": "GGGA"
+    },
+    "L2E": {
+        "left": "ACTA",
+        "right": "GGGA"
+    },
+    "L3E": {
+        "left": "TTAC",
+        "right": "GGGA"
+    },
+    "L4E": {
+        "left": "CAGA",
+        "right": "GGGA"
+    },
+    "L5E": {
+        "left": "TGTG",
+        "right": "GGGA"
+    },
+    "L6E": {
+        "left": "GAGC",
+        "right": "GGGA"
+    },
+    "L7E": {
+        "left": "TGCC",
+        "right": "GGGA"
+    }
+}

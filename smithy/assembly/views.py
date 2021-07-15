@@ -8,6 +8,8 @@ from django.views.generic import (
 )
 from django.contrib.messages.views import SuccessMessageMixin
 
+from assemblies.gibson import GibsonAssembler
+
 def home(request):
     return render(request, 'assembly/home.html')
 
@@ -73,6 +75,11 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
             'dna_conc', 
             'tm',
             'overlap']
+
+    def form_valid(self, form):
+        # self.object = form.save()
+        # print(self.object.pk)
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -4,3 +4,11 @@ virt/
 **/__pycache__
 **/__pycache__/*.pyc
 db.sqlite3
+sketches.py
+results/
+input/queries/
+input/sequences/
+*.pyc
+**/__pycache__
+**/__pycache__/*.pyc
+.python-version
