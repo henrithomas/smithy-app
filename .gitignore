@@ -12,3 +12,5 @@ input/sequences/
 **/__pycache__
 **/__pycache__/*.pyc
 .python-version
+smithy/assembly/migrations/
+smithy/media/

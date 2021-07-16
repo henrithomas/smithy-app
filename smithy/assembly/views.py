@@ -10,6 +10,16 @@ from django.contrib.messages.views import SuccessMessageMixin
 
 from assemblies.gibson import GibsonAssembler
 
+def db_list(addgene, igem, dnasu):
+    l = []
+    if addgene:
+        l.append('addgene')
+    if igem: 
+        l.append('igem')
+    if dnasu:
+        l.append('dnasu')
+    return l
+
 def home(request):
     return render(request, 'assembly/home.html')
 
@@ -59,8 +69,8 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
     success_message = 'View your new Gibson assembly below...'
     fields = [
             'title',
-            'backbone',
-            'insert',
+            'backbone_file',
+            'insert_file',
             'addgene',
             'igem',
             'dnasu',
@@ -77,8 +87,23 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
             'overlap']
 
     def form_valid(self, form):
-        # self.object = form.save()
-        # print(self.object.pk)
+        self.object = form.save()
+        gib_assembler = GibsonAssembler(
+                            self.object.mv_conc, 
+                            self.object.dv_conc, 
+                            self.object.dna_conc,
+                            self.object.dntp_conc, 
+                            self.object.tm, 
+                            self.object.backbone_file.path, 
+                            self.object.insert_file.path, 
+                            db_list(self.object.addgene, self.object.igem, self.object.dnasu), 
+                            min_frag=self.object.min_blast, 
+                            max_frag=self.object.max_blast, 
+                            min_synth=self.object.min_synth, 
+                            max_synth=self.object.max_synth)
+        # results, error = gib_assembler.query()
+        # gib_assembler.solution_building(results)
+        # gib_assembly, gib_fragments = gib_assembler.design(solution=1)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -101,8 +126,8 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
     success_message = 'View your new Golden Gate assembly below...'
     fields = [
             'title',
-            'backbone',
-            'insert',
+            'backbone_file',
+            'insert_file',
             'addgene',
             'igem',
             'dnasu',
