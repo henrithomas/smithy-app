@@ -1,0 +1,32 @@
+{
+    "enzyme": "BpiI",
+    "level": "1",
+    "TU1": {
+        "left": "TGCC",
+        "right": "GCAA"
+    },
+    "TU2": {
+        "left": "GCAA",
+        "right": "ACTA"
+    },
+    "TU3": {
+        "left": "ACTA",
+        "right": "TTAC"
+    },
+    "TU4": {
+        "left": "TTAC",
+        "right": "CAGA"
+    },
+    "TU5": {
+        "left": "CAGA",
+        "right": "TGTG"
+    },
+    "TU6": {
+        "left": "TGTG",
+        "right": "GAGC"
+    },
+    "TU7": {
+        "left": "GAGC",
+        "right": "GGGA"
+    }
+}

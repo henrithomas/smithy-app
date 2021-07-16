@@ -1,0 +1,32 @@
+{
+ "set": 3,
+ "count": 25,
+ "fidelity": 95.8,
+ "seq": [
+  "CCTC",
+  "CTAA",
+  "GACA",
+  "GCAC",
+  "AATC",
+  "GTAA",
+  "TGAA",
+  "ATTA",
+  "CCAG",
+  "AGGA",
+  "ACAA",
+  "TAGA",
+  "CGGA",
+  "CATA",
+  "CAGC",
+  "AACG",
+  "AAGT",
+  "CTCC",
+  "AGAT",
+  "ACCA",
+  "AGTG",
+  "GGTA",
+  "GCGA",
+  "AAAA",
+  "ATGA"
+ ]
+}
