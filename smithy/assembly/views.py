@@ -1,12 +1,20 @@
+from django.db.models.deletion import Collector
 from django.shortcuts import render,redirect
 from django.views.generic.edit import CreateView
 from .forms import GoldenGateForm, GibsonForm
-from .models import GibsonAssembly, GoldenGateAssembly
+from .models import (
+    GibsonAssembly, 
+    GibsonPart,
+    GibsonPrimer,
+    GoldenGateAssembly,
+    GoldenGatePart,
+    GoldenGatePrimer,
+)
 from django.views.generic import (
     DetailView,
     CreateView
 )
-from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.messages.views import SuccessMessageMixin 
 
 from assemblies.gibson import GibsonAssembler
 
@@ -26,34 +34,6 @@ def home(request):
 def about(request):
     return render(request, 'assembly/about.html', {'title': 'Assembly About'}) 
 
-def submission(request):
-    return render(request, 'assembly/submission.html', {'title': 'Assembly Submission'}) 
-
-def gibson_form(request):
-    return render(request, 'assembly/gibson_form.html', {'title': 'Gibson Assembly'})
-    
-def goldengate_form(request):
-    return render(request, 'assembly/goldengate_form.html', {'title': 'Golden Gate Assembly'})
-
-def goldengate_dev(request):
-    if request.method == 'POST':
-        form = GoldenGateForm(request.POST)
-        if form.is_valid():
-            return redirect('assembly-submit') 
-    else:
-        form = GoldenGateForm()
-
-    return render(request, 'assembly/goldengate_dev.html', {'title': 'Golden Gate Assembly', 'form': form})
-
-def gibson_dev(request):
-    if request.method == 'POST':
-        form = GibsonForm(request.POST)
-        if form.is_valid():
-            return redirect('assembly-submit') 
-    else:
-        form = GibsonForm()
-
-    return render(request, 'assembly/gibson_dev.html', {'title': 'Gibson Assembly', 'form': form})
 
 class GibsonDetailView(DetailView):
     model = GibsonAssembly
@@ -61,8 +41,11 @@ class GibsonDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = self.object.title
+        context['title'] = self.object.title 
+        context['parts'] = self.object.gibsonpart_set.all()
+        context['primer_sets'] =  [part.gibsonprimer_set.all() for part in context['parts']]
         return context
+
 
 class GibsonCreateView(SuccessMessageMixin, CreateView):
     model = GibsonAssembly
@@ -112,6 +95,26 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
         return context
 
 
+class GibsonPartDetailView(DetailView):
+    model = GibsonPart
+    context_object_name = 'gibson_part'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        return context
+
+
+class GibsonPrimerDetailView(DetailView):
+    model = GibsonPrimer
+    context_object_name = 'gibson_primer'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        return context
+
+
 class GoldenGateDetailView(DetailView):
     model = GoldenGateAssembly
     context_object_name = 'goldengate'
@@ -120,6 +123,7 @@ class GoldenGateDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.title
         return context
+
 
 class GoldenGateCreateView(SuccessMessageMixin, CreateView):
     model = GoldenGateAssembly
@@ -147,3 +151,53 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'New Golden Gate Assembly'
         return context
+
+
+class GoldenGatePartDetailView(DetailView):
+    model = GoldenGatePart
+    context_object_name = 'goldengate_part'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        return context
+
+
+class GoldenGatePrimerDetailView(DetailView):
+    model = GoldenGatePrimer
+    context_object_name = 'goldengate_primer'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        return context
+
+
+# def submission(request):
+#     return render(request, 'assembly/submission.html', {'title': 'Assembly Submission'}) 
+
+# def gibson_form(request):
+#     return render(request, 'assembly/gibson_form.html', {'title': 'Gibson Assembly'})
+    
+# def goldengate_form(request):
+#     return render(request, 'assembly/goldengate_form.html', {'title': 'Golden Gate Assembly'})
+
+# def goldengate_dev(request):
+#     if request.method == 'POST':
+#         form = GoldenGateForm(request.POST)
+#         if form.is_valid():
+#             return redirect('assembly-submit') 
+#     else:
+#         form = GoldenGateForm()
+
+#     return render(request, 'assembly/goldengate_dev.html', {'title': 'Golden Gate Assembly', 'form': form})
+
+# def gibson_dev(request):
+#     if request.method == 'POST':
+#         form = GibsonForm(request.POST)
+#         if form.is_valid():
+#             return redirect('assembly-submit') 
+#     else:
+#         form = GibsonForm()
+
+#     return render(request, 'assembly/gibson_dev.html', {'title': 'Gibson Assembly', 'form': form})

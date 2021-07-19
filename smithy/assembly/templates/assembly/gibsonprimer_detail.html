@@ -1,0 +1,60 @@
+{% extends 'proj_site/base.html' %}
+{% block content %}
+    <h2 class="mb-3">
+        {{ title }}
+        <span class="badge rounded-pill bg-secondary">
+            {{ gibson_primer.primer_type }}
+        </span>
+    </h2>
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <h3>Date Created</h3>
+            <p>{{ gibson_primer.date_created }}</p>
+        </div>
+        <div class="col-md-3">
+            <h3>Primer Type</h3>
+            <p>{{ gibson_primer.primer_type }}</p>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Sequence</h3>
+            <p>{{gibson_primer.sequence}}</p>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Thermodynamic Analysis</h3>
+            <div class="table-responsive-md">
+                <table class="table table-striped">
+                    <thead> 
+                        <th>Structure</th>
+                        <th>Structure Found</th>
+                        <th>Tm (C)</th>
+                        <th>&Delta;G</th>
+                        <th>&Delta;H</th>
+                        <th>&Delta;S</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Hairpin</td>
+                            <td>{{ gibson_primer.hairpin }}</td>
+                            <td>{{ gibson_primer.hairpin_tm }}</td>
+                            <td>{{ gibson_primer.hairpin_dg }}</td>
+                            <td>{{ gibson_primer.hairpin_dh }}</td>
+                            <td>{{ gibson_primer.hairpin_ds }}</td>
+                        </tr>
+                        <tr>
+                            <td>Homodimer</td>
+                            <td>{{ gibson_primer.homodimer}}</td>
+                            <td>{{ gibson_primer.homodimer_tm }}</td>
+                            <td>{{ gibson_primer.homodimer_dg }}</td>
+                            <td>{{ gibson_primer.homodimer_dh }}</td>
+                            <td>{{ gibson_primer.homodimer_ds }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

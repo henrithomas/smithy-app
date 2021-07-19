@@ -1,0 +1,34 @@
+{% extends 'proj_site/base.html' %}
+{% block content %}
+    <h2 class="mb-3">{{ title }}</h2>
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <h3>Date Created</h3>
+            <p>{{gibson_part.date_created}}</p>
+        </div>
+        <div class="col-md-3">
+            <h3>Database</h3>
+            <p>{{gibson_part.database}}</p>
+        </div>
+        <div class="col-md-3">
+            <h3>Length</h3>
+            <p>{{gibson_part.length}}</p>
+        </div>
+        <div class="col-md-3">
+            <h3>Extended Length</h3>
+            <p>{{gibson_part.length_extended}}</p>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Sequence</h3>
+            <p>
+                {{gibson_part.seq}}
+            </p>
+            <h3>Extended Sequence</h3>
+            <p>
+                {{gibson_part.seq_extended}}
+            </p>
+        </div>
+    </div>
+{% endblock content %}
