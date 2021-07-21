@@ -30,9 +30,9 @@ class Assembly(models.Model):
     dntp_conc = models.FloatField(verbose_name='dNTP concentration (mM)')
     dna_conc = models.FloatField(verbose_name='dna concentration (nM)')
     tm = models.FloatField(verbose_name='melting temperature (C)')
-    backbone_file = models.FileField(upload_to='fasta/backbones/', default='fasta/backbones/default.fasta')
-    insert_file = models.FileField(upload_to='fasta/queries/', default='fasta/queries/default.fasta')
-
+    backbone_file = models.FileField(upload_to='fasta/backbones/', blank=False)
+    insert_file = models.FileField(upload_to='fasta/queries/', blank=False)
+    
     class Meta:
         abstract = True
 

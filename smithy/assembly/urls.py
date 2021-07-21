@@ -9,7 +9,7 @@ from .views import (
     GoldenGateDetailView,
     GoldenGateCreateView,
     GoldenGatePartDetailView,
-    GoldenGatePrimerDetailView
+    GoldenGatePrimerDetailView,
 )
 
 urlpatterns = [

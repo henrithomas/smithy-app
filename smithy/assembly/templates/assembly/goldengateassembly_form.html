@@ -13,10 +13,251 @@
         </div>
     </div>
     <h2>Inputs</h2>
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
-        {{ form|crispy }}
+        {{ form.non_field_errors }}
 
-        <button type="submit" class="btn btn-primary">Assemble</button>
+        <div class="row mb-5">
+            <div class="col">
+                <h3>Title</h3>
+                <div id="div_id_title" class="mb-3"> 
+                    {{ form.title.label_tag }}
+                    <input type="text" name="{{ form.title.html_name}}" maxlength="250" class="form-control mt-2" id="{{ form.title.id_for_label }}"> 
+                    {% if form.title.errors %}
+                        <ul class="errorList">
+                            {% for error in form.title.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <h3>Insert</h3> 
+                {{ form.backbone_file.label_tag }} 
+                <div id="{{ form.backbone_file.id_for_label }}" class="mt-2">
+                     <input type="file" name="{{ form.backbone_file.html_name }}" class="form-control" required 
+                     id="{{ form.backbone_file.id_for_label }}" {% if form.is_bound %} value="{{ form.backbone_file.value }}" {% endif %}> 
+                </div>
+                {% if form.backbone_file.errors %}
+                    <ul class="errorList">
+                        {% for error in form.backbone_file.errors %}
+                            <li class="text-danger">{{ error|escape }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <h3>Backbone</h3>
+                {{ form.insert_file.label_tag }} 
+                <div id="{{ form.insert_file.id_for_label }}" class="mt-2">
+                     <input type="file" name="{{ form.insert_file.html_name }}" class="form-control" required 
+                     id="{{ form.insert_file.id_for_label }}" {% if form.is_bound %} value="{{ form.insert_file.value }}" {% endif %}> 
+                </div>
+                {% if form.insert_file.errors %}
+                    <ul class="errorList">
+                        {% for error in form.insert_file.errors %}
+                            <li class="text-danger">{{ error|escape }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <h3>Overhangs</h3>
+            <div class="col-md-3">
+                {{ form.overhangs.label_tag }}
+                <select class="form-select mt-2" name="{{ form.overhangs.html_name }}" required="" id="{{form.overhangs.id_for_label}}">
+                    {% for value, text in form.fields.overhangs.choices %}
+                        <option value="{{ value }}">{{ text }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.overhangs.errors %}
+                    <ul class="errorList">
+                        {% for error in form.overhangs.errors %}
+                            <li class="text-danger">{{ error|escape }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="row mb-5">
+            <h3>BLAST Query</h3>
+            <div class="col">
+                <label for="dbCheck" class="form-label">Databases:</label>
+                <div id="dbCheck">
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ form.addgene.html_name }}" 
+                        id="{{ form.addgene.id_for_label }}" {% if form.is_bound %} value="{{ form.addgene.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ form.addgene.id_for_label }}">AddGene</label>
+                    </div>
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ form.dnasu.html_name }}" 
+                        id="{{ form.dnasu.id_for_label }}" {% if form.is_bound %} value="{{ form.dnasu.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ form.dnasu.id_for_label }}">DNASU</label>
+                    </div>
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ form.igem.html_name }}" 
+                        id="{{ form.igem.id_for_label}}" {% if form.is_bound %} value="{{ form.igem.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ form.igem.id_for_label}}">iGEM</label>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3">
+                        {{ form.min_blast.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.min_blast.id_for_label }}">
+                            <input type="number" name="{{ form.min_blast.html_name }}" min="0" placeholder="100" class="form-control" required 
+                            id="{{ form.min_blast.id_for_label }}" {% if form.is_bound %} value="{{ form.min_blast.value }}" {% endif %}>
+                            <span class="input-group-text">nt</span>
+                        </div>
+                        {% if form.min_blast.errors %}
+                        <ul class="errorList">
+                            {% for error in form.min_blast.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                        <ul class="errorList" hidden></ul>
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.max_blast.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.max_blast.id_for_label }}">
+                            <input type="number" name="{{ form.max_blast.html_name }}" class="form-control" placeholder="1000" required 
+                            id="{{ form.max_blast.id_for_label }}" {% if form.is_bound %} value="{{ form.max_blast.value }}" {% endif %}>
+                            <span class="input-group-text">nt</span>
+                        </div>
+                        {% if form.max_blast.errors %}
+                        <ul class="errorList">
+                            {% for error in form.max_blast.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.min_synth.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.min_synth.id_for_label }}">
+                            <input type="number" name="{{ form.min_synth.html_name }}" min="0" placeholder="100" class="form-control" required 
+                            id="{{ form.min_synth.id_for_label }}" {% if form.is_bound %} value="{{ form.min_synth.value }}" {% endif %}>
+                            <span class="input-group-text">nt</span>
+                        </div>
+                        {% if form.min_synth.errors %}
+                        <ul class="errorList">
+                            {% for error in form.min_synth.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                        <ul class="errorList" hidden></ul>
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.max_synth.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.max_synth.id_for_label }}">
+                            <input type="number" name="{{ form.max_synth.html_name }}" class="form-control" placeholder="1000" required 
+                            id="{{ form.max_synth.id_for_label }}" {% if form.is_bound %} value="{{ form.max_synth.value }}" {% endif %}>
+                            <span class="input-group-text">nt</span>
+                        </div>
+                        {% if form.max_synth.errors %}
+                        <ul class="errorList">
+                            {% for error in form.max_synth.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <h3>Experiment</h3>
+            <div class="col">
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        {{ form.mv_conc.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.mv_conc.id_for_label }}">
+                            <input type="number" name="{{ form.mv_conc.html_name }}" class="form-control" placeholder="50" required
+                            id="{{ form.mv_conc.id_for_label }}" {% if form.is_bound %} value="{{ form.mv_conc.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ form.mv_conc.id_for_label }}">mM</span>
+                        </div>
+                        {% if form.mv_conc.errors %}
+                        <ul class="errorList">
+                            {% for error in form.mv_conc.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.dv_conc.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.dv_conc.id_for_label }}">
+                            <input type="number" name="{{ form.dv_conc.html_name }}" class="form-control" placeholder="1.5" required
+                            id="{{ form.dv_conc.id_for_label }}" {% if form.is_bound %} value="{{ form.dv_conc.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ form.dv_conc.id_for_label }}">mM</span>
+                        </div>
+                        {% if form.dv_conc.errors %}
+                        <ul class="errorList">
+                            {% for error in form.dv_conc.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.dntp_conc.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.dntp_conc.id_for_label }}">
+                            <input type="number" name="{{ form.dntp_conc.html_name }}" class="form-control" placeholder="0.8" required
+                            id="{{ form.dntp_conc.id_for_label }}" {% if form.is_bound %} value="{{ form.dntp_conc.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ form.dntp_conc.id_for_label }}">mM</span>
+                        </div>
+                        {% if form.dntp_conc.errors %}
+                        <ul class="errorList">
+                            {% for error in form.dntp_conc.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.dna_conc.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.dna_conc.id_for_label }}">
+                            <input type="number" name="{{ form.dna_conc.html_name }}" class="form-control" placeholder="50" required
+                            id="{{ form.dna_conc.id_for_label }}" {% if form.is_bound %} value="{{ form.dna_conc.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ form.dna_conc.id_for_label }}">nM</span>
+                        </div>
+                        {% if form.dna_conc.errors %}
+                        <ul class="errorList">
+                            {% for error in form.dna_conc.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        {{ form.tm.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.tm.id_for_label }}">
+                            <input type="number" name="{{ form.tm.html_name }}" class="form-control" placeholder="60" required
+                            id="{{ form.tm.id_for_label }}" {% if form.is_bound %} value="{{ form.tm.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ form.tm.id_for_label }}">mM</span>
+                        </div>
+                        {% if form.tm.errors %}
+                        <ul class="errorList">
+                            {% for error in form.tm.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" id="formButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assemblyModal">Assemble</button>
     </form>
 {% endblock content %}

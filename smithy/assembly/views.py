@@ -1,7 +1,7 @@
 from django.db.models.deletion import Collector
 from django.shortcuts import render,redirect
 from django.views.generic.edit import CreateView
-from .forms import GoldenGateForm, GibsonForm
+from .forms import GibsonForm
 from .models import (
     GibsonAssembly, 
     GibsonPart,
@@ -17,6 +17,7 @@ from django.views.generic import (
 from django.contrib.messages.views import SuccessMessageMixin 
 
 from assemblies.gibson import GibsonAssembler
+from time import sleep
 
 def db_list(addgene, igem, dnasu):
     l = []
@@ -84,15 +85,46 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
                             max_frag=self.object.max_blast, 
                             min_synth=self.object.min_synth, 
                             max_synth=self.object.max_synth)
-        # results, error = gib_assembler.query()
-        # gib_assembler.solution_building(results)
-        # gib_assembly, gib_fragments = gib_assembler.design(solution=1)
+        results, error = gib_assembler.query()
+        gib_assembler.solution_building(results)
+        gib_assembly, gib_fragments = gib_assembler.design(solution=1)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'New Gibson Assembly'
         return context
+
+
+# def GibsonCreate(request):
+#     valid = True
+#     if request.method == 'POST':
+#         form = GibsonForm(request.POST)
+#         if form.is_valid():
+#             gibson = form.save()
+#             gib_assembler = GibsonAssembler(
+#                                 gibson.mv_conc, 
+#                                 gibson.dv_conc, 
+#                                 gibson.dna_conc,
+#                                 gibson.dntp_conc, 
+#                                 gibson.tm, 
+#                                 gibson.backbone_file.path, 
+#                                 gibson.insert_file.path, 
+#                                 db_list(gibson.addgene, gibson.igem, gibson.dnasu), 
+#                                 min_frag=gibson.min_blast, 
+#                                 max_frag=gibson.max_blast, 
+#                                 min_synth=gibson.min_synth, 
+#                                 max_synth=gibson.max_synth)
+#             results, error = gib_assembler.query()
+#             gib_assembler.solution_building(results)
+#             gib_assembly, gib_fragments = gib_assembler.design(solution=1)
+#             return redirect('gibson-detail', pk=gibson.pk)
+#         else:
+#             valid = False
+#     else:
+#         form = GibsonForm()
+#     v_dict = {'val': valid}
+#     return render(request, 'assembly/gibsonassembly_form.html', {'title': 'Gibson Assembly', 'form': form, 'valid': v_dict})
 
 
 class GibsonPartDetailView(DetailView):

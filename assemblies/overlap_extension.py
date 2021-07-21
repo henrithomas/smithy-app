@@ -18,7 +18,12 @@ class OverlapExtensionAssembler(Assembler):
         # returns assembly, a list of amplicons with extensions
         fragments_pcr.insert(0, backbone_pcr)
         fragments_pcr.append(backbone_pcr)
-        assembly = assembly_fragments(fragments_pcr, overlap=self.overlap)
+        
+        try:
+            assembly = assembly_fragments(fragments_pcr, overlap=self.overlap)
+        except Exception:
+            pass
+        
         backbone_pcr = pcr(assembly[-1].forward_primer, assembly[0].reverse_primer, backbone_pcr)
         assembly = assembly[1:-1]
         assembly.insert(0, backbone_pcr)
