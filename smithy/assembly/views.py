@@ -17,6 +17,7 @@ from django.views.generic import (
 from django.contrib.messages.views import SuccessMessageMixin 
 
 from assemblies.gibson import GibsonAssembler
+from assemblies.goldengate import GoldenGateAssembler
 from time import sleep
 
 def db_list(addgene, igem, dnasu):
@@ -52,23 +53,24 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
     model = GibsonAssembly
     success_message = 'View your new Gibson assembly below...'
     fields = [
-            'title',
-            'backbone_file',
-            'insert_file',
-            'addgene',
-            'igem',
-            'dnasu',
-            'min_blast',
-            'max_blast',
-            'min_synth',
-            'max_synth',
-            'mv_conc',
-            'dv_conc',
-            'dntp_conc',
-            'dntp_conc',
-            'dna_conc', 
-            'tm',
-            'overlap']
+        'title',
+        'backbone_file',
+        'insert_file',
+        'addgene',
+        'igem',
+        'dnasu',
+        'min_blast',
+        'max_blast',
+        'min_synth',
+        'max_synth',
+        'mv_conc',
+        'dv_conc',
+        'dntp_conc',
+        'dntp_conc',
+        'dna_conc', 
+        'tm',
+        'overlap'
+    ]
 
     def form_valid(self, form):
         self.object = form.save()
@@ -84,47 +86,78 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
                             min_frag=self.object.min_blast, 
                             max_frag=self.object.max_blast, 
                             min_synth=self.object.min_synth, 
-                            max_synth=self.object.max_synth)
+                            max_synth=self.object.max_synth,
+                            overlap=self.object.overlap
+        )
         results, error = gib_assembler.query()
         gib_assembler.solution_building(results)
-        gib_assembly, gib_fragments = gib_assembler.design(solution=1)
+        gib_assembly, gib_fragments = gib_assembler.design(solution=0)
+        # save assembly parts with meta/annotations and their primers here
+        for i, part in enumerate(gib_assembly):
+            gibson_part_entry = GibsonPart(
+                name=part.name,
+                database=part.annotations['db'],
+                length=part.template.seq.length, 
+                length_extended=part.seq.length,
+                seq=part.template.seq,
+                seq_extended=part.seq,
+                position=i,
+                assembly=self.object                
+            )
+            gibson_part_entry.save()
+
+            forward_primer = GibsonPrimer(
+                name= (part.name + ' forward primer'),
+                primer_type='fwd',
+                sequence=part.forward_primer.seq,
+                footprint=part.forward_primer.footprint,
+                tail=part.forward_primer.tail,
+                tm_total=0.0,
+                tm_footprint=0.0,
+                gc=0.0,
+                hairpin=False,
+                hairpin_tm=0.0,
+                hairpin_dg=0.0,
+                hairpin_dh=0.0,
+                hairpin_ds=0.0,
+                homodimer=False,
+                homodimer_tm=0.0,
+                homodimer_dg=0.0,
+                homodimer_dh=0.0,
+                homodimer_ds=0.0,
+                part=gibson_part_entry
+            )
+            forward_primer.save()
+
+            reverse_primer = GibsonPrimer(
+                name= (part.name + ' reverse primer'),
+                primer_type='fwd',
+                sequence=part.reverse_primer.seq,
+                footprint=part.reverse_primer.footprint,
+                tail=part.reverse_primer.tail,
+                tm_total=0.0,
+                tm_footprint=0.0,
+                gc=0.0,
+                hairpin=False,
+                hairpin_tm=0.0,
+                hairpin_dg=0.0,
+                hairpin_dh=0.0,
+                hairpin_ds=0.0,
+                homodimer=False,
+                homodimer_tm=0.0,
+                homodimer_dg=0.0,
+                homodimer_dh=0.0,
+                homodimer_ds=0.0,
+                part=gibson_part_entry
+            )
+            reverse_primer.save()
+
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'New Gibson Assembly'
         return context
-
-
-# def GibsonCreate(request):
-#     valid = True
-#     if request.method == 'POST':
-#         form = GibsonForm(request.POST)
-#         if form.is_valid():
-#             gibson = form.save()
-#             gib_assembler = GibsonAssembler(
-#                                 gibson.mv_conc, 
-#                                 gibson.dv_conc, 
-#                                 gibson.dna_conc,
-#                                 gibson.dntp_conc, 
-#                                 gibson.tm, 
-#                                 gibson.backbone_file.path, 
-#                                 gibson.insert_file.path, 
-#                                 db_list(gibson.addgene, gibson.igem, gibson.dnasu), 
-#                                 min_frag=gibson.min_blast, 
-#                                 max_frag=gibson.max_blast, 
-#                                 min_synth=gibson.min_synth, 
-#                                 max_synth=gibson.max_synth)
-#             results, error = gib_assembler.query()
-#             gib_assembler.solution_building(results)
-#             gib_assembly, gib_fragments = gib_assembler.design(solution=1)
-#             return redirect('gibson-detail', pk=gibson.pk)
-#         else:
-#             valid = False
-#     else:
-#         form = GibsonForm()
-#     v_dict = {'val': valid}
-#     return render(request, 'assembly/gibsonassembly_form.html', {'title': 'Gibson Assembly', 'form': form, 'valid': v_dict})
 
 
 class GibsonPartDetailView(DetailView):
@@ -161,23 +194,44 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
     model = GoldenGateAssembly
     success_message = 'View your new Golden Gate assembly below...'
     fields = [
-            'title',
-            'backbone_file',
-            'insert_file',
-            'addgene',
-            'igem',
-            'dnasu',
-            'min_blast',
-            'max_blast',
-            'min_synth',
-            'max_synth',
-            'mv_conc',
-            'dv_conc',
-            'dntp_conc',
-            'dntp_conc',
-            'dna_conc', 
-            'tm',
-            'overhangs']
+        'title',
+        'backbone_file',
+        'insert_file',
+        'addgene',
+        'igem',
+        'dnasu',
+        'min_blast',
+        'max_blast',
+        'min_synth',
+        'max_synth',
+        'mv_conc',
+        'dv_conc',
+        'dntp_conc',
+        'dntp_conc',
+        'dna_conc', 
+        'tm',
+        'overhangs'
+    ]
+
+    def form_valid(self, form):
+        self.object = form.save()
+        gg_assembler = GoldenGateAssembler(
+                            self.object.mv_conc, 
+                            self.object.dv_conc, 
+                            self.object.dna_conc,
+                            self.object.dntp_conc, 
+                            self.object.tm, 
+                            self.object.backbone_file.path, 
+                            self.object.insert_file.path, 
+                            db_list(self.object.addgene, self.object.igem, self.object.dnasu), 
+                            min_frag=self.object.min_blast, 
+                            max_frag=self.object.max_blast, 
+                            min_synth=self.object.min_synth, 
+                            max_synth=self.object.max_synth,
+                            ovhngs=self.object.overhangs
+        )
+
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

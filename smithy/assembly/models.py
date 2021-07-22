@@ -5,11 +5,11 @@ from django.utils import timezone
 from django.urls import reverse
 
 ovhngs = (
-        (15, '15 overhangs'),
-        (20, '20 overhangs'),
-        (25, '25 overhangs'),
-        (30, '30 overhangs'),
-    )
+    (0, '15 overhangs'),
+    (1, '20 overhangs'),
+    (2, '25 overhangs'),
+    (3, '30 overhangs'),
+)
 
 # abstract base classes for assemblies, parts, and primers
 class Assembly(models.Model):
@@ -48,6 +48,7 @@ class AssemblyPart(models.Model):
     length_extended = models.PositiveIntegerField()
     seq = models.CharField(max_length=10000)
     seq_extended = models.CharField(max_length=10000)
+    position = models.PositiveIntegerField(default=0)
 
     class Meta:
         abstract = True
