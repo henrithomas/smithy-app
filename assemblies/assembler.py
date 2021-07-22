@@ -198,7 +198,7 @@ class Assembler:
     def annotations(self, assembly, nodes):
         new_assembly = assembly.copy()
         data = [[node.node_id, node.db] for node in nodes]
-        data.insert(0, [self.backbone.name, 'NONE'])
+        data.append([self.backbone.name, 'NONE'])
         for i, amplicon in enumerate(new_assembly):
             amplicon.name = data[i][0]
             amplicon.annotations.update({'db': data[i][1]})

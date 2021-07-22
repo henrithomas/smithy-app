@@ -1,8 +1,9 @@
+from re import template
 from assemblies.assembler import Assembler
 from pydna.design import assembly_fragments
 from Bio.Seq import Seq
 from pydna.primer import Primer
-from pydna.amplify import pcr
+from pydna.amplify import pcr, Anneal
 from importlib import import_module
 
 # TODO citation
@@ -14,20 +15,40 @@ class OverlapExtensionAssembler(Assembler):
         self.overlap = overlap
         self.lin_enzyme = getattr(import_module('Bio.Restriction'), lin_enzyme)
     
+    def add_extensions(self, ext1, ext2, amp):
+        ext_fwd = Seq(ext1) + amp.forward_primer
+        ext_rvs = Seq(ext2) + amp.reverse_primer
+
+        ext_fwd_p = Primer(ext_fwd, position=amp.forward_primer.position, footprint=amp.forward_primer._fp,id=amp.forward_primer.id)
+        ext_rev_p = Primer(ext_rvs, position=amp.reverse_primer.position, footprint=amp.reverse_primer._fp,id=amp.reverse_primer.id)
+        
+        annealing = Anneal([ext_fwd_p, ext_rev_p], amp.template)  
+        amp_ext = annealing.products[0]
+        return amp_ext
+
     def primer_extension(self, fragments_pcr, backbone_pcr):
-        # returns assembly, a list of amplicons with extensions
-        fragments_pcr.insert(0, backbone_pcr)
+        assembly = []
         fragments_pcr.append(backbone_pcr)
+        end_idx = len(fragments_pcr) - 1
+        overlap = int(self.overlap / 2)
+
+        for i, amp in enumerate(fragments_pcr):
+            if i == 0:
+                overlap_fwd = fragments_pcr[end_idx].seq.watson[-overlap:]
+            else:
+                overlap_fwd = fragments_pcr[i - 1].seq.watson[-overlap:]
+
+            if i == end_idx:
+                overlap_rvs = fragments_pcr[0].seq.crick[-overlap:]
+            else:
+                overlap_rvs = fragments_pcr[i + 1].seq.crick[-overlap:]
+
+            amp_extended = self.add_extensions(overlap_fwd, overlap_rvs, amp)
+            
+            assembly.append(amp_extended)
         
-        try:
-            assembly = assembly_fragments(fragments_pcr, overlap=self.overlap)
-        except Exception:
-            pass
-        
-        backbone_pcr = pcr(assembly[-1].forward_primer, assembly[0].reverse_primer, backbone_pcr)
-        assembly = assembly[1:-1]
-        assembly.insert(0, backbone_pcr)
         return assembly
+        
 
     def design(self, solution=0):
         # return fragments
@@ -42,4 +63,14 @@ class OverlapExtensionAssembler(Assembler):
         assembly = self.annotations(assembly, nodes)
         # create expected assembly construct/seq
         # run primer thermo analysis
+
         return assembly, nodes
+
+    def design_no_query(self):
+        # take in direct dseqrecord list of the parts and backbone from form/model input
+        # run self.primer_complement(fragments, backbone)
+        # assembly = =self.primer_extension(fragments_pcr, backbone_pcr)
+        # make sure names are correct for the assembly fragments & backbone compared to the input frags & backbone
+        # run thermo analysis
+
+        pass

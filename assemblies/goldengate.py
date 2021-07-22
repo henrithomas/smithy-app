@@ -13,10 +13,12 @@ class GoldenGateAssembler(TraditionalREAssembler):
     restriction_enzyme = getattr(import_module('Bio.Restriction'), 'BsaI')
     cutsite = restriction_enzyme.site
     # potapov et al 2018
-    overhang_files = ['.\\assemblies\\overhangs\\goldengate\\oh1.json',
-                        '.\\assemblies\\overhangs\\goldengate\\oh2.json',
-                        '.\\assemblies\\overhangs\\goldengate\\oh3.json',
-                        '.\\assemblies\\overhangs\\goldengate\\oh4.json']
+    overhang_files = [
+        '/home/hthoma/projects/smithy-app/assemblies/overhangs/goldengate/oh1.json',
+        '/home/hthoma/projects/smithy-app/assemblies/overhangs/goldengate/oh2.json',
+        '/home/hthoma/projects/smithy-app/assemblies/overhangs/goldengate/oh3.json',
+        '/home/hthoma/projects/smithy-app/assemblies/overhangs/goldengate/oh4.json'
+    ]
 
     def __init__(self, *args, ovhngs=0, re='BsaI', ligase='T4-DNA', **kwargs):
         super(GoldenGateAssembler, self).__init__(re, *args, ligase=ligase, **kwargs)
@@ -46,12 +48,14 @@ class GoldenGateAssembler(TraditionalREAssembler):
     def design(self, solution=0):
         # return fragments
         fragments = self.get_solution(solution)
+        nodes = self.solution_tree.solution_nodes(solution)
         # digest backbone
-        backbone_digest = self.digest_backbone(self.restriction_enzyme)
+        # backbone_digest = self.digest_backbone(self.restriction_enzyme)
         # create assembly primer complements for backbone and fragments
-        fragments_pcr, backbone_pcr = self.primer_complement(fragments, backbone_digest['backbone'])
+        fragments_pcr, backbone_pcr = self.primer_complement(fragments, self.backbone)
         # create primer extensions
         assembly = self.primer_extension(fragments_pcr, backbone_pcr)
+        assembly = self.annotations(assembly, nodes)
         # create expected assembly construct/seq
         # run primer thermo analysis
         return assembly
