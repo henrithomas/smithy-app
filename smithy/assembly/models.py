@@ -85,6 +85,23 @@ class AssemblyPrimer(models.Model):
         return self.name
 
 
+class AssemblySolution(models.Model):
+    name = models.CharField(max_length=250, default='no_name')
+    date_created = models.DateTimeField(default=timezone.now)
+    backbone = models.CharField(max_length=100000)
+    query = models.CharField(max_length=100000)
+    solution = models.CharField(max_length=100000)
+    parts_count = models.PositiveIntegerField()
+    primers_count = models.PositiveIntegerField()
+    match = models.FloatField()
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.name
+
+
 # specific classes/models in the db for supported assemblies, parts, and primers
 class GoldenGateAssembly(Assembly):
     overhangs = models.IntegerField(verbose_name='overhang count', choices=ovhngs)
@@ -100,15 +117,29 @@ class GibsonAssembly(Assembly):
         return reverse('gibson-detail', kwargs={'pk': self.pk})   
 
 
-class GoldenGatePart(AssemblyPart):
+class GibsonSolution(AssemblySolution):
+    assembly = models.ForeignKey(GibsonAssembly, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('gibson-solution-detail', kwargs={'pk': self.pk})
+
+
+class GoldenGateSolution(AssemblySolution):
     assembly = models.ForeignKey(GoldenGateAssembly, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('goldengate-solution-detail', kwargs={'pk': self.pk})
+
+
+class GoldenGatePart(AssemblyPart):
+    solution = models.ForeignKey(GoldenGateSolution, on_delete=models.CASCADE)
     
     def get_absolute_url(self):
         return reverse('goldengate-part-detail', kwargs={'pk': self.pk})
 
 
 class GibsonPart(AssemblyPart):
-    assembly = models.ForeignKey(GibsonAssembly, on_delete=models.CASCADE)
+    solution = models.ForeignKey(GibsonSolution, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         return reverse('gibson-part-detail', kwargs={'pk': self.pk})
@@ -126,3 +157,4 @@ class GibsonPrimer(AssemblyPrimer):
 
     def get_absolute_url(self):
         return reverse('gibson-primer-detail', kwargs={'pk': self.pk})
+
