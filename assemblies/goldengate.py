@@ -4,6 +4,7 @@ from Bio.Seq import Seq
 from pydna.primer import Primer
 from pydna.amplify import pcr
 from importlib import import_module
+from primers.analysis import assembly_thermo
 import json
 
 # TODO citation
@@ -58,4 +59,6 @@ class GoldenGateAssembler(TraditionalREAssembler):
         assembly = self.annotations(assembly, nodes)
         # create expected assembly construct/seq
         # run primer thermo analysis
-        return assembly
+        assembly = assembly_thermo(assembly, self.mv_conc, self.dv_conc, self.dna_conc, self.tm_custom)
+
+        return assembly, nodes

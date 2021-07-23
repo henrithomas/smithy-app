@@ -1,10 +1,12 @@
-from re import template
+from re import A, template
 from assemblies.assembler import Assembler
 from pydna.design import assembly_fragments
 from Bio.Seq import Seq
 from pydna.primer import Primer
 from pydna.amplify import pcr, Anneal
 from importlib import import_module
+from primers.analysis import assembly_thermo
+
 
 # TODO citation
 class OverlapExtensionAssembler(Assembler):
@@ -54,16 +56,17 @@ class OverlapExtensionAssembler(Assembler):
         # return fragments
         fragments = self.get_solution(solution)
         nodes = self.solution_tree.solution_nodes(solution)
-        # digest backbone
-        # backbone_digest = self.digest_backbone(self.lin_enzyme)
+        
         # create assembly primer complements for backbone and fragments
         fragments_pcr, backbone_pcr = self.primer_complement(fragments, self.backbone)
+        
         # create primer extensions
         assembly = self.primer_extension(fragments_pcr, backbone_pcr)
         assembly = self.annotations(assembly, nodes)
-        # create expected assembly construct/seq
+        # TODO create expected assembly construct/seq
         # run primer thermo analysis
-
+        assembly = assembly_thermo(assembly, self.mv_conc, self.dv_conc, self.dna_conc, self.tm_custom)
+  
         return assembly, nodes
 
     def design_no_query(self):

@@ -9,7 +9,8 @@ from .models import (
     GoldenGateAssembly,
     GoldenGatePart,
     GoldenGatePrimer,
-    GibsonSolution
+    GibsonSolution,
+    GoldenGateSolution
 )
 from django.views.generic import (
     DetailView,
@@ -46,8 +47,7 @@ class GibsonDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         # TODO change how the queries happen here, maybe change to code in the GET request
         context['title'] = self.object.title 
-        context['parts'] = self.object.gibsonpart_set.all()
-        context['primer_sets'] =  [part.gibsonprimer_set.all() for part in context['parts']]
+        context['solutions'] = self.object.gibsonsolution_set.all()
         return context
 
 
@@ -93,12 +93,12 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
         )
         results, error = gib_assembler.query()
         gib_assembler.solution_building(results)
-        gib_assembly, gib_fragments = gib_assembler.design(solution=0)
+        gib_assembly, gib_fragments = gib_assembler.design(solution=3)
         # save assembly parts with meta/annotations and their primers here
         # TODO update to have a match % and BLAST solution sequence
         # TODO add a foreach solution in for the assembly
         gibson_solution = GibsonSolution(
-            name='New Solution',
+            name=f'Solution - {self.object.title}',
             backbone=gib_assembler.backbone.seq,
             query=gib_assembler.query_record.seq,
             solution='',
@@ -108,6 +108,7 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
             assembly=self.object
         )
         gibson_solution.save()
+
 
         for i, part in enumerate(gib_assembly):
             gibson_part_entry = GibsonPart(
@@ -123,48 +124,48 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
             gibson_part_entry.save()
 
             forward_primer = GibsonPrimer(
-                name= (part.name + ' forward primer'),
+                name= f'{gibson_part_entry.name} forward primer',
                 primer_type='fwd',
                 sequence=part.forward_primer.seq,
                 footprint=part.forward_primer.footprint,
                 tail=part.forward_primer.tail,
-                tm_total=0.0,
-                tm_footprint=0.0,
-                gc=0.0,
-                hairpin=False,
-                hairpin_tm=0.0,
-                hairpin_dg=0.0,
-                hairpin_dh=0.0,
-                hairpin_ds=0.0,
-                homodimer=False,
-                homodimer_tm=0.0,
-                homodimer_dg=0.0,
-                homodimer_dh=0.0,
-                homodimer_ds=0.0,
+                tm_total=part.annotations['forward_primer']['tm_total'],
+                tm_footprint=part.annotations['forward_primer']['tm_footprint'],
+                gc=part.annotations['forward_primer']['gc'],
+                hairpin=part.annotations['forward_primer']['hairpin'],
+                hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
+                hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
+                hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
+                hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
+                homodimer=part.annotations['forward_primer']['homodimer'],
+                homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
+                homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
+                homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
+                homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
                 part=gibson_part_entry
             )
             forward_primer.save()
 
             reverse_primer = GibsonPrimer(
-                name= (part.name + ' reverse primer'),
-                primer_type='fwd',
+                name= f'{gibson_part_entry.name} reverse primer ',
+                primer_type='rvs',
                 sequence=part.reverse_primer.seq,
                 footprint=part.reverse_primer.footprint,
                 tail=part.reverse_primer.tail,
-                tm_total=0.0,
-                tm_footprint=0.0,
-                gc=0.0,
-                hairpin=False,
-                hairpin_tm=0.0,
-                hairpin_dg=0.0,
-                hairpin_dh=0.0,
-                hairpin_ds=0.0,
-                homodimer=False,
-                homodimer_tm=0.0,
-                homodimer_dg=0.0,
-                homodimer_dh=0.0,
-                homodimer_ds=0.0,
-                part=gibson_part_entry
+                tm_total=part.annotations['reverse_primer']['tm_total'],
+                tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
+                gc=part.annotations['reverse_primer']['gc'],
+                hairpin=part.annotations['reverse_primer']['hairpin'],
+                hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
+                hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
+                hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
+                hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
+                homodimer=part.annotations['reverse_primer']['homodimer'],
+                homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
+                homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
+                homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
+                homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
+                part=gibson_part_entry 
             )
             reverse_primer.save()
 
@@ -173,6 +174,18 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'New Gibson Assembly'
+        return context
+
+
+class GibsonSolutionDetailView(DetailView):
+    model = GibsonSolution
+    context_object_name = 'gibson_solution'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        context['parts'] = self.object.gibsonpart_set.all()
+        context['primer_sets'] =  [part.gibsonprimer_set.all() for part in context['parts']]
         return context
 
 
@@ -203,6 +216,7 @@ class GoldenGateDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.title
+        context['solutions'] = self.object.goldengatesolution_set.all()
         return context
 
 
@@ -246,6 +260,83 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
                             max_synth=self.object.max_synth,
                             ovhngs=self.object.overhangs
         )
+        
+        results, error = gg_assembler.query()
+        gg_assembler.solution_building(results)
+        gg_assembly, gg_fragments = gg_assembler.design(solution=3)
+
+        # TODO update to have a match % and BLAST solution sequence
+        # TODO add a foreach solution in for the assembly
+        goldengate_solution = GoldenGateSolution(
+            name=f'Solution - {self.object.title}',
+            backbone=gg_assembler.backbone.seq,
+            query=gg_assembler.query_record.seq,
+            solution='',
+            parts_count=len(gg_fragments),
+            primers_count=len(gg_fragments) * 2,
+            match=0.0,
+            assembly=self.object
+        )
+        goldengate_solution.save()
+
+        for i, part in enumerate(gg_assembly):
+            goldengate_part_entry = GoldenGatePart(
+                name=f'{part.name}-{i}',
+                database=part.annotations['db'],
+                length=part.template.seq.length, 
+                length_extended=part.seq.length,
+                seq=part.template.seq,
+                seq_extended=part.seq,
+                position=i,
+                solution=goldengate_solution            
+            )
+            goldengate_part_entry.save()
+
+            forward_primer = GoldenGatePrimer(
+                name= f'{goldengate_part_entry.name} forward primer',
+                primer_type='fwd',
+                sequence=part.forward_primer.seq,
+                footprint=part.forward_primer.footprint,
+                tail=part.forward_primer.tail,
+                tm_total=part.annotations['forward_primer']['tm_total'],
+                tm_footprint=part.annotations['forward_primer']['tm_footprint'],
+                gc=part.annotations['forward_primer']['gc'],
+                hairpin=part.annotations['forward_primer']['hairpin'],
+                hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
+                hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
+                hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
+                hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
+                homodimer=part.annotations['forward_primer']['homodimer'],
+                homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
+                homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
+                homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
+                homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
+                part=goldengate_part_entry
+            )
+            forward_primer.save()
+
+            reverse_primer = GoldenGatePrimer(
+                name= f'{goldengate_part_entry.name} reverse primer ',
+                primer_type='rvs',
+                sequence=part.reverse_primer.seq,
+                footprint=part.reverse_primer.footprint,
+                tail=part.reverse_primer.tail,
+                tm_total=part.annotations['reverse_primer']['tm_total'],
+                tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
+                gc=part.annotations['reverse_primer']['gc'],
+                hairpin=part.annotations['reverse_primer']['hairpin'],
+                hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
+                hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
+                hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
+                hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
+                homodimer=part.annotations['reverse_primer']['homodimer'],
+                homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
+                homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
+                homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
+                homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
+                part=goldengate_part_entry 
+            )
+            reverse_primer.save()
 
         return super().form_valid(form)
 
@@ -253,6 +344,18 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'New Golden Gate Assembly'
         return context
+
+
+class GoldenGateSolutionDetailView(DetailView):
+    model = GoldenGateSolution  
+    context_object_name = 'goldengate_solution'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        context['parts'] = self.object.goldengatepart_set.all()
+        context['primer_sets'] =  [part.goldengateprimer_set.all() for part in context['parts']]
+        return context   
 
 
 class GoldenGatePartDetailView(DetailView):

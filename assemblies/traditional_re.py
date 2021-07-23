@@ -1,7 +1,7 @@
 from assemblies.assembler import Assembler
 from Bio.Seq import Seq
 from pydna.primer import Primer
-from pydna.amplify import pcr
+from pydna.amplify import pcr, Anneal
 from importlib import import_module
 import json
 
@@ -32,7 +32,10 @@ class TraditionalREAssembler(Assembler):
         ext_fwd_p = Primer(ext_fwd, position=seq.forward_primer.position, footprint=seq.forward_primer._fp,id=seq.forward_primer.id)
         ext_rev_p = Primer(ext_rev, position=seq.reverse_primer.position, footprint=seq.reverse_primer._fp,id=seq.reverse_primer.id)
 
-        return pcr(ext_fwd_p, ext_rev_p, seq.template)
+        annealing = Anneal([ext_fwd_p, ext_rev_p], seq.template)
+        amp_ext = annealing.products[0]
+
+        return amp_ext
 
     def add_cutsites(self, site1, site2, seq):
         ext_fwd = Seq(site1) + seq.forward_primer
@@ -41,7 +44,10 @@ class TraditionalREAssembler(Assembler):
         ext_fwd_p = Primer(ext_fwd, position=seq.forward_primer.position, footprint=seq.forward_primer._fp,id=seq.forward_primer.id)
         ext_rev_p = Primer(ext_rev, position=seq.reverse_primer.position, footprint=seq.reverse_primer._fp,id=seq.reverse_primer.id)
 
-        return pcr(ext_fwd_p, ext_rev_p, seq.template)
+        annealing = Anneal([ext_fwd_p, ext_rev_p], seq.template)
+        amp_ext = annealing.products[0]
+
+        return amp_ext
 
     
     def single_digest_1(self, insert_pcr):

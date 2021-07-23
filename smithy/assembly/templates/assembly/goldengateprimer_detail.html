@@ -1,4 +1,60 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
-    <h2>{{ title }}</h2>
+    <h2 class="mb-3">
+        {{ title }}
+        <span class="badge rounded-pill bg-secondary">
+            {{ goldengate_primer.primer_type }}
+        </span>
+    </h2>
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <h3>Date Created</h3>
+            <p>{{ goldengate_primer.date_created }}</p>
+        </div>
+        <div class="col-md-3">
+            <h3>Primer Type</h3>
+            <p>{{ goldengate_primer.primer_type }}</p>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span></h3>
+            <p>{{ goldengate_primer.sequence }}</p>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Thermodynamic Analysis</h3>
+            <div class="table-responsive-md">
+                <table class="table table-striped">
+                    <thead> 
+                        <th>Structure</th>
+                        <th>Structure Found</th>
+                        <th>Tm (C)</th>
+                        <th>&Delta;G</th>
+                        <th>&Delta;H</th>
+                        <th>&Delta;S</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Hairpin</td>
+                            <td>{{ goldengate_primer.hairpin }}</td>
+                            <td>{{ goldengate_primer.hairpin_tm }}</td>
+                            <td>{{ goldengate_primer.hairpin_dg }}</td>
+                            <td>{{ goldengate_primer.hairpin_dh }}</td>
+                            <td>{{ goldengate_primer.hairpin_ds }}</td>
+                        </tr>
+                        <tr>
+                            <td>Homodimer</td>
+                            <td>{{ goldengate_primer.homodimer}}</td>
+                            <td>{{ goldengate_primer.homodimer_tm }}</td>
+                            <td>{{ goldengate_primer.homodimer_dg }}</td>
+                            <td>{{ goldengate_primer.homodimer_dh }}</td>
+                            <td>{{ goldengate_primer.homodimer_ds }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock content %}

@@ -24,55 +24,29 @@
     <div class="row mb-4">
         <div class="col">
             <h3 class="mb-4">
-                Parts
-                <a href="#" class="btn btn-outline-primary float-end disabled">Download Parts</a> 
+                Solutions
+                <a href="#" class="btn btn-outline-primary float-end disabled">Download Solutions</a> 
             </h3>
-            {% for part in parts %}
+            {% for solution in solutions %}
                 <div class="card mb-2">
                     <div class="card-body">
                         <h4 class="card-title">
-                            {{part.name}}
-                            <a href="{% url 'gibson-part-detail' part.pk %}" class="btn btn-outline-primary float-end">View Part</a>
+                            {{solution.name}}
+                            <a href="{% url 'gibson-solution-detail' solution.pk %}" class="btn btn-outline-primary float-end">View Solution</a>
                         </h4>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <strong>Sequence:</strong> {{ part.seq|slice:":50" }}...
+                                <strong>Created:</strong> {{ solution.date_created }}
                             </li>
                             <li class="list-group-item">
-                                <strong>Database:</strong> {{part.database}}
+                                <strong>Parts:</strong> {{ solution.parts_count }}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Primers:</strong> {{ solution.primers_count }}
                             </li>
                         </ul>
-                        
                     </div>
                 </div>
-            {% endfor %}
-        </div>
-    </div>
-    <div class="row mb-4">
-        <div class="col">
-            <h3 class="mb-4">
-                Primers
-                <a href="#" class="btn btn-outline-primary float-end disabled">Download Primers</a>
-            </h3>
-            {% for primers in primer_sets %}
-                {% for primer in primers %}
-                    <div class="card mb-2">
-                        <div class="card-body">
-                            <h4 class="card-title">
-                                {{primer.name}}
-                                <a href="{% url 'gibson-primer-detail' primer.pk %}" class="btn btn-outline-primary float-end">View Primer</a> 
-                            </h4>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <strong>Sequence:</strong> {{primer.sequence}}
-                                </li>
-                                <li class="list-group-item">
-                                   <strong>Melting Temperature (C):</strong> {{primer.tm_footprint}}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                {% endfor %}
             {% endfor %}
         </div>
     </div>

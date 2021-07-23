@@ -21,14 +21,11 @@
     </div>
     <div class="row mb-4">
         <div class="col">
-            <h3>Sequence</h3>
-            <p>
-                {{gibson_part.seq}}
-            </p>
-            <h3>Extended Sequence</h3>
-            <p>
-                {{gibson_part.seq_extended}}
-            </p>
+            <h3>Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span></h3>
+            <p>{{gibson_part.seq}}</p>
+            
+            <h3>Extended Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span></h3>
+            <p>{{gibson_part.seq_extended}}</p>
         </div>
     </div>
 {% endblock content %}
