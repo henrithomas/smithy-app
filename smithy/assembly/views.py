@@ -9,6 +9,7 @@ from .models import (
     GoldenGateAssembly,
     GoldenGatePart,
     GoldenGatePrimer,
+    GibsonSolution
 )
 from django.views.generic import (
     DetailView,
@@ -43,6 +44,7 @@ class GibsonDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # TODO change how the queries happen here, maybe change to code in the GET request
         context['title'] = self.object.title 
         context['parts'] = self.object.gibsonpart_set.all()
         context['primer_sets'] =  [part.gibsonprimer_set.all() for part in context['parts']]
@@ -93,16 +95,30 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
         gib_assembler.solution_building(results)
         gib_assembly, gib_fragments = gib_assembler.design(solution=0)
         # save assembly parts with meta/annotations and their primers here
+        # TODO update to have a match % and BLAST solution sequence
+        # TODO add a foreach solution in for the assembly
+        gibson_solution = GibsonSolution(
+            name='New Solution',
+            backbone=gib_assembler.backbone.seq,
+            query=gib_assembler.query_record.seq,
+            solution='',
+            parts_count=len(gib_fragments),
+            primers_count=len(gib_fragments) * 2,
+            match=0.0,
+            assembly=self.object
+        )
+        gibson_solution.save()
+
         for i, part in enumerate(gib_assembly):
             gibson_part_entry = GibsonPart(
-                name=part.name,
+                name=f'{part.name}-{i}',
                 database=part.annotations['db'],
                 length=part.template.seq.length, 
                 length_extended=part.seq.length,
                 seq=part.template.seq,
                 seq_extended=part.seq,
                 position=i,
-                assembly=self.object                
+                solution=gibson_solution            
             )
             gibson_part_entry.save()
 
