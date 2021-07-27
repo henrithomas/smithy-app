@@ -9,10 +9,52 @@ import json
 
 # TODO citation
 class GoldenGateAssembler(TraditionalREAssembler):
+    """
+    A class used to implement and execute Golden Gate assemblies. 
+
+    citation: Golden Gate Cloning - Engler et al 2008
+
+
+    Attributes
+    ----------
+    cloning_type : str
+        A simple description of the cloning method
+
+    overhang_files : list
+        A list of file paths to overhang sets of various sizes 
+
+    ovhngs : int
+        An index in the overhang_files for the file path to use for the assembly
+
+    re : str
+        The name of the restriction enzyme to use for the assembly
+
+    ligase : str
+        The name of the ligase to use for the assembly
+
+    *args
+        See documentation for TraditionalREAssembler parent class
+
+    **kwargs
+        See documentation for TraditionalREAssembler parent class 
+
+
+    Returns
+    -------
+    An instance of GoldenGateAssembler
+
+
+    Methods
+    -------
+    def primer_extension(self, fragments_pcr, backbone_pcr):
+        Determines the primer extensions for a given assembly amplicon in a parts set.
+
+    def design(self, solution=0):
+        Runs a full design procedure on the selected solution. Fetches the solution from the solution_tree, adds primer 
+        complements, designs and add primer extensions, logs part annotations, and performs thermodynamic analysis.
+    """
+    
     cloning_type = 'Golden Gate'
-    ligase = 'T4-DNA'
-    restriction_enzyme = getattr(import_module('Bio.Restriction'), 'BsaI')
-    cutsite = restriction_enzyme.site
     # potapov et al 2018
     overhang_files = [
         '/home/hthoma/projects/smithy-app/assemblies/overhangs/goldengate/oh1.json',
@@ -22,11 +64,50 @@ class GoldenGateAssembler(TraditionalREAssembler):
     ]
 
     def __init__(self, *args, ovhngs=0, re='BsaI', ligase='T4-DNA', **kwargs):
+        """
+        Constructs all necessary attributes for the GoldenGateAssembler object
+
+
+        Parameters
+        ----------
+        ovhngs : int
+            An index in the overhang_files for the file path to use for the assembly
+
+        re : str
+            The name of the restriction enzyme to use for the assembly
+
+        ligase : str
+            The name of the ligase to use for the assembly
+
+        *args
+            See documentation for TraditionalREAssembler parent class
+
+        **kwargs
+            See documentation for TraditionalREAssembler parent class
+        """
         super(GoldenGateAssembler, self).__init__(re, *args, ligase=ligase, **kwargs)
         with open(self.overhang_files[ovhngs]) as f:
             self.overhangs = json.load(f)
 
     def primer_extension(self, fragments_pcr, backbone_pcr):
+        """
+        Determines the primer extensions for a given assembly amplicon in a parts set.
+
+
+        Parameters
+        ----------
+        fragments_pcr : List of pydna Amplicons  
+            A list of pydna Amplicons used for a given assembly solution
+
+        backbone_pcr : A pydna Amplicon
+            The backbone Amplicon for a given assembly
+
+
+        Returns
+        -------
+        A list of new Amplicon objects, including fragments and backbone, that have gone through primer extension design and 
+        extended accordingly
+        """
         # returns assembly, a list of amplicons with extensions
         assembly = []
         fragments_pcr.append(backbone_pcr)
@@ -47,15 +128,32 @@ class GoldenGateAssembler(TraditionalREAssembler):
         return assembly
 
     def design(self, solution=0):
-        # return fragments
+        """
+        Runs a full design procedure on the selected solution. Fetches the solution from the solution_tree, adds primer 
+        complements, designs and add primer extensions, logs part annotations, and performs thermodynamic analysis.
+
+
+        Parameters
+        ----------
+        solution : int
+            The solution index in the solution_tree of the assembler
+
+
+        Returns
+        -------
+        A fully design list of assembly parts for assembly with a list of the blast record data for each part (nodes) 
+        """
+        # return fragments and nodes
         fragments = self.get_solution(solution)
         nodes = self.solution_tree.solution_nodes(solution)
-        # digest backbone
-        # backbone_digest = self.digest_backbone(self.restriction_enzyme)
+
         # create assembly primer complements for backbone and fragments
         fragments_pcr, backbone_pcr = self.primer_complement(fragments, self.backbone)
+        
         # create primer extensions
         assembly = self.primer_extension(fragments_pcr, backbone_pcr)
+
+        # add simple annotations
         assembly = self.annotations(assembly, nodes)
         # create expected assembly construct/seq
         # run primer thermo analysis

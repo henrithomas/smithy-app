@@ -1,11 +1,27 @@
 from collections import defaultdict
 from datetime import datetime
 from itertools import combinations
-from re import split
 from fragment.node import FragmentNode
 from Bio.Blast.Record import HSP, Alignment
 
 class FragmentTree:
+    """
+    
+
+
+    Attributes
+    ----------
+
+
+
+    Returns
+    -------
+
+
+
+    Methods
+    -------
+    """
     def __init__(self, query, nodes=None, query_len=0, min_synth=0, max_synth=0):
         self.node_list = nodes
         self.min_synth = min_synth
@@ -59,7 +75,6 @@ class FragmentTree:
         temp_hsp.sbjct_end = 0
         root_data.hsps.append(temp_hsp)
         self.node_list.append(FragmentNode(data=root_data, start=0, end=0, score=0, i='ROOT'))
-
 
     def filler_node(self, start, end):
         temp = Alignment()
@@ -184,7 +199,6 @@ class FragmentTree:
                 self.adjacency_set[last].add(len(self.node_list) - 1)
                 solution.append(len(self.node_list) - 1)
 
-    
     def max_score(self, v, path=None):
         if not path:
             path = []

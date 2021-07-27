@@ -16,28 +16,74 @@ from pydna.amplify import pcr
 
 
 class Assembler:
-    cloning_type = 'Abstract'
+    """
+    A base parent class for other assembly classes that will specify cloning methods.
 
-    def __init__(self, mv, dv, dna, dntp, tm, bb_file, q_file, db_list, min_frag=0, max_frag=0, min_synth=0, max_synth=0):
-        self.mv_conc = mv
-        self.dv_conc = dv
-        self.dna_conc = dna
-        self.dntp_conc = dntp
-        self.tm = tm
-        self.backbone_file = bb_file    # 'C:\\Users\\mt200\\Desktop\\projects\\thesis\\input\\sequences\\backbone.fasta'
-        self.query_file = q_file    # 'C:\\Users\\mt200\\Desktop\\projects\\thesis\\input\\queries\\rpr1-dcas9mxi1-gfp-adh1.fasta'
-        self.dbs = db_list  # ['addgene', 'igem', 'dnasu']
-        self.min_frag = min_frag
-        self.max_frag = max_frag
-        self.min_synth = min_synth
-        self.max_synth = max_synth
-        self.max_seqs = 1000
-        self.query_record = Dseqrecord(SeqIO.read(q_file, 'fasta'), circular=False)
-        self.backbone = Dseqrecord(SeqIO.read(bb_file, 'fasta'), circular=False)
-        self.solution_tree = None
-        self.insert = None
-        
 
+    Attributes
+    ----------
+    cloning_type : str
+        A simple description of the cloning method
+
+    mv_conc : float
+        Monovalent ion concentration
+    
+    dv_conc : float
+        Divalent ion concentration
+    
+    dna_conc : float
+        DNA concentration
+    
+    dntp_conc : float
+        dNTP concentration
+    
+    tm : float
+        Melting temperature
+    
+    backbone_file : string
+        Path to the backbone fasta file
+    
+    query_file : string
+        Path to the insert query file
+   
+    dbs : list
+        List of strings for the BLAST databases to use
+    
+    min_frag : int, optional
+        Minimum nucleotide size of alignments to use from BLAST databases
+    
+    max_frag : int, optional
+        Maximum nucleotide size of alignments to use from BLAST databases
+    
+    min_synth : int, optional
+        Minimum nucleotide size of synthetic fragments to design for assemblies
+    
+    max_synth : int, optional
+        Maximum nucleotide size of synthetic fragments to design for assemblies
+    
+    max_seqs : int, optional
+        Maximum count of alignments to return from BLAST queries
+    
+    query_record : Dseqrecord
+        A pydna Dseqrecord of the insert query sequence built from query_file
+    
+    backbone : Dseqrecord
+        A pydna Dseqrecord of the backbone sequence built from backbone_file
+    
+    solution_tree : FragmentTree
+        An instance of FragmentTree that holds all information for assembly solutions 
+    
+    insert : str
+        (unused) The sequence for a solution for an assembly 
+
+
+    Returns
+    -------
+    An instance of Assembler
+
+    
+    Methods
+    -------
     def tm_custom(
         self,
         seq,
@@ -60,7 +106,156 @@ class Assembler:
         saltcorr=7,  # Tm = 81.5 + 0.41(%GC) - 600/N + 16.6 x log[Na+]
         func=_mt.Tm_NN,  # Used by Primer3Plus to calculate the product Tm.
     ):
-        # change these params to the assemler values
+        Uses parameters from instantiation to build a custom pydna melting temperature function.
+
+    def parts_csv(self, parts, file_name):
+        Exports the assembly parts data to the chosen file in csv format.
+        
+    def primers_csv(self, parts, file_name):
+        Exports the assembly primer data to the choses file in csv format.
+
+    def assembly_construct_write(self, frags, file_name):
+        Exports the full assembly construct sequence. 
+
+    def assembly_output(self, frags, b_bone, assembly):
+        A convenience function to bundle the parts_csv, primers_csv, and assembly_construct_write functions.
+
+    def digest_backbone(self, enzyme):
+        Uses a pydna enzyme to cut a pydna Dseqrecord backbone sequence.
+
+    def get_solution(self, s):
+        Collects a Dseqrecord list of assembly fragments from a solution tree.
+    
+    def primer_complement(self, fragments, backbone):
+        Designs basic primers for all fragments and the backbone for the assembly.
+
+    def primer_verification(self, assembly):
+        Runs thermodynamic analysis on all sequences in an assembly using the assembly_thermo function from primers.analysis.
+
+    def query(self):
+        Creates a Blaster instance using attributes fron the current assembler object and runs BLAST queries using Blaster.
+
+    def solution_building(self, query_results):
+        Creates a Fragment tree using Blaster results and then initializes the assembler's solution_tree.
+
+    def annotations(self, assembly, nodes):
+        Adds annotations to the Dseqrecords in the assembly from the BLAST alignment data in nodes.
+    """
+    
+    cloning_type = 'Abstract'
+
+    def __init__(self, mv, dv, dna, dntp, tm, bb_file, q_file, db_list, min_frag=0, max_frag=1000, min_synth=0, max_synth=1000):
+        """
+        Constructs all necessary attributes for the Assembler object.
+
+
+        Parameters
+        ----------
+            mv_conc : float
+                Monovalent ion concentration
+            
+            dv_conc : float
+                Divalent ion concentration
+            
+            dna_conc : float
+                DNA concentration
+            
+            dntp_conc : float
+                dNTP concentration
+            
+            tm : float
+                Melting temperature
+            
+            backbone_file : string
+                Path to the backbone fasta file
+            
+            query_file : string
+                Path to the insert query file
+        
+            dbs : list
+                List of strings for the BLAST databases to use
+            
+            min_frag : int, optional
+                Minimum nucleotide size of alignments to use from BLAST databases
+            
+            max_frag : int, optional
+                Maximum nucleotide size of alignments to use from BLAST databases
+            
+            min_synth : int, optional
+                Minimum nucleotide size of synthetic fragments to design for assemblies
+            
+            max_synth : int, optional
+                Maximum nucleotide size of synthetic fragments to design for assemblies
+            
+            max_seqs : int, optional
+                Maximum count of alignments to return from BLAST queries
+            
+            query_record : Dseqrecord
+                A pydna Dseqrecord of the insert query sequence built from query_file
+            
+            backbone : Dseqrecord
+                A pydna Dseqrecord of the backbone sequence built from backbone_file
+            
+            solution_tree : FragmentTree
+                An instance of FragmentTree that holds all information for assembly solutions 
+            
+            insert : str
+                (unused) The sequence for a solution for an assembly 
+        """
+
+        self.mv_conc = mv
+        self.dv_conc = dv
+        self.dna_conc = dna
+        self.dntp_conc = dntp
+        self.tm = tm
+        self.backbone_file = bb_file    # 'C:\\Users\\mt200\\Desktop\\projects\\thesis\\input\\sequences\\backbone.fasta'
+        self.query_file = q_file    # 'C:\\Users\\mt200\\Desktop\\projects\\thesis\\input\\queries\\rpr1-dcas9mxi1-gfp-adh1.fasta'
+        self.dbs = db_list  # ['addgene', 'igem', 'dnasu']
+        self.min_frag = min_frag
+        self.max_frag = max_frag
+        self.min_synth = min_synth
+        self.max_synth = max_synth
+        self.max_seqs = 1000
+        self.query_record = Dseqrecord(SeqIO.read(q_file, 'fasta'), circular=False)
+        self.backbone = Dseqrecord(SeqIO.read(bb_file, 'fasta'), circular=False)
+        self.solution_tree = None
+        self.insert = None
+        
+    def tm_custom(
+        self,
+        seq,
+        check=True,
+        strict=True,
+        c_seq=None,
+        shift=0,
+        nn_table=_mt.DNA_NN4,  # DNA_NN4: values from SantaLucia & Hicks (2004)
+        tmm_table=None,
+        imm_table=None,
+        de_table=None,
+        dnac1=50, 
+        dnac2=50,  
+        selfcomp=False,
+        Na=50,
+        K=0,
+        Tris=75.0,  # We use the 10X Taq Buffer with (NH4)2SO4 (above)
+        Mg=1.5,  # 1.5 mM Mg2+ is often seen in modern protocols
+        dNTPs=0.8,  # I assume 200 µM of each dNTP
+        saltcorr=7,  # Tm = 81.5 + 0.41(%GC) - 600/N + 16.6 x log[Na+]
+        func=_mt.Tm_NN,  # Used by Primer3Plus to calculate the product Tm.
+    ):
+        """
+        Constructs a custom pydna melting temperature for the assembler object.
+
+
+        Parameters
+        ----------
+        See pydna docs.
+
+
+        Returns
+        -------
+        A custom pydna melting temperature function to use throughout the assembler object.
+        """
         dnac1 = self.dna_conc
         dnac2 = self.dna_conc
         Na = self.mv_conc
@@ -88,6 +283,23 @@ class Assembler:
         )
 
     def parts_csv(self, parts, file_name):
+        """
+        Exports the assembly parts data to the chosen file in csv format.
+
+
+        Parameters
+        ----------
+        parts : list
+            List of Dseqrecords objects for the assembly
+            
+        file_name : str
+            Name of the csv file to export
+
+
+        Returns
+        -------
+        None
+        """
         import csv
         fields = ['id', 'db','length', 'length_ext', 'seq', 'seq_ext']
         csv_list = []
@@ -108,6 +320,23 @@ class Assembler:
             writer.writerows(csv_list)
 
     def primers_csv(self, parts, file_name):
+        """
+        Exports the assembly primers to the chosen file in csv format.
+
+
+        Parameters
+        ----------
+        parts : list
+            List of Dseqrecords objects
+
+        file_name : str
+            Name of the csv file to export
+
+
+        Returns
+        -------        
+        None
+        """
         # this will become more complicated when JSON structure is added
         # TODO add JSON structure for parts
         import csv
@@ -135,16 +364,51 @@ class Assembler:
             writer.writeheader()
             writer.writerows(csv_list)
 
-
     def assembly_construct_write(self, frags, file_name):
+        """
+        Exports the full assembly sequence, backbone and insert, to the chosen file in csv format.
+
+
+        Parameters
+        ----------
+        frags : list 
+            List of strings of all assembly sequences
+
+        file_name : str
+            Name of the file to export
+
+
+        Returns
+        -------        
+        None
+        """
         # this will become more complicated when JSON structure is added
         # TODO add JSON structure for construct
         construct = ''.join([str(frag.seq.watson) for frag in frags])
         with open(file_name, 'w') as file:
             file.write(construct)
 
-
     def assembly_output(self, frags, b_bone, assembly):
+        """
+        A convenience function to bundle the parts_csv, primers_csv, and assembly_construct_write functions.
+
+
+        Parameters
+        ----------
+        frags : list
+            List of strings of all assembly sequences
+
+        b_bone : Dseqrecord
+            Dseqrecord of the backbone sequence
+
+        assembly : list
+            List of Dseqrecords objects for the assembly
+
+
+        Returns
+        -------        
+        None
+        """
         # format the fragments, extension primers, and digest['backbone'] sequences here
         # maybe write out two files here, one for PCR without extension and another with extension
         # combine the digested backbone with the original fragments into a single sequence
@@ -157,6 +421,20 @@ class Assembler:
     # TODO change method to use pydna linearize function for exceptions
     # TODO add more thorough checks on linearizing the backbone with given enzyme
     def digest_backbone(self, enzyme):
+        """
+        Uses a pydna enzyme to cut a pydna Dseqrecord backbone sequence.        
+
+
+        Parameters
+        ----------
+        enzyme : Bio.Restriction enzyme
+            An enzyme instance from Bio.Restriction 
+
+
+        Returns
+        -------        
+        A dict with the undigested or digested backbone and the number of cuts.
+        """
         results = {
             'cuts': self.backbone.number_of_cuts(enzyme),
             'backbone': self.backbone,
@@ -166,21 +444,61 @@ class Assembler:
         return results
 
     def get_solution(self, s):
+        """
+        Collects a Dseqrecord list of assembly fragments from a solution tree.
+
+
+        Parameters
+        ----------
+        s : int
+            The solution index to retrieve from the solution tree 
+
+
+        Returns
+        -------
+        A Dseqrecord fragment list for the sequences of a solution        
+        """
         tree_solution = self.solution_tree.solution_seqs(s)
         fragments = [Dseqrecord(record) for record in tree_solution]
         return fragments
 
     def primer_complement(self, fragments, backbone):
+        """
+        Designs basic non-extension primers for all fragments and the backbone for the assembly.
+
+
+        Parameters
+        ----------
+        fragments : list
+            List of Dseqrecords objects for the assembly
+
+        backbone : Dseqrecord
+            Dseqrecord of the backbone sequence
+
+
+        Returns
+        -------
+        A tuple of a list of fragment Amplicons and a backbone Amplicon after non-extension primer design 
+        """
         fragments_pcr = [primer_design(fragment, target_tm=self.tm) for fragment in fragments]
         backbone_pcr = primer_design(backbone, target_tm=self.tm)
         # assembly_set = self.prepare_assembly(fragments_pcr, backbone_pcr, overlap)
         return fragments_pcr, backbone_pcr
 
-    def primer_verification(self, assembly):
-        thermo_set = assembly_thermo(assembly, self.mv_conc, self.dv_conc, self.dna_concdna, self.tm_custom)
-        return thermo_set
-
     def query(self):
+        """
+        Creates a Blaster instance using attributes fron the current assembler object and runs BLAST queries using Blaster.
+
+
+        Parameters
+        ----------
+        None
+
+
+        Returns
+        -------        
+        Blaster query results from the BLAST query and stderr messages from run_blastn()
+        """
         blaster = Blaster(self.max_seqs, self.dbs, self.min_frag, self.max_frag)
         queries = blaster.queries(self.query_file)
         query_results, stderr = blaster.run_blastn(queries)
@@ -188,6 +506,20 @@ class Assembler:
 
     # TODO separate into two methods to first build the frag tree, then select a solution
     def solution_building(self, query_results):
+        """
+        Creates a Fragment tree using Blaster results and then initializes the assembler's solution_tree.
+
+
+        Parameters
+        ----------
+        query_results : list
+            A long list of BLAST alignments
+
+
+        Returns
+        -------
+        None        
+        """
         sol_tree = FragmentTree(self.query_record.seq.watson, nodes=[], 
                         query_len=self.query_record.seq.length, 
                         min_synth=self.min_synth, 
@@ -196,6 +528,23 @@ class Assembler:
         self.solution_tree = sol_tree
 
     def annotations(self, assembly, nodes):
+        """
+        Adds annotations to the Dseqrecords in the assembly from the BLAST alignment data in nodes.
+
+
+        Parameters
+        ----------
+        assembly : list 
+            A list of Amplicons from the assembly design
+
+        nodes : list
+            A list of FragmentTree assembly FragmentNodes
+
+
+        Returns
+        -------        
+        A new Amplicon list for the assembly with annotations for names and database sources
+        """
         new_assembly = assembly.copy()
         data = [[node.node_id, node.db] for node in nodes]
         data.append([self.backbone.name, 'NONE'])

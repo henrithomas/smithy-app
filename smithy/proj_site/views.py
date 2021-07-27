@@ -7,3 +7,6 @@ def home(request):
 
 def about(request):
     return render(request, 'proj_site/about.html', {'title': 'About'})
+
+def survey(request):
+    return render(request, 'proj_site/survey.html', {'title': 'Survey'})

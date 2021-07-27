@@ -45,15 +45,14 @@
                             {{part.name}}
                             <a href="{% url 'gibson-part-detail' part.pk %}" class="btn btn-outline-primary float-end">View Part</a>
                         </h4>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item">
                                 <strong>Sequence:</strong> {{ part.seq|slice:":50" }}...
                             </li>
-                            <li class="list-group-item">
-                                <strong>Database:</strong> {{part.database}}
+                            <li class="list-inline-item">
+                               <strong>Database:</strong> {{part.database}}
                             </li>
                         </ul>
-                        
                     </div>
                 </div>
             {% endfor %}
@@ -123,9 +122,12 @@
                                 {{primer.name}}
                                 <a href="{% url 'gibson-primer-detail' primer.pk %}" class="btn btn-outline-primary float-end">View Primer</a> 
                             </h4>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <strong>Sequence:</strong> {{primer.sequence}} <strong>Tm (C):</strong> {{primer.tm_footprint|stringformat:".3f"}}
+                            <ul class="list-inline mb-0">
+                                <li class="list-inline-item">
+                                    <strong>Sequence:</strong> {{primer.sequence}}
+                                </li>
+                                <li class="list-inline-item">
+                                   <strong>Tm (C):</strong> {{primer.tm_footprint|stringformat:".3f"}}
                                 </li>
                             </ul>
                         </div>

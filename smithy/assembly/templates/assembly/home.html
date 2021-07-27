@@ -1,8 +1,19 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
-    <h1>Assembly</h1>
-    <p class="lead">Select a cloning method...</p>
-    <a class="btn btn-primary btn-lg" href="{% url 'gibson-create' %}" role="button">Gibson</a>
-    <a class="btn btn-primary btn-lg" href="{% url 'goldengate-create' %}" role="button">Golden Gate</a>
-
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Assembly</h1>
+            <p class="lead">Select a cloning method...</p>
+            <a class="btn btn-primary btn-lg" href="{% url 'gibson-create' %}" role="button">Gibson</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'goldengate-create' %}" role="button">Golden Gate</a>        
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Examples</h2>
+            <p class="lead">View an example solution set for our supported cloning methods...</p>
+            <a class="btn btn-outline-primary" href="{% url 'gibson-detail' 4 %}" role="button">Gibson</a>
+            <a class="btn btn-outline-primary" href="{% url 'goldengate-detail' 5 %}" role="button">Golden Gate</a>  
+        </div>
+    </div>
 {% endblock content %}

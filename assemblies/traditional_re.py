@@ -7,9 +7,91 @@ import json
 
 # TODO citation
 class TraditionalREAssembler(Assembler):
+    """
+    A class to implement restriction enzyme-based cloning methods. It is mostly used as a parent class
+    for other more specific classes like GoldenGateAssembler.
+    
+    citation: https://www.thermofisher.com/us/en/home/life-science/cloning/cloning-learning-center/invitrogen-school-of-molecular-biology/molecular-cloning/cloning/traditional-cloning-basics.html#vector
+    
+
+    Attributes
+    ----------
+    cloning_type : str
+        A simple description of the cloning method
+
+    re1 : Bio.Restriction enzyme
+        An enzyme used in a restriction enzyme assembly.
+
+    re2 : optional, Bio.Restriction enzyme 
+        A second enzyme used in a restriction enzyme assembly, if needed.
+
+    ligase : optional, str  
+        The name of the ligase used for the assembly experiment. Defaults to 'T4-DNA'.
+
+    polymerase : str 
+        The name of the polymerase used for the assembly experiment. Defaults to 'T4-DNA'.
+
+    *args
+        See documentation for Assembler parent class
+
+    **kwargs
+        See documentation for Assembler parent class
+
+
+    Returns
+    -------
+    An instance of TraditionalREAssembler
+
+
+    Methods
+    -------
+    def add_cutsite(self, site, seq):
+        Adds primer extensions for a single RE cutsite to each ends of an insert sequence
+
+    def add_cutsites(self, site1, site2, seq):
+        Adds primer extensions for two unique RE cutsites, one on the forward primer one on the reverse primer
+
+    def single_digest_1(self, insert_pcr):
+        Performs a single digest using an insert and backbone that share the same RE cutsite and ligation sites
+
+    def single_digest_2A(self, insert_pcr):
+        Performs a single digest using an insert and backbone that use two REs, re1 and re2, with compatible ends
+
+    def single_digest_2B(self, insert_pcr):
+        Performs a single digest using an insert and backbone using two REs, re1 and re2, with non-compatible ends. 
+        One RE for the insert, one RE for the backbone. 
+
+    def double_digest(self, insert_pcr):
+        Performs a double digest using an insert and backbone using two REs with non-compatible ends.
+        Two REs, re1 and re2, used for the insert and just re2 used on the backbone.
+    """
     cloning_type = 'Trad. Restriction Enzyme'
 
     def __init__(self, re1, *args, re2=None, ligase='T4-DNA', polymerase='T4-DNA', **kwargs):
+        """
+        Constructs all necessary attributes for the TraditionalREAssembler object.
+
+
+        Parameters
+        ----------
+        re1 : Bio.Restriction enzyme
+            An enzyme used in a restriction enzyme assembly.
+
+        re2 : optional, Bio.Restriction enzyme 
+            A second enzyme used in a restriction enzyme assembly, if needed.
+
+        ligase : optional, str  
+            The name of the ligase used for the assembly experiment. Defaults to 'T4-DNA'.
+
+        polymerase : str 
+            The name of the polymerase used for the assembly experiment. Defaults to 'T4-DNA'.
+
+        *args
+            See documentation for Assembler parent class
+
+        **kwargs
+            See documentation for Assembler parent class
+        """
         super(TraditionalREAssembler, self).__init__(*args, **kwargs)
         self.ligase = ligase
         self.polymerase = polymerase
@@ -20,12 +102,28 @@ class TraditionalREAssembler(Assembler):
     def blunting(self):
         pass
     
-    # citation: https://www.thermofisher.com/us/en/home/life-science/cloning/cloning-learning-center/invitrogen-school-of-molecular-biology/molecular-cloning/cloning/traditional-cloning-basics.html#vector
     # TODO use parent class' self.query and self.backbone for design
     # TODO figure out if we can assume backbones already have their cutsites
     # TODO check end compatibility for single_digest_2A before it's called
     # one enzyme
     def add_cutsite(self, site, seq):
+        """
+        Adds primer extensions for a single RE cutsite to each ends of an insert sequence
+
+
+        Parameters
+        ----------
+        site : str
+            The RE cutsite for the insert
+
+        seq : pydna Amplicon
+            A pydna amplicon object for the insert
+
+
+        Returns
+        -------
+        An extended amplicon object for the insert with RE cutsites added
+        """
         ext_fwd = Seq(site) + seq.forward_primer
         ext_rev = Seq(site) + seq.reverse_primer
 
@@ -38,6 +136,26 @@ class TraditionalREAssembler(Assembler):
         return amp_ext
 
     def add_cutsites(self, site1, site2, seq):
+        """
+        Adds primer extensions for two RE cutsites, one for each ends of an insert sequence
+
+
+        Parameters
+        ----------
+        site1 : str
+            The first RE cutsite for the insert
+
+        site2 : str
+            The second RE cutsite for the insert
+
+        seq : pydna Amplicon
+            A pydna amplicon object for the insert
+
+
+        Returns
+        -------
+        An extended amplicon object for the insert with RE cutsites added
+        """
         ext_fwd = Seq(site1) + seq.forward_primer
         ext_rev = Seq(site2) + seq.reverse_primer
 
@@ -48,9 +166,22 @@ class TraditionalREAssembler(Assembler):
         amp_ext = annealing.products[0]
 
         return amp_ext
-
-    
+   
     def single_digest_1(self, insert_pcr):
+        """
+        Performs a single digest using an insert and backbone that share the same RE cutsite and ligation sites
+
+
+        Parameters
+        ----------
+        insert_pcr : A pydna Amplicon 
+            An insert Amplicon for the assembly
+
+
+        Returns
+        -------
+        A list of the RE-based assembly prepared insert and backbone Amplicon objects
+        """
         # forward and reverse primers of both the backbone and insert receive the same cutsite extension
         insert_prep = self.add_cutsite(self.re1.site, insert_pcr)
         backbone_digest = self.digest_backbone(self.re1)
@@ -60,6 +191,20 @@ class TraditionalREAssembler(Assembler):
 
     # two enzymes, compatible ends
     def single_digest_2A(self, insert_pcr):
+        """
+        Performs a single digest using an insert and backbone that use two REs, re1 and re2, with compatible ends
+
+
+        Parameters
+        ----------
+        insert_pcr : A pydna Amplicon 
+            An insert Amplicon for the assembly
+
+
+        Returns
+        -------
+        A list of the RE-based assembly prepared insert and backbone Amplicon objects
+        """
         # insert gets same extensions on fwd and rev for re1
         insert_prep = self.add_cutsite(self.re1.site, insert_pcr)
         # backbone digested by re2
@@ -69,6 +214,21 @@ class TraditionalREAssembler(Assembler):
 
     # two enzymes, non-compatible ends
     def single_digest_2B(self, insert_pcr):
+        """
+        Performs a single digest using an insert and backbone using two REs, re1 and re2, with non-compatible ends. 
+        One RE for the insert, one RE for the backbone.
+
+
+        Parameters
+        ----------
+        insert_pcr : A pydna Amplicon 
+            An insert Amplicon for the assembly
+
+
+        Returns
+        -------
+        A list of the RE-based assembly prepared insert and backbone Amplicon objects
+        """
         # insert gets same extensions on fwd and rev for re1
         insert_prep = self.add_cutsite(self.re1.site, insert_pcr)
         # backbone digested by re2
@@ -79,6 +239,21 @@ class TraditionalREAssembler(Assembler):
 
     # two enzymes, non-compatible ends
     def double_digest(self, insert_pcr):
+        """
+        Performs a double digest using an insert and backbone using two REs with non-compatible ends.
+        Two REs, re1 and re2, used for the insert and just re2 used on the backbone.
+
+
+        Parameters
+        ----------
+        insert_pcr : A pydna Amplicon 
+            An insert Amplicon for the assembly
+
+
+        Returns
+        -------
+        A list of the RE-based assembly prepared insert and backbone Amplicon objects
+        """
         # insert gets same extensions on fwd and rev for re1
         insert_prep = self.add_cutsites(self.re1.site, self.re2.site, insert_pcr)
         # backbone digested by re2

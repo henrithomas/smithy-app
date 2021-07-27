@@ -45,11 +45,11 @@
                             {{part.name}}
                             <a href="{% url 'goldengate-part-detail' part.pk %}" class="btn btn-outline-primary float-end">View Part</a>
                         </h4>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item">
                                 <strong>Sequence:</strong> {{ part.seq|slice:":50" }}...
                             </li>
-                            <li class="list-group-item">
+                            <li class="list-inline-item">
                                 <strong>Database:</strong> {{part.database}}
                             </li>
                         </ul>

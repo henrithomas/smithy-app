@@ -1,80 +1,109 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
-    <h1>Smithy</h1>
-    <p class="lead">A design automation pipeline for complex DNA assembly experiments.</p>
-    <a class="btn btn-primary btn-lg mb-3" href="{% url 'assembly-home' %}" role="button">New Assembly</a>
-    <h2>Description</h2>
-    <p>
-        This is Smithy. A web application that provides design automation for complex DNA assembly 
-        experiments. Smithy serves to aid researchers in their efforts to correctly build the gene 
-        assemblies they expect, helping them answer the fundamental questions, "Where can I find my 
-        parts, and how can they be put together?" 
-    </p>
-    <p>
-        Through a simple input interface, complete insert and backbone sequences are provided for 
-        the design process. Along with the DNA sequences for an assembly the cloning method to use,
-        sequence repositories for parts sourcing (<a href="https://www.addgene.org/" target="_blank" rel="noopener noreferrer">AddGene</a>, 
-        <a href="https://dnasu.org/DNASU/Home.do" target="_blank" rel="noopener noreferrer">DNASU</a>, 
-        <a href="https://igem.org/" target="_blank" rel="noopener noreferrer">iGEM</a>, etc), 
-        and general experimental parameters (monovalent ion, divalent ion, dNTP concentrations, etc) 
-        are collected. Smithy uses these inputs to generate several complete assembly insert designs 
-        that:
-        <ul>
-            <li>have minimized sets of sub-sequences for an assembly,</li>
-            <li>source and plasmid information for every sub-sequence,</li>
-            <li>identification of sub-sequences that must be directly synthesized,</li>
-            <li>have a set of primers that facilitate assembly,</li>
-            <li>have thorough thermodynamic analysis for each primer provided by 
-                <a href="https://libnano.github.io/primer3-py/quickstart.html#thermodynamic-analysis" target="_blank" rel="noopener noreferrer">Primer3-py</a>,
-            </li>
-            <li>are in accordance with an researcher's experimental environment.</li>
-        </ul>
-    </p>
-    <h3>Cloning Methods</h3>
-    <p>
-        The cloning methods Smithy currently supports are Golden Gate, overlap extension based methods, 
-        and Gibson Assembly. Before an assembly design is created one of these cloning methods is 
-        selected so that Smithy can properly design primers for each sub-sequence used to assemble a 
-        researcher's desired insert.    
-    </p>
-    <h3>Sequence Repositories</h3>
-    <p>
-        Smithy utilizes local copies of popular sequence repositories, saved in BLAST databases, for
-        BLAST queries of the assembly's insert. The currently supported repositores are 
-        <a href="https://www.addgene.org/" target="_blank" rel="noopener noreferrer">AddGene</a>, 
-        <a href="https://dnasu.org/DNASU/Home.do" target="_blank" rel="noopener noreferrer">DNASU</a>, 
-        and <a href="https://igem.org/" target="_blank" rel="noopener noreferrer">iGEM</a>. 
-        All sequences provided by these repositories are accessible by Smithy's query
-        functionality. An insert sequence is queried agaist these local sequence databases using BLAST's 
-        nucleotide query method and the results are used to create complete assembly-ready sets of 
-        sequences for a cloning experiment.  
-    </p>
-    <h3>Assembly Parameters</h3>
-    <p>
-        The essential parameters for a cloning experiment are gathered at the input. These parameters are:
-        <ul>
-            <li>monovalent and divalent ion concentrations</li>
-            <li>dNTP concentrations</li>
-            <li>DNA sequence concentrations</li>
-            <li>melting temperature</li>
-        </ul> 
-        Smithy uses these values for the thermodynamic analysis generated for primers of an experiment.
-    </p>
-    <p>
-        Additional parameters used by Smithy are:
-        <ul>
-            <li>overlap amount (for overlap-based assemblies only)</li>
-            <li>overhang count (for Golden Gate cloning only)</li>
-            <li>user's selection of BLAST databases to use</li>
-            <li><em>minimum</em> size (in nucleotides) of BLAST query alignment results to use from each database</li>
-            <li><em>maximum</em> size (in nucleotides) of BLAST query alignment results to use from each database</li>
-            <li><em>minimum</em> size (in nucleotides) of synthetized sequences a user would purchase for an experiment</li>
-            <li><em>maximum</em> size (in nucleotides) of synthetized sequences a user would purchase for an experiment</li>
-        </ul> 
-    </p>
-    <p>
-        All of the parameters listed above will be asked for at the input stage for a new assembly.
-    </p>
-    <!-- <h2>Uses</h2>
-    <h2>Workflow</h2> -->
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Smithy</h1>
+            <p class="lead">A design automation pipeline for complex DNA assembly experiments.</p>
+            <a class="btn btn-primary btn-lg mb-3" href="{% url 'assembly-home' %}" role="button">New Assembly</a>
+        </div>
+    </div>
+    
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Examples</h2>
+            <p class="lead">View an example solution set for our supported cloning methods...</p>
+            <a class="btn btn-outline-primary" href="{% url 'gibson-detail' 4 %}" role="button">Gibson</a>
+            <a class="btn btn-outline-primary" href="{% url 'goldengate-detail' 5 %}" role="button">Golden Gate</a>  
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Description</h2>
+            <p>
+                This is Smithy. A web application that provides design automation for complex DNA assembly 
+                experiments. Smithy serves to aid researchers in their efforts to correctly build the gene 
+                assemblies they expect, helping them answer the fundamental questions, "Where can I find my 
+                parts, and how can they be put together?" 
+            </p>
+            <p>
+                Through a simple input interface, complete insert and backbone sequences are provided for 
+                the design process. Along with the DNA sequences for an assembly the cloning method to use,
+                sequence repositories for parts sourcing (<a href="https://www.addgene.org/" target="_blank" rel="noopener noreferrer">AddGene</a>, 
+                <a href="https://dnasu.org/DNASU/Home.do" target="_blank" rel="noopener noreferrer">DNASU</a>, 
+                <a href="https://igem.org/" target="_blank" rel="noopener noreferrer">iGEM</a>, etc), 
+                and general experimental parameters (monovalent ion, divalent ion, dNTP concentrations, etc) 
+                are collected. Smithy uses these inputs to generate several complete assembly insert designs 
+                that:
+                <ul>
+                    <li>have minimized sets of sub-sequences for an assembly,</li>
+                    <li>source and plasmid information for every sub-sequence,</li>
+                    <li>identification of sub-sequences that must be directly synthesized,</li>
+                    <li>have a set of primers that facilitate assembly,</li>
+                    <li>have thorough thermodynamic analysis for each primer provided by 
+                        <a href="https://libnano.github.io/primer3-py/quickstart.html#thermodynamic-analysis" target="_blank" rel="noopener noreferrer">Primer3-py</a>,
+                    </li>
+                    <li>are in accordance with an researcher's experimental environment.</li>
+                </ul>
+            </p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Cloning Methods</h3>
+            <p>
+                The cloning methods Smithy currently supports are Golden Gate, overlap extension based methods, 
+                and Gibson Assembly. Before an assembly design is created one of these cloning methods is 
+                selected so that Smithy can properly design primers for each sub-sequence used to assemble a 
+                researcher's desired insert.    
+            </p>
+            <h3>Sequence Repositories</h3>
+            <p>
+                Smithy utilizes local copies of popular sequence repositories, saved in BLAST databases, for
+                BLAST queries of the assembly's insert. The currently supported repositores are 
+                <a href="https://www.addgene.org/" target="_blank" rel="noopener noreferrer">AddGene</a>, 
+                <a href="https://dnasu.org/DNASU/Home.do" target="_blank" rel="noopener noreferrer">DNASU</a>, 
+                and <a href="https://igem.org/" target="_blank" rel="noopener noreferrer">iGEM</a>. 
+                All sequences provided by these repositories are accessible by Smithy's query
+                functionality. An insert sequence is queried agaist these local sequence databases using BLAST's 
+                nucleotide query method and the results are used to create complete assembly-ready sets of 
+                sequences for a cloning experiment.  
+            </p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h3>Assembly Parameters</h3>
+            <p>
+                The essential parameters for a cloning experiment are gathered at the input. These parameters are:
+                <ul>
+                    <li>monovalent and divalent ion concentrations</li>
+                    <li>dNTP concentrations</li>
+                    <li>DNA sequence concentrations</li>
+                    <li>melting temperature</li>
+                </ul> 
+                Smithy uses these values for the thermodynamic analysis generated for primers of an experiment.
+            </p>
+            <p>
+                Additional parameters used by Smithy are:
+                <ul>
+                    <li>overlap amount (for overlap-based assemblies only)</li>
+                    <li>overhang count (for Golden Gate cloning only)</li>
+                    <li>user's selection of BLAST databases to use</li>
+                    <li><em>minimum</em> size (in nucleotides) of BLAST query alignment results to use from each database</li>
+                    <li><em>maximum</em> size (in nucleotides) of BLAST query alignment results to use from each database</li>
+                    <li><em>minimum</em> size (in nucleotides) of synthetized sequences a user would purchase for an experiment</li>
+                    <li><em>maximum</em> size (in nucleotides) of synthetized sequences a user would purchase for an experiment</li>
+                </ul> 
+            </p>
+            <p>
+                All of the parameters listed above will be asked for at the input stage for a new assembly.
+            </p>
+            <!-- <h2>Uses</h2>
+            <h2>Workflow</h2> -->
+        </div>
+    </div>
+
 {% endblock content %}

@@ -19,7 +19,101 @@ from fragment.tree import FragmentTree
 
 # TODO either make the query files attribute kwarg or make it a param on the query func
 class Blaster:
+    """
+    A class for performing local BLAST queries
+
+
+    Attributes
+    ----------
+    max_seqs : int
+        A maximum count of BLAST alignment results to use from each database query
+
+    databases : list
+        A list of databases to query in the local BLAST search
+
+    blastn_format : int
+        The output format from the local BLAST queries. See Biopython documentation. 
+
+    fragment_min : int
+        The minimum nucleotide size of alignments to keep from BLAST queries
+
+    fragment_max : int
+        The maximum nucleotide size of alignments to keep from BLAST queries
+
+    synthetic_min : int
+        The minimum nucleotide size of 
+
+    query_length : int
+        The length of the BLAST query sequence
+
+
+    Returns
+    -------
+    An instance of Blaster
+
+
+    Methods
+    -------
+    def index_func(self, align):
+        Returns the query_start value from a BLAST alignment
+
+    def score_func(self, align):
+        Returns the score value from a BLAST alignment
+
+    def get_entry(self, entry, database):
+        Fetches a single fasta entry in a local BLAST database
+
+    def get_entry_batch(self, parts, database, file):
+        Fetches a batch of fasta entries in a local BLAST database
+
+    def queries(self, f_query, f_out=None):
+        Builds dicts parameters for each BLAST query
+
+    def merge_blastn(self, blast_list):
+        Merges results from each BLAST database query
+
+    def filter_blastn(self, alignments):
+        Filters results from the merged BLAST results according to parameters 
+
+    def query_blastn(self, cmd_params, batch=False):
+        Executes a local BLASTN search for the insert sequence
+
+    def multi_query_blastn(self, cmd_params):
+        Executes a local BLASTN search for multiple fasta sequences
+
+    def run_blastn(self, params_list):
+        Performs the full BLASTN procedure using the parameters dicts created in queries()
+    """
+
     def __init__(self, max_seqs, databases, min_frag, max_frag):
+        """
+        Constructs all necessary attributes for Blaster
+
+
+        Parameters
+        ----------
+        max_seqs : int
+            A maximum count of BLAST alignment results to use from each database query
+
+        databases : list
+            A list of databases to query in the local BLAST search
+
+        blastn_format : int
+            The output format from the local BLAST queries. See Biopython documentation. 
+
+        fragment_min : int
+            The minimum nucleotide size of alignments to keep from BLAST queries
+
+        fragment_max : int
+            The maximum nucleotide size of alignments to keep from BLAST queries
+
+        synthetic_min : int
+            The minimum nucleotide size of 
+
+        query_length : int
+            The length of the BLAST query sequence
+        """
+
         self.max_seqs = max_seqs
         self.databases = databases
         self.solution_file = None
@@ -31,32 +125,128 @@ class Blaster:
         self.query_length = 0
         self.query_lengths = []
 
+
     def index_func(self, align):
+        """
+        Returns the query_start value from a BLAST alignment
+
+
+        Parameters
+        ----------
+        align : Biopython BLAST Alignment object
+            A BLAST query alignment result
+
+
+        Returns
+        -------
+        The query_start value from align
+        """
         return align.hsps[0].query_start
 
 
     def score_func(self, align):
+        """
+        Returns the score value from a BLAST alignment
+
+
+        Parameters
+        ----------
+        align : Bio.Alignment BLAST Alignment object
+            A BLAST query alignment result
+
+
+        Returns
+        -------
+        The BLAST score value from align
+        """
         return align.hsps[0].score
 
 
     def solution_func(self, solution):
+        """
+        
+
+
+        Parameters
+        ----------
+
+
+
+        Returns
+        -------
+        """
         return float(solution[0])
 
 
     def get_entry(self, entry, database):
+        """
+        Fetches a single fasta entry in a local BLAST database
+
+
+        Parameters
+        ----------
+        entry : str
+            The local BLAST database entry's name
+
+        database : str
+            The local BLAST database to query 
+
+
+        Returns
+        -------
+        The results of the database query in stdout and any error messages in stderr
+        """
         result = subprocess.run(['blastdbcmd', '-db', database, '-entry', entry], capture_output=True, text=True)
         return result.stdout, result.stderr
 
 
-    def get_entry_batch(self, parts, database, file):
+    def get_entry_batch(self, entries, database, file):
+        """
+        Fetches a batch of fasta entries in a local BLAST database
+
+
+        Parameters
+        ----------
+        entries : list
+            A list of entry names to query from the local BLAST database
+
+        database : str
+            The local BLAST database to query
+
+        file : str
+            The file path to use to write entry names into for a batch query
+
+
+        Returns
+        -------
+        The results of the database query in stdout and any error messages in stderr
+        """
         with open(file, 'w') as f:
-            for part in parts:
-                f.write(f'{part}\n')
+            for entry in entries:
+                f.write(f'{entry}\n')
         entries = f'{os.getcwd()}\\{file}'
         result = subprocess.run(['blastdbcmd', '-db', database, '-entry_batch', entries], capture_output=True, text=True)
         return result.stdout, result.stderr
 
+
     def queries(self, f_query, f_out=None):
+        """
+        Builds dicts parameters for each BLAST query
+
+
+        Parameters
+        ----------
+        f_query : str
+            The file path for the fasta sequence of the insert to query over the BLAST database
+
+        f_out : optional, str
+            An optional file path for the BLAST query results 
+            ***Not intended for use in the main Smithy pipeline***
+
+        Returns
+        -------
+        A list of dicts for each database query with all necessary BLASTN parameters
+        """
         query_params = []
         for db in self.databases:
             params = {
@@ -76,6 +266,20 @@ class Blaster:
 
 
     def merge_blastn(self, blast_list):
+        """
+        Merges results from each BLAST database query
+
+
+        Parameters
+        ----------
+        blast_list : list
+            A list of lists, each list containing individual BLAST query alignment results
+
+
+        Returns
+        -------
+        A flattened, combined list of all alignments from the BLAST queries
+        """
         flattened = []
         # TODO make this alignment/hit flattening not so messy
         for blast in blast_list:
@@ -94,6 +298,20 @@ class Blaster:
 
 
     def filter_blastn(self, alignments):
+        """
+        Filters results from the merged BLAST results according to parameters
+
+
+        Parameters
+        ----------
+        alignments : list
+            A list of Biopython alignment objects from all local BLAST queries
+
+
+        Returns
+        -------
+        An ordered and filtered list of BLAST alignments according to user parameters
+        """
         print('filtering blastn results')
         verify_set = {(-1, -1)}
         blast_hits_filtered = []
@@ -116,8 +334,24 @@ class Blaster:
         return blast_hits_filtered
 
 
-
     def query_blastn(self, cmd_params, batch=False):
+        """
+        Executes a local BLASTN search for the insert sequence
+
+
+        Parameters
+        ----------
+        cmd_params : dict
+            A dict of BLASTN parameters for the query
+
+        batch : bool
+            Declares the query to be using a multi- or single-entry fasta file
+
+
+        Returns
+        -------
+        An XML formatted output from the BLASTN query in stdout, any error messages in stderr
+        """
         print(f'running {cmd_params["db"]} blastn query')
         blastn_cmd = NcbiblastnCommandline(**cmd_params)
         stdout, stderr = blastn_cmd()
@@ -131,6 +365,20 @@ class Blaster:
 
 
     def multi_query_blastn(self, cmd_params):
+        """
+        Executes a local BLASTN search for multiple fasta sequences
+
+
+        Parameters
+        ----------
+        cmd_params : dict
+            A dict of BLASTN parameters for the query
+
+
+        Returns
+        -------
+        An XML formatted list output from the BLASTN query in stdout, any error messages in stderr
+        """
         print(f'running {cmd_params["db"]} blastn query')
         blastn_cmd = NcbiblastnCommandline(**cmd_params)
         stdout, stderr = blastn_cmd()
@@ -140,6 +388,21 @@ class Blaster:
 
 
     def run_blastn(self, params_list):
+        """
+        Performs the full BLASTN procedure using the parameters dicts created in queries()
+
+
+        Parameters
+        ----------
+        params_list : list
+            A list of dicts for each BLAST query to run
+
+
+        Returns
+        -------
+        An ordered and filtered BLASTN alignment results list in filtered and any error messages 
+        in query_stderr   
+        """
         print('building blastn query')
         query_results = []
         query_errors = []
