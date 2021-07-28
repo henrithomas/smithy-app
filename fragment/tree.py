@@ -6,23 +6,115 @@ from Bio.Blast.Record import HSP, Alignment
 
 class FragmentTree:
     """
-    
+    A class for building cloning assembly solutions for insert queries using BLAST query results.
 
 
     Attributes
     ----------
+    node_list : optional, list
+        A list of FragmentNodes for building a solution tree
 
+    min_synth : optional, int
+        Minimum nucleotide size of synthetic fragments to design for assemblies
 
+    max_synth : optional, int
+        Maximum nucleotide size of synthetic fragments to design for assemblies
+
+    adjacency_set : defaultdict(set)
+        A set of adjacencies between FragmentNodes for building insert solutions
+
+    node_end : set
+        A set of FragmentNode ends used for 
+
+    visited : list
+        A list of visited nodes to use when building solution
+
+    solutions : list
+        A list of lists, where each list is a collection of indexes of FragmentNodes in the nodes list that make
+        an ordered solution for the assembly.
+
+    scores : list
+        A list of scores for each respective solution. Indexes of the scores list correspond to those of the solutions list. 
+
+    query_len : optional, int
+        The length of the insert query sequence
+
+    query : str
+        The sequence of the insert sequence
+
+    max : float
+        The maximum total score of all solutions  
 
     Returns
     -------
-
+    An instance of FragmentTree
 
 
     Methods
     -------
+    def build_edge_set(self):
+        Constructs the fragment solution tree/network based on FragmentNode adjacencies
+
+    def root_node(self):   
+        Constructs and appends the "root"/starter node for the solution tree to the nodes list
+
+    def filler_node(self, start, end):
+        Constructs and appends a filler/synthetic node for the solution tree to the nodes list
+
+    def blast_input(self, fragments):
+        Takes a BLAST alignment list and builds the node_list and node_ends collections
+
+    def build(self, input):
+        Performs the full FragmentTree building and constructs the node_list, node_ends, adjacency_set, 
+        solutions, and finds the max score of all solutions
+
+    def dfs(self, v, path=None):
+        Performs a depth-first-search on the FragmentTree network and finds solutions
+
+    def print_solution(self, s):
+        Prints a solution, s, in a readable format
+
+    def formatted_solution(self, s):
+        Creates a writable line of a solution, s, in comma-separated format
+
+    def solution_seqs(self, s, text=False):
+        Creates a list of all sequences for a solution to an assembly insert
+
+    def solution_nodes(self, s):
+        Creates a list of all FragmentNodes for a solution to an assembly insert
+
+    def solution_score(self, path):
+        Calculates the score of a given solution
+
+    def complete_solutions(self):
+        Checks the end of each solution and adds a necessary filler FragmentNode if necessary for 
+        a complete insert solution 
+
+    def max_score(self, v, path=None):
+        Performs a depth-first search on the FragmentTree to find the max solution score
     """
-    def __init__(self, query, nodes=None, query_len=0, min_synth=0, max_synth=0):
+    def __init__(self, query, nodes=None, query_len=0, min_synth=0, max_synth=1000):
+        """
+        Constructs all attributes for a FragmentTree
+
+
+        Parameters
+        ----------
+        query : str
+            The sequence of the insert sequence
+
+        nodes : optional, list
+            A list of FragmentNodes for building a solution tree
+
+        query_len : optional, int
+            The length of the insert query sequence
+
+        min_synth : optional, int
+            Minimum nucleotide size of synthetic fragments to design for assemblies
+
+        max_synth : optional, int
+            Maximum nucleotide size of synthetic fragments to design for assemblies
+        """
         self.node_list = nodes
         self.min_synth = min_synth
         self.max_synth = max_synth
@@ -36,6 +128,19 @@ class FragmentTree:
         self.max = 0
 
     def build_edge_set(self):
+        """
+        Constructs the fragment solution tree/network based on FragmentNode adjacencies
+
+
+        Parameters
+        ----------
+        None
+
+
+        Returns
+        -------
+        None
+        """
         for i, j in combinations(range(len(self.node_list)), 2):
             node_a_start, node_a_end = self.node_list[i].coordinates
             node_b_start, node_b_end = self.node_list[j].coordinates
@@ -61,6 +166,19 @@ class FragmentTree:
                 self.adjacency_set[j].add(i)
 
     def root_node(self):
+        """
+        Constructs and appends the "root"/starter node for the solution tree to the nodes list
+
+
+        Parameters
+        ----------
+        None
+
+
+        Returns
+        -------
+        None
+        """
         root_data = Alignment()
         root_data.title = 'ROOT'
         root_data.hit_id = 'ROOT'
@@ -77,6 +195,19 @@ class FragmentTree:
         self.node_list.append(FragmentNode(data=root_data, start=0, end=0, score=0, i='ROOT'))
 
     def filler_node(self, start, end):
+        """
+        Constructs and appends a filler/synthetic node for the solution tree to the nodes list
+
+
+        Parameters
+        ----------
+        None
+
+
+        Returns
+        -------
+        None
+        """
         temp = Alignment()
         temp.title = 'FILLER'
         temp.hit_id = 'FILLER'
@@ -94,6 +225,20 @@ class FragmentTree:
         self.node_list.append(FragmentNode(data=temp, start=start, end=end, score=0, i=f'FILLER'))
 
     def blast_input(self, fragments):
+        """
+        Takes a BLAST alignment list and builds the node_list and node_ends collections
+
+
+        Parameters
+        ----------
+        fragments : list
+            A list of Biopython BLAST alignment objects from a BLAST query 
+
+
+        Returns
+        -------
+        None
+        """
         self.root_node()
         for fragment in fragments:
             self.node_list.append(FragmentNode(data=fragment,
@@ -105,6 +250,21 @@ class FragmentTree:
             self.node_ends.add(fragment.hsps[0].query_end)
 
     def build(self, input):
+        """
+        Performs the full FragmentTree building and constructs the node_list, node_ends, adjacency_set, 
+        solutions, and finds the max score of all solutions
+
+
+        Parameters
+        ----------
+        input : list
+            A list of Biopython BLAST alignment objects from a BLAST query 
+
+
+        Returns
+        -------
+        None
+        """
         self.blast_input(input)
         print(f'number of fragments: {len(self.node_list)}')
 
@@ -124,6 +284,23 @@ class FragmentTree:
         self.complete_solutions()
 
     def dfs(self, v, path=None):
+        """
+        Performs a depth-first-search on the FragmentTree network and finds solutions
+
+
+        Parameters
+        ----------
+        v : int
+            The node list index
+
+        path : optional, list
+            A list of node list indexes for a path to a solution in the FragmentTree
+
+
+        Returns
+        -------
+        None
+        """
         if not path:
             path = []
         self.visited[v] = True
@@ -144,6 +321,19 @@ class FragmentTree:
         self.visited[v] = False
 
     def print_solution(self, s):
+        """
+        Prints a solution, s, in a readable format
+
+
+        Parameters
+        ----------
+        s : int
+            The index for a solution in the solutions list
+
+        Returns
+        -------
+        A readable string for a solution
+        """
         if self.solutions:
             for i in self.solutions[s]:
                 fragment = self.node_list[i]
@@ -153,6 +343,19 @@ class FragmentTree:
                 print(f'FILLER-{test}-{self.query_len}, seq=_____')
 
     def formatted_solution(self, s):
+        """
+        Creates a writable line of a solution, s, in comma-separated format
+
+
+        Parameters
+        ----------
+        s : int
+            The index for a solution in the solutions list
+
+        Returns
+        -------
+        A writable string for a solution
+        """
         line = ''
         if self.solutions:
             nodes = []
@@ -165,6 +368,23 @@ class FragmentTree:
         return line
 
     def solution_seqs(self, s, text=False):
+        """
+        Creates a list of all sequences for a solution to an assembly insert
+
+
+        Parameters
+        ----------
+        s : int
+            The index for a solution in the solutions list
+
+        text : optional, str
+            An option to return the list as a comma-separated string for file writing or a list of strings
+
+
+        Returns
+        -------
+        Either a list of solution sequences or a string in comma-separated format of the sequences
+        """
         if self.solutions:
             seqs = [node.subject_seq for node in [self.node_list[i] for i in self.solutions[s][2:]]]
             if text:
@@ -173,6 +393,21 @@ class FragmentTree:
                 return seqs
 
     def solution_nodes(self, s):
+        """
+        Creates a list of all FragmentNodes for a solution to an assembly insert
+
+
+
+        Parameters
+        ----------
+        s : int
+            The index for a solution in the solutions list
+
+
+        Returns
+        -------
+        A list of FragmentNodes for a solution
+        """
         nodes = [node for node in [self.node_list[i] for i in self.solutions[s][2:]]]
         return nodes
     
@@ -180,6 +415,20 @@ class FragmentTree:
         pass
 
     def solution_score(self, path):
+        """
+        Calculates the score of a given solution
+
+
+        Parameters
+        ----------
+        path : int
+            A list of node list indexes for a solution
+
+
+        Returns
+        -------
+        The calculated total of a solution's score
+        """
         nodes = []
         for i in path:
             nodes.append(self.node_list[i])
@@ -191,6 +440,19 @@ class FragmentTree:
         return sum([node.score for node in [self.node_list[i] for i in path]])
     
     def complete_solutions(self):
+        """
+        Checks the end of each solution and adds a necessary filler FragmentNode if necessary for 
+        a complete insert solution 
+
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
         for solution in self.solutions:
             last = solution[-1]
             test = self.node_list[last].end
@@ -200,6 +462,23 @@ class FragmentTree:
                 solution.append(len(self.node_list) - 1)
 
     def max_score(self, v, path=None):
+        """
+        Performs a depth-first search on the FragmentTree to find the max solution score
+
+
+        Parameters
+        ----------
+        v : int
+            The node list index
+
+        path : optional, list
+            A list of node list indexes for a path to a solution in the FragmentTree
+
+
+        Returns
+        -------
+        None
+        """
         if not path:
             path = []
 
