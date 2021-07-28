@@ -377,32 +377,3 @@ class GoldenGatePrimerDetailView(DetailView):
         context['title'] = self.object.name
         return context
 
-
-# def submission(request):
-#     return render(request, 'assembly/submission.html', {'title': 'Assembly Submission'}) 
-
-# def gibson_form(request):
-#     return render(request, 'assembly/gibson_form.html', {'title': 'Gibson Assembly'})
-    
-# def goldengate_form(request):
-#     return render(request, 'assembly/goldengate_form.html', {'title': 'Golden Gate Assembly'})
-
-# def goldengate_dev(request):
-#     if request.method == 'POST':
-#         form = GoldenGateForm(request.POST)
-#         if form.is_valid():
-#             return redirect('assembly-submit') 
-#     else:
-#         form = GoldenGateForm()
-
-#     return render(request, 'assembly/goldengate_dev.html', {'title': 'Golden Gate Assembly', 'form': form})
-
-# def gibson_dev(request):
-#     if request.method == 'POST':
-#         form = GibsonForm(request.POST)
-#         if form.is_valid():
-#             return redirect('assembly-submit') 
-#     else:
-#         form = GibsonForm()
-
-#     return render(request, 'assembly/gibson_dev.html', {'title': 'Gibson Assembly', 'form': form})
