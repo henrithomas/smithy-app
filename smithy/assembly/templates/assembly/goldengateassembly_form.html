@@ -3,6 +3,7 @@
 {% block content %}
     <h2>{{ title }}</h2>
     <p class="lead">Generate a Golden Gate assembly design by providing the information below...</p>
+    
     <div class="row mb-5">
         <h3>General Info</h3>
         <div class="col">
@@ -12,7 +13,7 @@
             </ul>
         </div>
     </div>
-    <h2>Inputs</h2>
+
     <form method="POST" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
         {{ form.non_field_errors }}
@@ -21,6 +22,9 @@
             <div class="col">
                 <h3>Title</h3>
                 <div id="div_id_title" class="mb-3"> 
+                    <p>
+                        Enter a useful title for this assembly.
+                    </p>
                     {{ form.title.label_tag }}
                     <input type="text" name="{{ form.title.html_name}}" maxlength="250" class="form-control mt-2" id="{{ form.title.id_for_label }}"> 
                     {% if form.title.errors %}
@@ -33,10 +37,13 @@
                 </div>
             </div>
         </div>
-
+         
         <div class="row mb-5">
-            <div class="col-md-6">
-                <h3>Insert</h3> 
+            <div class="col">
+                <h3>Backbone</h3> 
+                <p>
+                    Upload a <strong>.fasta</strong> file containing a single entry of your backbone sequence.
+                </p>
                 {{ form.backbone_file.label_tag }} 
                 <div id="{{ form.backbone_file.id_for_label }}" class="mt-2">
                      <input type="file" name="{{ form.backbone_file.html_name }}" class="form-control" required 
@@ -49,9 +56,10 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
-            </div>
-            <div class="col-md-6">
-                <h3>Backbone</h3>
+                <h3 class="mt-3">Insert</h3>
+                <p>
+                    Upload a <strong>.fasta</strong> file containing a single entry of your full insert sequence.
+                </p>
                 {{ form.insert_file.label_tag }} 
                 <div id="{{ form.insert_file.id_for_label }}" class="mt-2">
                      <input type="file" name="{{ form.insert_file.html_name }}" class="form-control" required 
@@ -69,7 +77,10 @@
 
         <div class="row mb-5">
             <h3>Overhangs</h3>
-            <div class="col-md-3">
+            <div class="col">
+                <p>
+                    How many overhangs are needed for your assembly?
+                </p>
                 {{ form.overhangs.label_tag }}
                 <select class="form-select mt-2" name="{{ form.overhangs.html_name }}" required="" id="{{form.overhangs.id_for_label}}">
                     {% for value, text in form.fields.overhangs.choices %}
@@ -89,6 +100,9 @@
         <div class="row mb-5">
             <h3>BLAST Query</h3>
             <div class="col">
+                <p>
+                    Which <strong>BLAST</strong> databases would you like to query from to find parts?
+                </p>
                 <label for="dbCheck" class="form-label">Databases:</label>
                 <div id="dbCheck">
                     <div class="form-check form-check-inline form-switch">
@@ -108,7 +122,11 @@
                     </div>
                 </div>
                 <div class="row mt-3">
-                    <div class="col-md-3">
+                    <p>
+                        Enter the minimum and maximum nucleotide sequence sizes you are willing to use that are returned from the database(s). 
+                        BLAST alignment query results are filtered according to these sizes. 
+                    </p>
+                    <div class="col-md-6">
                         {{ form.min_blast.label_tag }}
                         <div class="input-group mt-2" id="{{ form.min_blast.id_for_label }}">
                             <input type="number" name="{{ form.min_blast.html_name }}" min="0" placeholder="100" class="form-control" required 
@@ -124,7 +142,7 @@
                         {% endif %}
                         <ul class="errorList" hidden></ul>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         {{ form.max_blast.label_tag }}
                         <div class="input-group mt-2" id="{{ form.max_blast.id_for_label }}">
                             <input type="number" name="{{ form.max_blast.html_name }}" class="form-control" placeholder="1000" required 
@@ -139,7 +157,12 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
+                </div>
+                <div class="row mt-3">
+                    <p>
+                        Enter the minimum and maximum nucleotide sequence sizes you are willing to use for synthesized assembly sequences.
+                    </p>
+                    <div class="col-md-6">
                         {{ form.min_synth.label_tag }}
                         <div class="input-group mt-2" id="{{ form.min_synth.id_for_label }}">
                             <input type="number" name="{{ form.min_synth.html_name }}" min="0" placeholder="100" class="form-control" required 
@@ -155,7 +178,7 @@
                         {% endif %}
                         <ul class="errorList" hidden></ul>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         {{ form.max_synth.label_tag }}
                         <div class="input-group mt-2" id="{{ form.max_synth.id_for_label }}">
                             <input type="number" name="{{ form.max_synth.html_name }}" class="form-control" placeholder="1000" required 
@@ -176,9 +199,13 @@
 
         <div class="row mb-5">
             <h3>Experiment</h3>
+            <p>
+                Enter experimental parameters you will be using for your assembly experiment in the lab.
+                These values are important for primer desing and thermodynamic analysis.
+            </p>
             <div class="col">
                 <div class="row mb-2">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         {{ form.mv_conc.label_tag }}
                         <div class="input-group mt-2" id="{{ form.mv_conc.id_for_label }}">
                             <input type="number" name="{{ form.mv_conc.html_name }}" class="form-control" placeholder="50" required
@@ -193,7 +220,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         {{ form.dv_conc.label_tag }}
                         <div class="input-group mt-2" id="{{ form.dv_conc.id_for_label }}">
                             <input type="number" name="{{ form.dv_conc.html_name }}" class="form-control" placeholder="1.5" required
@@ -208,7 +235,9 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
                         {{ form.dntp_conc.label_tag }}
                         <div class="input-group mt-2" id="{{ form.dntp_conc.id_for_label }}">
                             <input type="number" name="{{ form.dntp_conc.html_name }}" class="form-control" placeholder="0.8" required
@@ -223,7 +252,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         {{ form.dna_conc.label_tag }}
                         <div class="input-group mt-2" id="{{ form.dna_conc.id_for_label }}">
                             <input type="number" name="{{ form.dna_conc.html_name }}" class="form-control" placeholder="50" required
@@ -240,7 +269,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         {{ form.tm.label_tag }}
                         <div class="input-group mt-2" id="{{ form.tm.id_for_label }}">
                             <input type="number" name="{{ form.tm.html_name }}" class="form-control" placeholder="60" required

@@ -28,7 +28,7 @@ class Assembly(models.Model):
     mv_conc = models.FloatField(verbose_name='monovalent ion concentration (mM)')
     dv_conc = models.FloatField(verbose_name='divalent ion concentration (mM)')
     dntp_conc = models.FloatField(verbose_name='dNTP concentration (mM)')
-    dna_conc = models.FloatField(verbose_name='dna concentration (nM)')
+    dna_conc = models.FloatField(verbose_name='DNA concentration (nM)')
     tm = models.FloatField(verbose_name='melting temperature (C)')
     backbone_file = models.FileField(upload_to='fasta/backbones/', blank=False)
     insert_file = models.FileField(upload_to='fasta/queries/', blank=False)

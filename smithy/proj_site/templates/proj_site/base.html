@@ -43,33 +43,31 @@
                 </div>
             </div>
         </div>
-
-        <header class="site-header mb-2" id="siteheader">
-            <nav class="navbar navbar-expand-lg navbar-dark bg-steel">
-                <div class="container-fluid">
-                    <a class="navbar-brand mr-4" href="{% url 'site-home' %}">Smithy</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'site-home' %}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'assembly-home' %}">Assembly</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'site-about' %}">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'site-survey' %}">Survey</a>
-                        </li>
-                    </ul>
-                    </div>
+        
+        <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-steel mb-2">
+            <div class="container-fluid">
+                <a class="navbar-brand mr-4" href="{% url 'site-home' %}">Smithy</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'site-home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'assembly-home' %}">Assembly</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'site-about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'site-survey' %}">Survey</a>
+                    </li>
+                </ul>
                 </div>
-            </nav>
-        </header>
+            </div>
+        </nav>
 
         <main role="main" class="container">
             <div class="row mb-5">
@@ -77,7 +75,7 @@
 
                     <div class="alert alert-warning" role="alert">
                         <p>
-                            <strong>This site is still in DEVELOPMENT.</strong> Complete info, functionality, and features are continually being added and verified. Most pages and forms are static. 
+                            <strong>This site is still in DEVELOPMENT.</strong> Complete info, functionality, and features are continually being added and verified. 
                             In the meantime, enjoy!
                         </p>
                         <p>
@@ -95,11 +93,6 @@
                     {% endif %}
                     <div class="card">
                         <div class="card-body">
-                            <!-- <div id="loading">
-                                <div class="spinner-border" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                            </div> -->
                             {% block content %}{% endblock %}
                         </div>
                     </div>
