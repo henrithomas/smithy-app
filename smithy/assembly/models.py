@@ -49,6 +49,10 @@ class AssemblyPart(models.Model):
     seq = models.CharField(max_length=10000)
     seq_extended = models.CharField(max_length=10000)
     position = models.PositiveIntegerField(default=0)
+    query_start = models.PositiveIntegerField(default=0)
+    query_end = models.PositiveIntegerField(default=0)
+    subject_start = models.PositiveIntegerField(default=0)
+    subject_end = models.PositiveIntegerField(default=0)
 
     class Meta:
         abstract = True

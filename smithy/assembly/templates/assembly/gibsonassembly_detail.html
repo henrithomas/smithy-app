@@ -1,9 +1,9 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
-    <h2>{{ title }}</h2>
+    <h1>{{ title }}</h1>
     <div class="row mb-4">
         <div class="col">
-            <h3>General Info</h3>
+            <h2>General Info</h2>
             <ul class="list-group">
                 <li class="list-group-item">Created on {{ gibson.date_created|date:'F d, Y' }}</li>
                 <li class="list-group-item">Exonuclease: T5</li>
@@ -15,18 +15,18 @@
     </div>
     <div class="row mb-4">
         <div class="col">
-            <h3>Backbone</h3>
+            <h2>Backbone</h2>
             <a href="{{ gibson.backbone_file.url }}" class="btn btn-outline-primary">Download Backbone File</a>
-            <h3 class="mt-3">Insert</h3>
+            <h2 class="mt-3">Insert</h2>
             <a href="{{ gibson.insert_file.url }}" class="btn btn-outline-primary">Download Insert File</a>
         </div>
     </div>
     <div class="row mb-4">
         <div class="col">
-            <h3 class="mb-4">
+            <h2 class="mb-4">
                 Solutions
                 <a href="#" class="btn btn-outline-primary float-end disabled">Download Solutions</a> 
-            </h3>
+            </h2>
             {% for solution in solutions %}
                 <div class="card mb-2">
                     <div class="card-body">
@@ -52,7 +52,7 @@
     </div>
     <div class="row mb-4">
         <div class="col">
-            <h3>BLAST Query</h3>
+            <h2>BLAST Query</h2>
             <ul class="list-group">
                 <li class="list-group-item">AddGene: {{ gibson.addgene }}</li>
                 <li class="list-group-item">iGEM: {{ gibson.igem }}</li>
@@ -66,7 +66,7 @@
     </div>
     <div class="row mb-4">
         <div class="col">
-            <h3>Experiment</h3>
+            <h2>Experiment</h2>
             <ul class="list-group">
                 <li class="list-group-item">Monovalent ion concentration: {{ gibson.mv_conc }}mM</li>
                 <li class="list-group-item">Divalent ion concentration: {{ gibson.dv_conc }}mM</li>

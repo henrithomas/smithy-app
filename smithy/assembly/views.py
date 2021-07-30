@@ -112,14 +112,18 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
 
         for i, part in enumerate(gib_assembly):
             gibson_part_entry = GibsonPart(
-                name=f'{part.name}-{i}',
+                name=part.name,
                 database=part.annotations['db'],
                 length=part.template.seq.length, 
                 length_extended=part.seq.length,
                 seq=part.template.seq,
                 seq_extended=part.seq,
                 position=i,
-                solution=gibson_solution            
+                solution=gibson_solution,
+                query_start = part.annotations['query_start'],
+                query_end = part.annotations['query_end'],
+                subject_start = part.annotations['subject_start'],
+                subject_end = part.annotations['subject_end'] 
             )
             gibson_part_entry.save()
 
@@ -281,14 +285,18 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
 
         for i, part in enumerate(gg_assembly):
             goldengate_part_entry = GoldenGatePart(
-                name=f'{part.name}-{i}',
+                name=part.name,
                 database=part.annotations['db'],
                 length=part.template.seq.length, 
                 length_extended=part.seq.length,
                 seq=part.template.seq,
                 seq_extended=part.seq,
                 position=i,
-                solution=goldengate_solution            
+                solution=goldengate_solution,
+                query_start = part.annotations['query_start'],
+                query_end = part.annotations['query_end'],
+                subject_start = part.annotations['subject_start'],
+                subject_end = part.annotations['subject_end']             
             )
             goldengate_part_entry.save()
 

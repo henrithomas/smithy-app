@@ -4,7 +4,7 @@
         <div class="col">
             <h1>Smithy</h1>
             <p class="lead">A design automation pipeline for complex DNA assembly experiments.</p>
-            <a class="btn btn-primary btn-lg mb-3" href="{% url 'assembly-home' %}" role="button">New Assembly</a>
+            <a class="btn btn-primary btn-lg" href="{% url 'assembly-home' %}" role="button">New Assembly</a>
         </div>
     </div>
     
@@ -35,30 +35,30 @@
                 and general experimental parameters (monovalent ion, divalent ion, dNTP concentrations, etc) 
                 are collected. Smithy uses these inputs to generate several complete assembly insert designs 
                 that:
-                <ul>
-                    <li>have minimized sets of sub-sequences for an assembly,</li>
-                    <li>source and plasmid information for every sub-sequence,</li>
-                    <li>identification of sub-sequences that must be directly synthesized,</li>
-                    <li>have a set of primers that facilitate assembly,</li>
-                    <li>have thorough thermodynamic analysis for each primer provided by 
-                        <a href="https://libnano.github.io/primer3-py/quickstart.html#thermodynamic-analysis" target="_blank" rel="noopener noreferrer">Primer3-py</a>,
-                    </li>
-                    <li>are in accordance with an researcher's experimental environment.</li>
-                </ul>
             </p>
+            <ul>
+                <li>have minimized sets of sub-sequences for an assembly,</li>
+                <li>source and plasmid information for every sub-sequence,</li>
+                <li>identification of sub-sequences that must be directly synthesized,</li>
+                <li>have a set of primers that facilitate assembly,</li>
+                <li>have thorough thermodynamic analysis for each primer provided by 
+                    <a href="https://libnano.github.io/primer3-py/quickstart.html#thermodynamic-analysis" target="_blank" rel="noopener noreferrer">Primer3-py</a>,
+                </li>
+                <li>are in accordance with an researcher's experimental environment.</li>
+            </ul>
         </div>
     </div>
 
     <div class="row mb-4">
         <div class="col">
-            <h3>Cloning Methods</h3>
+            <h2>Cloning Methods</h2>
             <p>
                 The cloning methods Smithy currently supports are Golden Gate, overlap extension based methods, 
                 and Gibson Assembly. Before an assembly design is created one of these cloning methods is 
                 selected so that Smithy can properly design primers for each sub-sequence used to assemble a 
                 researcher's desired insert.    
             </p>
-            <h3>Sequence Repositories</h3>
+            <h2>Sequence Repositories</h2>
             <p>
                 Smithy utilizes local copies of popular sequence repositories, saved in BLAST databases, for
                 BLAST queries of the assembly's insert. The currently supported repositores are 
@@ -75,7 +75,7 @@
 
     <div class="row mb-4">
         <div class="col">
-            <h3>Assembly Parameters</h3>
+            <h2>Assembly Parameters</h2>
             <p>
                 The essential parameters for a cloning experiment are gathered at the input. These parameters are:
                 <ul>

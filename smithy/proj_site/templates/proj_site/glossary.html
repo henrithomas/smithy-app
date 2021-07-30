@@ -1,0 +1,17 @@
+{% extends 'proj_site/base.html' %}
+{% block content %}
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Glossary</h1>
+            <ul class="list-group list-group-flush">
+                {% for entry in entries %}
+                    <li class="list-group-item">
+                        <p>
+                            <strong>{{ entry.phrase }}:</strong> {{ entry.definition }}
+                        </p>
+                    </li>
+                {% endfor %}
+              </ul>
+        </div>
+    </div>
+{% endblock content %}

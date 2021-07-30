@@ -1,11 +1,11 @@
 {% extends 'proj_site/base.html' %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <h2>{{ title }}</h2>
+    <h1>{{ title }}</h1>
     <p class="lead">Generate a Gibson assembly design by providing the information below...</p>
 
     <div class="row mb-5">
-        <h3>General Info</h3>
+        <h2>General Info</h2>
         <div class="col">
             <ul class="list-group">
                 <li class="list-group-item">Exonuclease: T5</li>
@@ -22,7 +22,7 @@
 
         <div class="row mb-5">
             <div class="col">
-                <h3>Title</h3>
+                <h2>Title</h2>
                 <div id="div_id_title" class="mb-3"> 
                     <p>
                         Enter a useful title for this assembly.
@@ -42,7 +42,7 @@
 
         <div class="row mb-5">
             <div class="col">
-                <h3>Backbone</h3> 
+                <h2>Backbone</h2> 
                 <p>
                     Upload a <strong>.fasta</strong> file containing a single entry of your backbone sequence.
                 </p>
@@ -58,7 +58,7 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
-                <h3 class="mt-3">Insert</h3>
+                <h2 class="mt-3">Insert</h2>
                 <p>
                     Upload a <strong>.fasta</strong> file containing a single entry of your full insert sequence.
                 </p>
@@ -78,7 +78,7 @@
         </div>
 
         <div class="row mb-5">
-            <h3>Overlap</h3>
+            <h2>Overlap</h2>
             <div class="col">
                 <p>
                     How much of an overlap would you like between your parts?
@@ -100,7 +100,7 @@
         </div>
         
         <div class="row mb-5">
-            <h3>BLAST Query</h3>
+            <h2>BLAST Query</h2>
             <div class="col">
                 <p>
                     Which <strong>BLAST</strong> databases would you like to query from to find parts?
@@ -125,7 +125,7 @@
                 </div>
                 <div class="row mt-3">
                     <p>
-                        Enter the minimum and maximum nucleotide sequence sizes you are willing to use that are returned from the database(s). 
+                        Enter the minimum and maximum nucleotide sequence sizes to use that are returned from the database(s). 
                         BLAST alignment query results are filtered according to these sizes. 
                     </p>
                     <div class="col-md-6">
@@ -162,7 +162,7 @@
                 </div>
                 <div class="row mt-3">
                     <p>
-                        Enter the minimum and maximum nucleotide sequence sizes you are willing to use for synthesized assembly sequences.
+                        Enter the minimum and maximum nucleotide sequence sizes to use for synthesized assembly sequences.
                     </p>
                     <div class="col-md-6">
                         {{ form.min_synth.label_tag }}
@@ -200,7 +200,7 @@
         </div>
 
         <div class="row mb-5">
-            <h3>Experiment</h3>
+            <h2>Experiment</h2>
             <p>
                 Enter experimental parameters you will be using for your assembly experiment in the lab.
                 These values are important for primer desing and thermodynamic analysis.

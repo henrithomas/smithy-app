@@ -1,15 +1,20 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
-    <h2>{{ title }}</h2>
+    <h1>{{ title }}</h1>
     <p>{{ goldengate_solution.date_created }}</p>
     <div class="row mb-4">
         <div class="col">
-            <h3 class="mb-4">
+            <h2 class="mb-4">
                 Parts
                 <a href="#" class="btn btn-outline-primary float-end disabled">Download Parts</a> 
-            </h3>
+            </h2>
             <div class="table-responsive">
                 <table class="table table-striped">
+                    <caption>
+                        <u>Query Start/End:</u> The start/end index of the part on the insert sequence. Defaults to 0. <br>
+                        <u>Subject Start/End:</u> The start/end index of the part on its original sequence. Defaults to 0. <br>
+                        <u>Position:</u> The location of the part in the assembly solution.
+                    </caption>
                     <thead>
                         <th>Name</th>
                         <th>Database</th>
@@ -28,10 +33,10 @@
                                 <td>{{ part.database }}</td>
                                 <td>{{ part.length }}</td>
                                 <td>{{ part.length_extended }}</td>
-                                <td>---</td>
-                                <td>---</td>
-                                <td>---</td>
-                                <td>---</td>
+                                <td>{{ part.query_start }}</td>
+                                <td>{{ part.query_end }}</td>
+                                <td>{{ part.subject_start }}</td>
+                                <td>{{ part.subject_end }}</td>
                                 <td>{{ part.position }}</td>
                             </tr>
                         {% endfor %}
@@ -47,10 +52,10 @@
                         </h4>
                         <ul class="list-inline mb-0">
                             <li class="list-inline-item">
-                                <strong>Sequence:</strong> {{ part.seq|slice:":50" }}...
+                                <strong>Database:</strong> {{part.database}}
                             </li>
                             <li class="list-inline-item">
-                                <strong>Database:</strong> {{part.database}}
+                                <strong>Sequence:</strong> {{ part.seq|slice:":50" }}...
                             </li>
                         </ul>
                         
@@ -62,12 +67,18 @@
 
     <div class="row mb-4">
         <div class="col">
-            <h3 class="mb-4">
+            <h2 class="mb-4">
                 Primers
                 <a href="#" class="btn btn-outline-primary float-end disabled">Download Primers</a>
-            </h3>
+            </h2>
             <div class="table-responsive">
                 <table class="table table-striped">
+                    <caption>
+                        <u>hp Tm (C):</u> The melting temperature of the primer's hairpin (hp) structure. <br>
+                        <u>hp &Delta;G:</u> The Gibbs free energy of the primer's hairpin (hp) structure. <br>
+                        <u>hd Tm (C):</u> The melting temperature of the primer's homodimer (hd) structure. <br>
+                        <u>hd &Delta;G:</u> The Gibbs free energy of the primer's homodimer (hd) structure. <br>
+                    </caption>
                     <thead>
                         <th>Name</th>
                         <th>Type</th>
@@ -87,18 +98,13 @@
                                     <td>{{ primer.name }}</td>
                                     <td>{{ primer.primer_type }}</td>
                                     <td>{{ primer.tm_footprint|stringformat:".3f" }}</td>
-                                    <!-- <td>{{ primer.tm_total|stringformat:".3f" }}</td> -->
                                     <td>{{ primer.gc }}</td>
                                     <td>{{ primer.hairpin }}</td>
                                     <td>{{ primer.hairpin_tm|stringformat:".3f" }}</td>
                                     <td>{{ primer.hairpin_dg|stringformat:".3f" }}</td>
-                                    <!-- <td>{{ primer.hairpin_dh|stringformat:".3f" }}</td>
-                                    <td>{{ primer.hairpin_ds|stringformat:".3f" }}</td> -->
                                     <td>{{ primer.homodimer}}</td>
                                     <td>{{ primer.homodimer_tm|stringformat:".3f" }}</td>
                                     <td>{{ primer.homodimer_dg|stringformat:".3f" }}</td>
-                                    <!-- <td>{{ primer.homodimer_dh|stringformat:".3f" }}</td>
-                                    <td>{{ primer.homodimer_ds|stringformat:".3f" }}</td> -->
                                 </tr>
                             {% endfor %}
                         {% endfor %}
