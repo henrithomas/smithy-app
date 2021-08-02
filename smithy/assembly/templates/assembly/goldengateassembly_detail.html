@@ -5,11 +5,11 @@
         <h2>General Info</h2>
         <div class="col">
             <ul class="list-group">
-                <li class="list-group-item">Created on {{ goldengate.date_created|date:'F d, Y' }}</li>
-                <li class="list-group-item">Restriction Enzyme: BsaI</li>
-                <li class="list-group-item">Ligase: T4-DNA</li>
+                <li class="list-group-item"><strong>Created:</strong> {{ goldengate.date_created|date:'F d, Y' }}</li>
+                <li class="list-group-item"><strong>Restriction Enzyme:</strong> BsaI</li>
+                <li class="list-group-item"><strong>Ligase:</strong> T4-DNA</li>
                 <li class="list-group-item">
-                    Overhangs: 
+                    <strong>Overhangs:</strong> 
                     {% if goldengate.overhangs == 0 %}
                         15 overhangs
                     {% elif goldengate.overhangs == 1 %}
@@ -66,13 +66,13 @@
         <div class="col">
             <h2>BLAST Query</h2>
             <ul class="list-group">
-                <li class="list-group-item">AddGene: {{ goldengate.addgene }}</li>
-                <li class="list-group-item">iGEM: {{ goldengate.igem }}</li>
-                <li class="list-group-item">DNASU: {{ goldengate.dnasu }}</li>
-                <li class="list-group-item">Min BLAST seq size: {{ goldengate.min_blast }}nt</li>
-                <li class="list-group-item">Max BLAST seq size: {{ goldengate.max_blast }}nt</li>
-                <li class="list-group-item">Min synthetic seq size: {{ goldengate.min_synth }}nt</li>
-                <li class="list-group-item">Max synthetic seq size: {{ goldengate.max_synth }}nt</li>
+                <li class="list-group-item"><strong>AddGene:</strong> {{ goldengate.addgene }}</li>
+                <li class="list-group-item"><strong>iGEM:</strong> {{ goldengate.igem }}</li>
+                <li class="list-group-item"><strong>DNASU:</strong> {{ goldengate.dnasu }}</li>
+                <li class="list-group-item"><strong>Min BLAST seq size:</strong> {{ goldengate.min_blast }}nt</li>
+                <li class="list-group-item"><strong>Max BLAST seq size:</strong> {{ goldengate.max_blast }}nt</li>
+                <li class="list-group-item"><strong>Min synthetic seq size:</strong> {{ goldengate.min_synth }}nt</li>
+                <li class="list-group-item"><strong>Max synthetic seq size:</strong> {{ goldengate.max_synth }}nt</li>
             </ul>    
         </div>
     </div>
@@ -80,11 +80,11 @@
         <div class="col">
             <h2>Experiment</h2>
             <ul class="list-group">
-                <li class="list-group-item">Monovalent ion concentration: {{ goldengate.mv_conc }}mM</li>
-                <li class="list-group-item">Divalent ion concentration: {{ goldengate.dv_conc }}mM</li>
-                <li class="list-group-item">dNTP concentration: {{ goldengate.dntp_conc }}mM</li>
-                <li class="list-group-item">DNA concentration: {{ goldengate.dna_conc }}nM</li>
-                <li class="list-group-item">Melting temperature: {{ goldengate.tm }}C</li>
+                <li class="list-group-item"><strong>Monovalent ion concentration:</strong> {{ goldengate.mv_conc }}mM</li>
+                <li class="list-group-item"><strong>Divalent ion concentration:</strong> {{ goldengate.dv_conc }}mM</li>
+                <li class="list-group-item"><strong>dNTP concentration:</strong> {{ goldengate.dntp_conc }}mM</li>
+                <li class="list-group-item"><strong>DNA concentration:</strong> {{ goldengate.dna_conc }}nM</li>
+                <li class="list-group-item"><strong>Melting temperature:</strong> {{ goldengate.tm }}C</li>
             </ul>
         </div>
     </div>

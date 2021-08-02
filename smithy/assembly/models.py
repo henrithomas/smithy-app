@@ -1,6 +1,10 @@
+from django.core import validators
 from django.db import models
 from django.db.models.base import Model
 from django.db.models.fields import BooleanField, FloatField
+from django.core.validators import MinValueValidator, FileExtensionValidator
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.urls import reverse
 
@@ -10,6 +14,10 @@ ovhngs = (
     (2, '25 overhangs'),
     (3, '30 overhangs'),
 )
+
+def fasta_validation(fa_file):
+    if fa_file.file.content_type != 'text/plain':
+        raise ValidationError(_('Please choose a valid .fasta file.'), code='invalid')
 
 # abstract base classes for assemblies, parts, and primers
 class Assembly(models.Model):
@@ -21,17 +29,29 @@ class Assembly(models.Model):
     addgene = models.BooleanField(default=False)
     igem = models.BooleanField(default=False)
     dnasu = models.BooleanField(default=False)
-    min_blast = models.PositiveIntegerField(verbose_name='min BLAST seq size (nt)')
-    max_blast = models.PositiveIntegerField(verbose_name='max BLAST seq size (nt)')
-    min_synth = models.PositiveIntegerField(verbose_name='min synthetic seq size (nt)')
-    max_synth = models.PositiveIntegerField(verbose_name='max synthetic seq size (nt)')
+    min_blast = models.PositiveIntegerField(verbose_name='min BLAST seq size (nt)',validators=[MinValueValidator(50)])
+    max_blast = models.PositiveIntegerField(verbose_name='max BLAST seq size (nt)',validators=[MinValueValidator(50)])
+    min_synth = models.PositiveIntegerField(verbose_name='min synthetic seq size (nt)',validators=[MinValueValidator(50)])
+    max_synth = models.PositiveIntegerField(verbose_name='max synthetic seq size (nt)',validators=[MinValueValidator(50)])
     mv_conc = models.FloatField(verbose_name='monovalent ion concentration (mM)')
     dv_conc = models.FloatField(verbose_name='divalent ion concentration (mM)')
     dntp_conc = models.FloatField(verbose_name='dNTP concentration (mM)')
     dna_conc = models.FloatField(verbose_name='DNA concentration (nM)')
     tm = models.FloatField(verbose_name='melting temperature (C)')
-    backbone_file = models.FileField(upload_to='fasta/backbones/', blank=False)
-    insert_file = models.FileField(upload_to='fasta/queries/', blank=False)
+    backbone_file = models.FileField(
+                        upload_to='fasta/backbones/', 
+                        validators=[
+                            FileExtensionValidator(allowed_extensions=['fasta', 'fa', 'faa']),
+                            fasta_validation
+                        ],
+                        blank=False)
+    insert_file = models.FileField(
+                        upload_to='fasta/queries/',
+                        validators=[
+                            FileExtensionValidator(allowed_extensions=['fasta', 'fa', 'faa']),
+                            fasta_validation
+                        ],
+                        blank=False)
     
     class Meta:
         abstract = True

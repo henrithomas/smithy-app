@@ -5,11 +5,11 @@
         <div class="col">
             <h2>General Info</h2>
             <ul class="list-group">
-                <li class="list-group-item">Created on {{ gibson.date_created|date:'F d, Y' }}</li>
-                <li class="list-group-item">Exonuclease: T5</li>
-                <li class="list-group-item">Ligase: Taq</li>
-                <li class="list-group-item">Polymerase: Phusion</li>
-                <li class="list-group-item">Overlap: {{ gibson.overlap }}nt</li>
+                <li class="list-group-item"><strong>Created:</strong> {{ gibson.date_created|date:'F d, Y' }}</li>
+                <li class="list-group-item"><strong>Exonuclease:</strong> T5</li>
+                <li class="list-group-item"><strong>Ligase:</strong> Taq</li>
+                <li class="list-group-item"><strong>Polymerase:</strong> Phusion</li>
+                <li class="list-group-item"><strong>Overlap:</strong> {{ gibson.overlap }}nt</li>
             </ul>
         </div>
     </div>
@@ -54,13 +54,13 @@
         <div class="col">
             <h2>BLAST Query</h2>
             <ul class="list-group">
-                <li class="list-group-item">AddGene: {{ gibson.addgene }}</li>
-                <li class="list-group-item">iGEM: {{ gibson.igem }}</li>
-                <li class="list-group-item">DNASU: {{ gibson.dnasu }}</li>
-                <li class="list-group-item">Min BLAST seq size: {{ gibson.min_blast }}nt</li>
-                <li class="list-group-item">Max BLAST seq size: {{ gibson.max_blast }}nt</li>
-                <li class="list-group-item">Min synthetic seq size: {{ gibson.min_synth }}nt</li>
-                <li class="list-group-item">Max synthetic seq size: {{ gibson.max_synth }}nt</li>
+                <li class="list-group-item"><strong>AddGene:</strong> {{ gibson.addgene }}</li>
+                <li class="list-group-item"><strong>iGEM:</strong> {{ gibson.igem }}</li>
+                <li class="list-group-item"><strong>DNASU:</strong> {{ gibson.dnasu }}</li>
+                <li class="list-group-item"><strong>Min BLAST seq size:</strong> {{ gibson.min_blast }}nt</li>
+                <li class="list-group-item"><strong>Max BLAST seq size:</strong> {{ gibson.max_blast }}nt</li>
+                <li class="list-group-item"><strong>Min synthetic seq size:</strong> {{ gibson.min_synth }}nt</li>
+                <li class="list-group-item"><strong>Max synthetic seq size:</strong> {{ gibson.max_synth }}nt</li>
             </ul>    
         </div>
     </div>
@@ -68,11 +68,11 @@
         <div class="col">
             <h2>Experiment</h2>
             <ul class="list-group">
-                <li class="list-group-item">Monovalent ion concentration: {{ gibson.mv_conc }}mM</li>
-                <li class="list-group-item">Divalent ion concentration: {{ gibson.dv_conc }}mM</li>
-                <li class="list-group-item">dNTP concentration: {{ gibson.dntp_conc }}mM</li>
-                <li class="list-group-item">DNA concentration: {{ gibson.dna_conc }}nM</li>
-                <li class="list-group-item">Melting temperature: {{ gibson.tm }}C</li>
+                <li class="list-group-item"><strong>Monovalent ion concentration:</strong> {{ gibson.mv_conc }}mM</li>
+                <li class="list-group-item"><strong>Divalent ion concentration:</strong> {{ gibson.dv_conc }}mM</li>
+                <li class="list-group-item"><strong>dNTP concentration:</strong> {{ gibson.dntp_conc }}mM</li>
+                <li class="list-group-item"><strong>DNA concentration:</strong> {{ gibson.dna_conc }}nM</li>
+                <li class="list-group-item"><strong>Melting temperature:</strong> {{ gibson.tm }}C</li>
             </ul>
         </div>
     </div>

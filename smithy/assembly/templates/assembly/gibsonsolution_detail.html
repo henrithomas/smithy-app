@@ -1,13 +1,26 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
     <h1>{{ title }}</h1>
-    <p>{{ gibson_solution.date_created }}</p>
+    <div class="row mb-4">
+        <div class="col">
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Created:</strong> {{ gibson_solution.date_created }}</li>
+                <li class="list-group-item"><strong>Parts:</strong> {{ gibson_solution.parts_count }}</li>
+                <li class="list-group-item"><strong>Primers:</strong> {{ gibson_solution.primers_count }}</li>
+            </ul>
+        </div>
+    </div>
+    
     <div class="row mb-4">
         <div class="col">
             <h2 class="mb-4">
                 Parts
                 <a href="#" class="btn btn-outline-primary float-end disabled">Download Parts</a> 
             </h2>
+            <p>
+                Below is a summary table of the DNA sequences that make up this assembly solution. Further details on each part can be 
+                viewed by clicking <em>View Part</em> for each listed below this table.  
+            </p>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <caption>
@@ -70,6 +83,10 @@
                 Primers
                 <a href="#" class="btn btn-outline-primary float-end disabled">Download Primers</a>
             </h2>
+            <p>
+                Below is a summary table of the primers needed for each part of this assembly solution (shown above). Further details on each primer can be 
+                viewed by clicking <em>View Primer</em> for each listed below this table.  
+            </p>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <caption>
