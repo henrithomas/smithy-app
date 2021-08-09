@@ -41,22 +41,20 @@ class Assembly(models.Model):
     backbone_file = models.FileField(
                         upload_to='fasta/backbones/', 
                         validators=[
-                            FileExtensionValidator(allowed_extensions=['fasta', 'fa', 'faa']),
-                            fasta_validation
+                            FileExtensionValidator(allowed_extensions=['fasta', 'fa', 'faa'])
                         ],
                         blank=False)
     insert_file = models.FileField(
                         upload_to='fasta/queries/',
                         validators=[
-                            FileExtensionValidator(allowed_extensions=['fasta', 'fa', 'faa']),
-                            fasta_validation
+                            FileExtensionValidator(allowed_extensions=['fasta', 'fa', 'faa'])
                         ],
                         blank=False)
     
     class Meta:
         abstract = True
 
-    def __str__(self):
+    def __str__(self): 
         return self.title
 
 

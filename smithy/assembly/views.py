@@ -22,6 +22,7 @@ from assemblies.gibson import GibsonAssembler
 from assemblies.goldengate import GoldenGateAssembler
 from time import sleep
 
+
 def db_list(addgene, igem, dnasu):
     l = []
     if addgene:
