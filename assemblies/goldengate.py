@@ -91,7 +91,7 @@ class GoldenGateAssembler(TraditionalREAssembler):
 
     def primer_extension(self, fragments_pcr, backbone_pcr):
         """
-        Determines the primer extensions for a given assembly amplicon in a parts set.
+        Determines and creates the Golden Gate primer extensions for a given assembly amplicon in a parts set.
 
 
         Parameters
@@ -141,7 +141,7 @@ class GoldenGateAssembler(TraditionalREAssembler):
 
         Returns
         -------
-        A fully design list of assembly parts for assembly with a list of the blast record data for each part (nodes) 
+        A fully designed list of assembly parts for assembly with a list of the blast record data for each part (nodes) 
         """
         # return fragments and nodes
         fragments = self.get_solution(solution)
@@ -155,7 +155,7 @@ class GoldenGateAssembler(TraditionalREAssembler):
 
         # add simple annotations
         assembly = self.annotations(assembly, nodes)
-        # create expected assembly construct/seq
+        
         # run primer thermo analysis
         assembly = assembly_thermo(assembly, self.mv_conc, self.dv_conc, self.dna_conc, self.tm_custom)
 

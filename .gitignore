@@ -14,3 +14,4 @@ input/sequences/
 .python-version
 smithy/assembly/migrations/
 smithy/media/
+tests.py

@@ -16,7 +16,7 @@ ovhngs = (
 )
 
 def fasta_validation(fa_file):
-    if fa_file.file.content_type != 'text/plain':
+    if fa_file.file.content_type != 'application/octet-stream':
         raise ValidationError(_('Please choose a valid .fasta file.'), code='invalid')
 
 # abstract base classes for assemblies, parts, and primers
@@ -41,13 +41,15 @@ class Assembly(models.Model):
     backbone_file = models.FileField(
                         upload_to='fasta/backbones/', 
                         validators=[
-                            FileExtensionValidator(allowed_extensions=['fasta', 'fa', 'faa'])
+                            FileExtensionValidator(allowed_extensions=['fasta', 'fa', 'faa']),
+                            fasta_validation
                         ],
                         blank=False)
     insert_file = models.FileField(
                         upload_to='fasta/queries/',
                         validators=[
-                            FileExtensionValidator(allowed_extensions=['fasta', 'fa', 'faa'])
+                            FileExtensionValidator(allowed_extensions=['fasta', 'fa', 'faa']),
+                            fasta_validation
                         ],
                         blank=False)
     

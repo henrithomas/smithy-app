@@ -33,6 +33,204 @@ def db_list(addgene, igem, dnasu):
         l.append('dnasu')
     return l
 
+def gibson_create_service(gibson_obj):
+    pass
+    gib_assembler = GibsonAssembler(
+                        gibson_obj.mv_conc, 
+                        gibson_obj.dv_conc, 
+                        gibson_obj.dna_conc,
+                        gibson_obj.dntp_conc, 
+                        gibson_obj.tm, 
+                        gibson_obj.backbone_file.path, 
+                        gibson_obj.insert_file.path, 
+                        db_list(gibson_obj.addgene, gibson_obj.igem, gibson_obj.dnasu), 
+                        min_frag=gibson_obj.min_blast, 
+                        max_frag=gibson_obj.max_blast, 
+                        min_synth=gibson_obj.min_synth, 
+                        max_synth=gibson_obj.max_synth,
+                        overlap=gibson_obj.overlap
+    )
+    results, error = gib_assembler.query()
+    gib_assembler.solution_building(results)
+    gib_assembly, gib_fragments = gib_assembler.design(solution=3)
+    # save assembly parts with meta/annotations and their primers here
+    # TODO update to have a match % and BLAST solution sequence
+    # TODO add a foreach solution in for the assembly
+    gibson_solution = GibsonSolution(
+        name=f'Solution - {gibson_obj.title}',
+        backbone=gib_assembler.backbone.seq,
+        query=gib_assembler.query_record.seq,
+        solution='',
+        parts_count=len(gib_fragments),
+        primers_count=len(gib_fragments) * 2,
+        match=0.0,
+        assembly=self.object
+    )
+    gibson_solution.save()
+
+
+    for i, part in enumerate(gib_assembly):
+        gibson_part_entry = GibsonPart(
+            name=part.name,
+            database=part.annotations['db'],
+            length=part.template.seq.length, 
+            length_extended=part.seq.length,
+            seq=part.template.seq,
+            seq_extended=part.seq,
+            position=i,
+            solution=gibson_solution,
+            query_start = part.annotations['query_start'],
+            query_end = part.annotations['query_end'],
+            subject_start = part.annotations['subject_start'],
+            subject_end = part.annotations['subject_end'] 
+        )
+        gibson_part_entry.save()
+
+        forward_primer = GibsonPrimer(
+            name= f'{gibson_part_entry.name} forward primer',
+            primer_type='fwd',
+            sequence=part.forward_primer.seq,
+            footprint=part.forward_primer.footprint,
+            tail=part.forward_primer.tail,
+            tm_total=part.annotations['forward_primer']['tm_total'],
+            tm_footprint=part.annotations['forward_primer']['tm_footprint'],
+            gc=part.annotations['forward_primer']['gc'],
+            hairpin=part.annotations['forward_primer']['hairpin'],
+            hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
+            hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
+            hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
+            hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
+            homodimer=part.annotations['forward_primer']['homodimer'],
+            homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
+            homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
+            homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
+            homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
+            part=gibson_part_entry
+        )
+        forward_primer.save()
+
+        reverse_primer = GibsonPrimer(
+            name= f'{gibson_part_entry.name} reverse primer ',
+            primer_type='rvs',
+            sequence=part.reverse_primer.seq,
+            footprint=part.reverse_primer.footprint,
+            tail=part.reverse_primer.tail,
+            tm_total=part.annotations['reverse_primer']['tm_total'],
+            tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
+            gc=part.annotations['reverse_primer']['gc'],
+            hairpin=part.annotations['reverse_primer']['hairpin'],
+            hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
+            hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
+            hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
+            hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
+            homodimer=part.annotations['reverse_primer']['homodimer'],
+            homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
+            homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
+            homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
+            homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
+            part=gibson_part_entry 
+        )
+        reverse_primer.save()
+
+def goldengate_create_service(goldengate_obj):
+    pass
+    gg_assembler = GoldenGateAssembler(
+                        goldengate_obj.mv_conc, 
+                        goldengate_obj.dv_conc, 
+                        goldengate_obj.dna_conc,
+                        goldengate_obj.dntp_conc, 
+                        goldengate_obj.tm, 
+                        goldengate_obj.backbone_file.path, 
+                        goldengate_obj.insert_file.path, 
+                        db_list(goldengate_obj.addgene,goldengate_obj.igem, goldengate_obj.dnasu), 
+                        min_frag=goldengate_obj.min_blast, 
+                        max_frag=goldengate_obj.max_blast, 
+                        min_synth=goldengate_obj.min_synth, 
+                        max_synth=goldengate_obj.max_synth,
+                        ovhngs=goldengate_obj.overhangs
+    )
+    
+    results, error = gg_assembler.query()
+    gg_assembler.solution_building(results)
+    gg_assembly, gg_fragments = gg_assembler.design(solution=3)
+
+    # TODO update to have a match % and BLAST solution sequence
+    # TODO add a foreach solution in for the assembly
+    goldengate_solution = GoldenGateSolution(
+        name=f'Solution - {goldengate_obj.title}',
+        backbone=gg_assembler.backbone.seq,
+        query=gg_assembler.query_record.seq,
+        solution='',
+        parts_count=len(gg_fragments),
+        primers_count=len(gg_fragments) * 2,
+        match=0.0,
+        assembly=self.object
+    )
+    goldengate_solution.save()
+
+    for i, part in enumerate(gg_assembly):
+        goldengate_part_entry = GoldenGatePart(
+            name=part.name,
+            database=part.annotations['db'],
+            length=part.template.seq.length, 
+            length_extended=part.seq.length,
+            seq=part.template.seq,
+            seq_extended=part.seq,
+            position=i,
+            solution=goldengate_solution,
+            query_start = part.annotations['query_start'],
+            query_end = part.annotations['query_end'],
+            subject_start = part.annotations['subject_start'],
+            subject_end = part.annotations['subject_end']             
+        )
+        goldengate_part_entry.save()
+
+        forward_primer = GoldenGatePrimer(
+            name= f'{goldengate_part_entry.name} forward primer',
+            primer_type='fwd',
+            sequence=part.forward_primer.seq,
+            footprint=part.forward_primer.footprint,
+            tail=part.forward_primer.tail,
+            tm_total=part.annotations['forward_primer']['tm_total'],
+            tm_footprint=part.annotations['forward_primer']['tm_footprint'],
+            gc=part.annotations['forward_primer']['gc'],
+            hairpin=part.annotations['forward_primer']['hairpin'],
+            hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
+            hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
+            hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
+            hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
+            homodimer=part.annotations['forward_primer']['homodimer'],
+            homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
+            homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
+            homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
+            homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
+            part=goldengate_part_entry
+        )
+        forward_primer.save()
+
+        reverse_primer = GoldenGatePrimer(
+            name= f'{goldengate_part_entry.name} reverse primer ',
+            primer_type='rvs',
+            sequence=part.reverse_primer.seq,
+            footprint=part.reverse_primer.footprint,
+            tail=part.reverse_primer.tail,
+            tm_total=part.annotations['reverse_primer']['tm_total'],
+            tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
+            gc=part.annotations['reverse_primer']['gc'],
+            hairpin=part.annotations['reverse_primer']['hairpin'],
+            hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
+            hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
+            hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
+            hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
+            homodimer=part.annotations['reverse_primer']['homodimer'],
+            homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
+            homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
+            homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
+            homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
+            part=goldengate_part_entry 
+        )
+        reverse_primer.save()
+
 def home(request):
     return render(request, 'assembly/home.html')
 
@@ -77,104 +275,106 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        gib_assembler = GibsonAssembler(
-                            self.object.mv_conc, 
-                            self.object.dv_conc, 
-                            self.object.dna_conc,
-                            self.object.dntp_conc, 
-                            self.object.tm, 
-                            self.object.backbone_file.path, 
-                            self.object.insert_file.path, 
-                            db_list(self.object.addgene, self.object.igem, self.object.dnasu), 
-                            min_frag=self.object.min_blast, 
-                            max_frag=self.object.max_blast, 
-                            min_synth=self.object.min_synth, 
-                            max_synth=self.object.max_synth,
-                            overlap=self.object.overlap
-        )
-        results, error = gib_assembler.query()
-        gib_assembler.solution_building(results)
-        gib_assembly, gib_fragments = gib_assembler.design(solution=3)
-        # save assembly parts with meta/annotations and their primers here
-        # TODO update to have a match % and BLAST solution sequence
-        # TODO add a foreach solution in for the assembly
-        gibson_solution = GibsonSolution(
-            name=f'Solution - {self.object.title}',
-            backbone=gib_assembler.backbone.seq,
-            query=gib_assembler.query_record.seq,
-            solution='',
-            parts_count=len(gib_fragments),
-            primers_count=len(gib_fragments) * 2,
-            match=0.0,
-            assembly=self.object
-        )
-        gibson_solution.save()
-
-
-        for i, part in enumerate(gib_assembly):
-            gibson_part_entry = GibsonPart(
-                name=part.name,
-                database=part.annotations['db'],
-                length=part.template.seq.length, 
-                length_extended=part.seq.length,
-                seq=part.template.seq,
-                seq_extended=part.seq,
-                position=i,
-                solution=gibson_solution,
-                query_start = part.annotations['query_start'],
-                query_end = part.annotations['query_end'],
-                subject_start = part.annotations['subject_start'],
-                subject_end = part.annotations['subject_end'] 
-            )
-            gibson_part_entry.save()
-
-            forward_primer = GibsonPrimer(
-                name= f'{gibson_part_entry.name} forward primer',
-                primer_type='fwd',
-                sequence=part.forward_primer.seq,
-                footprint=part.forward_primer.footprint,
-                tail=part.forward_primer.tail,
-                tm_total=part.annotations['forward_primer']['tm_total'],
-                tm_footprint=part.annotations['forward_primer']['tm_footprint'],
-                gc=part.annotations['forward_primer']['gc'],
-                hairpin=part.annotations['forward_primer']['hairpin'],
-                hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
-                hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
-                hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
-                hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
-                homodimer=part.annotations['forward_primer']['homodimer'],
-                homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
-                homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
-                homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
-                homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
-                part=gibson_part_entry
-            )
-            forward_primer.save()
-
-            reverse_primer = GibsonPrimer(
-                name= f'{gibson_part_entry.name} reverse primer ',
-                primer_type='rvs',
-                sequence=part.reverse_primer.seq,
-                footprint=part.reverse_primer.footprint,
-                tail=part.reverse_primer.tail,
-                tm_total=part.annotations['reverse_primer']['tm_total'],
-                tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
-                gc=part.annotations['reverse_primer']['gc'],
-                hairpin=part.annotations['reverse_primer']['hairpin'],
-                hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
-                hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
-                hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
-                hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
-                homodimer=part.annotations['reverse_primer']['homodimer'],
-                homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
-                homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
-                homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
-                homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
-                part=gibson_part_entry 
-            )
-            reverse_primer.save()
-
+        gibson_create_service(self.object)
         return super().form_valid(form)
+        # gib_assembler = GibsonAssembler(
+        #                     self.object.mv_conc, 
+        #                     self.object.dv_conc, 
+        #                     self.object.dna_conc,
+        #                     self.object.dntp_conc, 
+        #                     self.object.tm, 
+        #                     self.object.backbone_file.path, 
+        #                     self.object.insert_file.path, 
+        #                     db_list(self.object.addgene, self.object.igem, self.object.dnasu), 
+        #                     min_frag=self.object.min_blast, 
+        #                     max_frag=self.object.max_blast, 
+        #                     min_synth=self.object.min_synth, 
+        #                     max_synth=self.object.max_synth,
+        #                     overlap=self.object.overlap
+        # )
+        # results, error = gib_assembler.query()
+        # gib_assembler.solution_building(results)
+        # gib_assembly, gib_fragments = gib_assembler.design(solution=3)
+        # # save assembly parts with meta/annotations and their primers here
+        # # TODO update to have a match % and BLAST solution sequence
+        # # TODO add a foreach solution in for the assembly
+        # gibson_solution = GibsonSolution(
+        #     name=f'Solution - {self.object.title}',
+        #     backbone=gib_assembler.backbone.seq,
+        #     query=gib_assembler.query_record.seq,
+        #     solution='',
+        #     parts_count=len(gib_fragments),
+        #     primers_count=len(gib_fragments) * 2,
+        #     match=0.0,
+        #     assembly=self.object
+        # )
+        # gibson_solution.save()
+
+
+        # for i, part in enumerate(gib_assembly):
+        #     gibson_part_entry = GibsonPart(
+        #         name=part.name,
+        #         database=part.annotations['db'],
+        #         length=part.template.seq.length, 
+        #         length_extended=part.seq.length,
+        #         seq=part.template.seq,
+        #         seq_extended=part.seq,
+        #         position=i,
+        #         solution=gibson_solution,
+        #         query_start = part.annotations['query_start'],
+        #         query_end = part.annotations['query_end'],
+        #         subject_start = part.annotations['subject_start'],
+        #         subject_end = part.annotations['subject_end'] 
+        #     )
+        #     gibson_part_entry.save()
+
+        #     forward_primer = GibsonPrimer(
+        #         name= f'{gibson_part_entry.name} forward primer',
+        #         primer_type='fwd',
+        #         sequence=part.forward_primer.seq,
+        #         footprint=part.forward_primer.footprint,
+        #         tail=part.forward_primer.tail,
+        #         tm_total=part.annotations['forward_primer']['tm_total'],
+        #         tm_footprint=part.annotations['forward_primer']['tm_footprint'],
+        #         gc=part.annotations['forward_primer']['gc'],
+        #         hairpin=part.annotations['forward_primer']['hairpin'],
+        #         hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
+        #         hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
+        #         hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
+        #         hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
+        #         homodimer=part.annotations['forward_primer']['homodimer'],
+        #         homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
+        #         homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
+        #         homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
+        #         homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
+        #         part=gibson_part_entry
+        #     )
+        #     forward_primer.save()
+
+        #     reverse_primer = GibsonPrimer(
+        #         name= f'{gibson_part_entry.name} reverse primer ',
+        #         primer_type='rvs',
+        #         sequence=part.reverse_primer.seq,
+        #         footprint=part.reverse_primer.footprint,
+        #         tail=part.reverse_primer.tail,
+        #         tm_total=part.annotations['reverse_primer']['tm_total'],
+        #         tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
+        #         gc=part.annotations['reverse_primer']['gc'],
+        #         hairpin=part.annotations['reverse_primer']['hairpin'],
+        #         hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
+        #         hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
+        #         hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
+        #         hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
+        #         homodimer=part.annotations['reverse_primer']['homodimer'],
+        #         homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
+        #         homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
+        #         homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
+        #         homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
+        #         part=gibson_part_entry 
+        #     )
+        #     reverse_primer.save()
+
+        
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -250,104 +450,106 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        gg_assembler = GoldenGateAssembler(
-                            self.object.mv_conc, 
-                            self.object.dv_conc, 
-                            self.object.dna_conc,
-                            self.object.dntp_conc, 
-                            self.object.tm, 
-                            self.object.backbone_file.path, 
-                            self.object.insert_file.path, 
-                            db_list(self.object.addgene, self.object.igem, self.object.dnasu), 
-                            min_frag=self.object.min_blast, 
-                            max_frag=self.object.max_blast, 
-                            min_synth=self.object.min_synth, 
-                            max_synth=self.object.max_synth,
-                            ovhngs=self.object.overhangs
-        )
-        
-        results, error = gg_assembler.query()
-        gg_assembler.solution_building(results)
-        gg_assembly, gg_fragments = gg_assembler.design(solution=3)
-
-        # TODO update to have a match % and BLAST solution sequence
-        # TODO add a foreach solution in for the assembly
-        goldengate_solution = GoldenGateSolution(
-            name=f'Solution - {self.object.title}',
-            backbone=gg_assembler.backbone.seq,
-            query=gg_assembler.query_record.seq,
-            solution='',
-            parts_count=len(gg_fragments),
-            primers_count=len(gg_fragments) * 2,
-            match=0.0,
-            assembly=self.object
-        )
-        goldengate_solution.save()
-
-        for i, part in enumerate(gg_assembly):
-            goldengate_part_entry = GoldenGatePart(
-                name=part.name,
-                database=part.annotations['db'],
-                length=part.template.seq.length, 
-                length_extended=part.seq.length,
-                seq=part.template.seq,
-                seq_extended=part.seq,
-                position=i,
-                solution=goldengate_solution,
-                query_start = part.annotations['query_start'],
-                query_end = part.annotations['query_end'],
-                subject_start = part.annotations['subject_start'],
-                subject_end = part.annotations['subject_end']             
-            )
-            goldengate_part_entry.save()
-
-            forward_primer = GoldenGatePrimer(
-                name= f'{goldengate_part_entry.name} forward primer',
-                primer_type='fwd',
-                sequence=part.forward_primer.seq,
-                footprint=part.forward_primer.footprint,
-                tail=part.forward_primer.tail,
-                tm_total=part.annotations['forward_primer']['tm_total'],
-                tm_footprint=part.annotations['forward_primer']['tm_footprint'],
-                gc=part.annotations['forward_primer']['gc'],
-                hairpin=part.annotations['forward_primer']['hairpin'],
-                hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
-                hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
-                hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
-                hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
-                homodimer=part.annotations['forward_primer']['homodimer'],
-                homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
-                homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
-                homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
-                homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
-                part=goldengate_part_entry
-            )
-            forward_primer.save()
-
-            reverse_primer = GoldenGatePrimer(
-                name= f'{goldengate_part_entry.name} reverse primer ',
-                primer_type='rvs',
-                sequence=part.reverse_primer.seq,
-                footprint=part.reverse_primer.footprint,
-                tail=part.reverse_primer.tail,
-                tm_total=part.annotations['reverse_primer']['tm_total'],
-                tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
-                gc=part.annotations['reverse_primer']['gc'],
-                hairpin=part.annotations['reverse_primer']['hairpin'],
-                hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
-                hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
-                hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
-                hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
-                homodimer=part.annotations['reverse_primer']['homodimer'],
-                homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
-                homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
-                homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
-                homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
-                part=goldengate_part_entry 
-            )
-            reverse_primer.save()
-
+        goldengate_create_service(self.object)
         return super().form_valid(form)
+        # gg_assembler = GoldenGateAssembler(
+        #                     self.object.mv_conc, 
+        #                     self.object.dv_conc, 
+        #                     self.object.dna_conc,
+        #                     self.object.dntp_conc, 
+        #                     self.object.tm, 
+        #                     self.object.backbone_file.path, 
+        #                     self.object.insert_file.path, 
+        #                     db_list(self.object.addgene, self.object.igem, self.object.dnasu), 
+        #                     min_frag=self.object.min_blast, 
+        #                     max_frag=self.object.max_blast, 
+        #                     min_synth=self.object.min_synth, 
+        #                     max_synth=self.object.max_synth,
+        #                     ovhngs=self.object.overhangs
+        # )
+        
+        # results, error = gg_assembler.query()
+        # gg_assembler.solution_building(results)
+        # gg_assembly, gg_fragments = gg_assembler.design(solution=3)
+
+        # # TODO update to have a match % and BLAST solution sequence
+        # # TODO add a foreach solution in for the assembly
+        # goldengate_solution = GoldenGateSolution(
+        #     name=f'Solution - {self.object.title}',
+        #     backbone=gg_assembler.backbone.seq,
+        #     query=gg_assembler.query_record.seq,
+        #     solution='',
+        #     parts_count=len(gg_fragments),
+        #     primers_count=len(gg_fragments) * 2,
+        #     match=0.0,
+        #     assembly=self.object
+        # )
+        # goldengate_solution.save()
+
+        # for i, part in enumerate(gg_assembly):
+        #     goldengate_part_entry = GoldenGatePart(
+        #         name=part.name,
+        #         database=part.annotations['db'],
+        #         length=part.template.seq.length, 
+        #         length_extended=part.seq.length,
+        #         seq=part.template.seq,
+        #         seq_extended=part.seq,
+        #         position=i,
+        #         solution=goldengate_solution,
+        #         query_start = part.annotations['query_start'],
+        #         query_end = part.annotations['query_end'],
+        #         subject_start = part.annotations['subject_start'],
+        #         subject_end = part.annotations['subject_end']             
+        #     )
+        #     goldengate_part_entry.save()
+
+        #     forward_primer = GoldenGatePrimer(
+        #         name= f'{goldengate_part_entry.name} forward primer',
+        #         primer_type='fwd',
+        #         sequence=part.forward_primer.seq,
+        #         footprint=part.forward_primer.footprint,
+        #         tail=part.forward_primer.tail,
+        #         tm_total=part.annotations['forward_primer']['tm_total'],
+        #         tm_footprint=part.annotations['forward_primer']['tm_footprint'],
+        #         gc=part.annotations['forward_primer']['gc'],
+        #         hairpin=part.annotations['forward_primer']['hairpin'],
+        #         hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
+        #         hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
+        #         hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
+        #         hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
+        #         homodimer=part.annotations['forward_primer']['homodimer'],
+        #         homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
+        #         homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
+        #         homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
+        #         homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
+        #         part=goldengate_part_entry
+        #     )
+        #     forward_primer.save()
+
+        #     reverse_primer = GoldenGatePrimer(
+        #         name= f'{goldengate_part_entry.name} reverse primer ',
+        #         primer_type='rvs',
+        #         sequence=part.reverse_primer.seq,
+        #         footprint=part.reverse_primer.footprint,
+        #         tail=part.reverse_primer.tail,
+        #         tm_total=part.annotations['reverse_primer']['tm_total'],
+        #         tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
+        #         gc=part.annotations['reverse_primer']['gc'],
+        #         hairpin=part.annotations['reverse_primer']['hairpin'],
+        #         hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
+        #         hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
+        #         hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
+        #         hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
+        #         homodimer=part.annotations['reverse_primer']['homodimer'],
+        #         homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
+        #         homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
+        #         homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
+        #         homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
+        #         part=goldengate_part_entry 
+        #     )
+        #     reverse_primer.save()
+
+        
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

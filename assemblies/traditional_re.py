@@ -4,6 +4,7 @@ from pydna.primer import Primer
 from pydna.amplify import pcr, Anneal
 from importlib import import_module
 import json
+from primers.analysis import assembly_thermo
 
 # TODO citation
 class TraditionalREAssembler(Assembler):
@@ -11,7 +12,7 @@ class TraditionalREAssembler(Assembler):
     A class to implement restriction enzyme-based cloning methods. It is mostly used as a parent class
     for other more specific classes like GoldenGateAssembler.
     
-    citation: https://www.thermofisher.com/us/en/home/life-science/cloning/cloning-learning-center/invitrogen-school-of-molecular-biology/molecular-cloning/cloning/traditional-cloning-basics.html#vector
+    citation: https://www.thermofisher.com/us/en/home/life-science/cloning/cloning-learning-center/invitrogen-school-of-molecular-biology/molecular-cloning/cloning/traditional-cloning-basics.html
     
 
     Attributes
@@ -65,7 +66,7 @@ class TraditionalREAssembler(Assembler):
         Performs a double digest using an insert and backbone using two REs with non-compatible ends.
         Two REs, re1 and re2, used for the insert and just re2 used on the backbone.
     """
-    cloning_type = 'Trad. Restriction Enzyme'
+    cloning_type = 'Traditional Restriction Enzyme'
 
     def __init__(self, re1, *args, re2=None, ligase='T4-DNA', polymerase='T4-DNA', **kwargs):
         """
@@ -239,6 +240,7 @@ class TraditionalREAssembler(Assembler):
 
     # two enzymes, non-compatible ends
     def double_digest(self, insert_pcr):
+
         """
         Performs a double digest using an insert and backbone using two REs with non-compatible ends.
         Two REs, re1 and re2, used for the insert and just re2 used on the backbone.
@@ -261,3 +263,88 @@ class TraditionalREAssembler(Assembler):
         # TODO add blunting reactions here
         pass
         return [insert_prep, backbone_digest]
+
+    def design(self):
+        pass 
+
+
+class BioBrickAssembler(TraditionalREAssembler):
+
+    cloning_type = 'BioBrickAssembly'
+    prefix = 'gaattcgcggccgcttctagag'
+    prefix_cds = 'gaattcgcggccgcttctag'
+    suffix = 'tactagtagcggccgctgcag'
+
+    def __init__(self, *args, re1='EcoRI', re2='XbaI', re3='SpeI', re4='PstI', **kwargs):
+        super(BioBrickAssembler, self).__init__(re1, *args, re2=re2, **kwargs)
+        self.re3 = getattr(import_module('Bio.Restriction'), re3)
+        self.re4 = getattr(import_module('Bio.Restriction'), re4)
+
+    def primer_extension(self, fragments_pcr, backbone_pcr):
+        """
+        Creates the BioBrick primer extensions for a given assembly amplicon in a parts set.
+
+
+        Parameters
+        ----------
+        fragments_pcr : List of pydna Amplicons  
+            A list of pydna Amplicons used for a given assembly solution
+
+        backbone_pcr : A pydna Amplicon
+            The backbone Amplicon for a given assembly
+
+
+        Returns
+        -------
+        A list of new Amplicon objects, including fragments and backbone, that have gone through primer extension design and 
+        extended accordingly
+        """
+        # returns assembly, a list of amplicons with extensions
+        assembly = []
+        fragments_pcr.append(backbone_pcr)
+        
+        for amp in fragments_pcr:
+            amp_suffix = self.suffix
+            if amp.template[:3].lower() == 'atg':
+                amp_prefix = self.prefix_cds
+            else:
+                amp_prefix = self.prefix
+            
+            amp_extended = self.add_cutsites(amp_prefix, amp_suffix, amp)
+
+            assembly.append(amp_extended)
+
+        
+    def design(self, solution=0):
+        """
+        Runs a full design procedure on the selected solution. Fetches the solution from the solution_tree, adds primer 
+        complements, designs and add primer extensions, logs part annotations, and performs thermodynamic analysis.
+
+
+        Parameters
+        ----------
+        solution : int
+            The solution index in the solution_tree of the assembler
+
+
+        Returns
+        -------
+        A fully designed list of assembly parts for assembly with a list of the blast record data for each part (nodes) 
+        """
+        # return fragments and nodes
+        fragments = self.get_solution(solution)
+        nodes = self.solution_tree.solution_nodes(solution)
+
+        # create assembly primer complements for backbone and fragments
+        fragments_pcr, backbone_pcr = self.primer_complement(fragments, self.backbone)
+
+        # create primer extensions
+        assembly = self.primer_extension(fragments_pcr, backbone_pcr)
+
+        # add simple annotations
+        assembly = self.annotations(assembly, nodes)
+        
+        # run primer thermo analysis
+        assembly = assembly_thermo(assembly, self.mv_conc, self.dv_conc, self.dna_conc, self.tm_custom)
+
+        return assembly, nodes

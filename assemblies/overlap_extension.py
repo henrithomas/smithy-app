@@ -179,7 +179,7 @@ class OverlapExtensionAssembler(Assembler):
 
         Returns
         -------
-        A fully design list of assembly parts for assembly with a list of the blast record data for each part (nodes) 
+        A fully designed list of assembly parts for assembly with a list of the blast record data for each part (nodes) 
         """
 
         # return fragments and nodes
