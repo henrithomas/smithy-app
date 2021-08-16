@@ -64,7 +64,7 @@ def gibson_create_service(gibson_obj):
         parts_count=len(gib_fragments),
         primers_count=len(gib_fragments) * 2,
         match=0.0,
-        assembly=self.object
+        assembly=gibson_obj
     )
     gibson_solution.save()
 
@@ -164,7 +164,7 @@ def goldengate_create_service(goldengate_obj):
         parts_count=len(gg_fragments),
         primers_count=len(gg_fragments) * 2,
         match=0.0,
-        assembly=self.object
+        assembly=goldengate_obj
     )
     goldengate_solution.save()
 
