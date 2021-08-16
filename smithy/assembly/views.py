@@ -21,6 +21,12 @@ from django.contrib.messages.views import SuccessMessageMixin
 from assemblies.gibson import GibsonAssembler
 from assemblies.goldengate import GoldenGateAssembler
 from time import sleep
+import os
+from dna_features_viewer import (
+    GraphicFeature, 
+    GraphicRecord, 
+    CircularGraphicRecord
+)
 
 
 def db_list(addgene, igem, dnasu):
@@ -33,8 +39,80 @@ def db_list(addgene, igem, dnasu):
         l.append('dnasu')
     return l
 
+def part_map(assembly, index, space):
+    part_plot_name = f'{assembly[index].name}-map.png'
+
+    if index == 0:
+        left_index = len(assembly) - 1
+    else:
+        left_index = index - 1
+
+    if index == len(assembly) - 1:
+        right_index = 0
+    else:
+        right_index = index + 1
+
+    part_start = 50 + space
+    part_end = part_start + assembly[index].template.seq.length
+
+    right_start = part_end + space
+    right_end = right_start + 50
+
+    fwd_start = part_start - len(assembly[index].forward_primer.tail)
+    fwd_end = part_start + len(assembly[index].forward_primer.footprint)
+
+    rvs_start = part_end - len(assembly[index].reverse_primer.tail)
+    rvs_end = part_end + len(assembly[index].reverse_primer.tail)
+
+    features = [
+        GraphicFeature(
+            start=0, 
+            end=50, 
+            strand=+1, 
+            open_left=True, 
+            label=assembly[left_index].name
+        ),
+        GraphicFeature(
+            start=part_start, 
+            end=part_end, 
+            strand=+1,  
+            label=assembly[index].name
+        ),
+        GraphicFeature(
+            start=right_start, 
+            end=right_end, 
+            strand=+1,  
+            label=assembly[right_index].name
+        ),
+        GraphicFeature(
+            thickness=10, 
+            start= fwd_start,
+            end=fwd_end,
+            strand=+1,
+            color="#ccccff",
+            label=f'{assembly[index].name} fwd'
+        ),
+        GraphicFeature(
+            thickness=10, 
+            start= rvs_start,
+            end=rvs_end,
+            strand=-1,
+            color="#ccccff",
+            label=f'{assembly[index].name} rvs'
+        )
+    ] 
+
+    record = GraphicRecord(sequence_length=right_end, features=features)
+    ax, _ = record.plot(figure_width=10)
+    ax.figure.savefig(part_plot_name)
+    pass
+
+def plasmid_map(assembly, total_len):
+    pass
+
 def gibson_create_service(gibson_obj):
     pass
+    print(os.getcwd())
     gib_assembler = GibsonAssembler(
                         gibson_obj.mv_conc, 
                         gibson_obj.dv_conc, 
