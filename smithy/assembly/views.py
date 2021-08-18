@@ -1,3 +1,4 @@
+from Bio.Blast import Record
 from django.db.models.deletion import Collector
 from django.shortcuts import render,redirect
 from django.views.generic.edit import CreateView
@@ -27,6 +28,7 @@ from dna_features_viewer import (
     GraphicRecord, 
     CircularGraphicRecord
 )
+from django.core.files import File
 
 
 def db_list(addgene, igem, dnasu):
@@ -39,50 +41,52 @@ def db_list(addgene, igem, dnasu):
         l.append('dnasu')
     return l
 
-def part_map(assembly, index, space):
-    part_plot_name = f'{assembly[index].name}-map.png'
+def primer_map():
+    pass
 
-    if index == 0:
-        left_index = len(assembly) - 1
-    else:
-        left_index = index - 1
+def part_map(part_model, part, left, right, name, space):
+    part_plot_name = f'{name}-map.png'
+    temp_plot = f'/home/hthoma/projects/smithy-app/smithy/media/images/{part_plot_name}'
 
-    if index == len(assembly) - 1:
-        right_index = 0
-    else:
-        right_index = index + 1
+    display_len = int(part.template.seq.length * 0.1)
 
-    part_start = 50 + space
-    part_end = part_start + assembly[index].template.seq.length
+    part_start = left.annotations['query_start'] + display_len + space
+    part_end = part_start + part.template.seq.length
 
     right_start = part_end + space
-    right_end = right_start + 50
+    right_end = right_start + display_len
 
-    fwd_start = part_start - len(assembly[index].forward_primer.tail)
-    fwd_end = part_start + len(assembly[index].forward_primer.footprint)
+    fwd_start = part_start - len(part.forward_primer.tail)
+    fwd_end = part_start + len(part.forward_primer.footprint)
 
-    rvs_start = part_end - len(assembly[index].reverse_primer.tail)
-    rvs_end = part_end + len(assembly[index].reverse_primer.tail)
+    rvs_start = part_end - len(part.reverse_primer.tail)
+    rvs_end = part_end + len(part.reverse_primer.tail)
+
+    seq_len = right_end - left.annotations['query_start']
 
     features = [
         GraphicFeature(
-            start=0, 
-            end=50, 
+            start=left.annotations['query_start'], 
+            end=left.annotations['query_start'] + display_len, 
             strand=+1, 
             open_left=True, 
-            label=assembly[left_index].name
+            label=left.name,
+            color='lightslategrey'
         ),
         GraphicFeature(
             start=part_start, 
             end=part_end, 
             strand=+1,  
-            label=assembly[index].name
+            label=part.name,
+            color='darkseagreen'
         ),
         GraphicFeature(
             start=right_start, 
             end=right_end, 
             strand=+1,  
-            label=assembly[right_index].name
+            label=right.name,
+            open_right=True,
+            color='lightslategrey'
         ),
         GraphicFeature(
             thickness=10, 
@@ -90,7 +94,7 @@ def part_map(assembly, index, space):
             end=fwd_end,
             strand=+1,
             color="#ccccff",
-            label=f'{assembly[index].name} fwd'
+            label=f'{part.name} fwd'
         ),
         GraphicFeature(
             thickness=10, 
@@ -98,21 +102,52 @@ def part_map(assembly, index, space):
             end=rvs_end,
             strand=-1,
             color="#ccccff",
-            label=f'{assembly[index].name} rvs'
+            label=f'{part.name} rvs'
         )
     ] 
 
-    record = GraphicRecord(sequence_length=right_end, features=features)
+    record = GraphicRecord(sequence_length=seq_len, features=features, first_index=left.annotations['query_start'])
     ax, _ = record.plot(figure_width=10)
-    ax.figure.savefig(part_plot_name)
-    pass
+    ax.figure.savefig(temp_plot)
 
-def plasmid_map(assembly, total_len):
-    pass
+    part_model.part_map.save(part_plot_name, File(open(temp_plot, 'rb')))
+    part_model.save()
+    os.remove(temp_plot)
+
+def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
+    plot_name = f'{assembly_name}_map.png'
+    temp_plot = f'/home/hthoma/projects/smithy-app/smithy/media/images/{plot_name}'   
+    features = []
+    total_len += len(assembly) * space
+    part_start = 0
+    part_end = 0
+
+    for i, part in enumerate(assembly):
+        part_end = part_start + part.template.seq.length
+        if i % 2 == 0:
+            part_color = 'darkseagreen'
+        else:
+            part_color = 'lightslategrey'
+        features.append(
+            GraphicFeature(
+                start=part_start,
+                end=part_end,
+                strand=+1,
+                label=part.name,
+                color=part_color
+            )
+        )
+        part_start = part_end + space
+
+    record = CircularGraphicRecord(sequence_length=total_len, features=features)
+    ax, _ = record.plot(figure_width=10)
+    ax.figure.savefig(temp_plot)
+
+    solution_model.plasmid_map.save(plot_name, File(open(temp_plot, 'rb')))
+    solution_model.save()
+    os.remove(temp_plot)
 
 def gibson_create_service(gibson_obj):
-    pass
-    print(os.getcwd())
     gib_assembler = GibsonAssembler(
                         gibson_obj.mv_conc, 
                         gibson_obj.dv_conc, 
@@ -130,7 +165,11 @@ def gibson_create_service(gibson_obj):
     )
     results, error = gib_assembler.query()
     gib_assembler.solution_building(results)
-    gib_assembly, gib_fragments = gib_assembler.design(solution=3)
+    gib_assembly, gib_fragments = gib_assembler.design(solution=0)
+
+    total_len = gib_assembler.backbone.seq.length + gib_assembler.query_record.seq.length
+
+    
     # save assembly parts with meta/annotations and their primers here
     # TODO update to have a match % and BLAST solution sequence
     # TODO add a foreach solution in for the assembly
@@ -145,6 +184,8 @@ def gibson_create_service(gibson_obj):
         assembly=gibson_obj
     )
     gibson_solution.save()
+
+    plasmid_map(gibson_solution, gib_assembly, gibson_obj.title, 0, total_len)
 
 
     for i, part in enumerate(gib_assembly):
@@ -163,6 +204,25 @@ def gibson_create_service(gibson_obj):
             subject_end = part.annotations['subject_end'] 
         )
         gibson_part_entry.save()
+
+        if i == 0:
+            left_index = len(gib_assembly) - 1
+        else:
+            left_index = i - 1
+
+        if i == len(gib_assembly) - 1:
+            right_index = 0
+        else:
+            right_index = i + 1
+
+        part_map(
+            gibson_part_entry, 
+            part, 
+            gib_assembly[left_index], 
+            gib_assembly[right_index], 
+            f'{part.name}-{i}', 
+            0
+        )
 
         forward_primer = GibsonPrimer(
             name= f'{gibson_part_entry.name} forward primer',
@@ -209,6 +269,7 @@ def gibson_create_service(gibson_obj):
             part=gibson_part_entry 
         )
         reverse_primer.save()
+    pass
 
 def goldengate_create_service(goldengate_obj):
     pass
@@ -354,105 +415,7 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save()
         gibson_create_service(self.object)
-        return super().form_valid(form)
-        # gib_assembler = GibsonAssembler(
-        #                     self.object.mv_conc, 
-        #                     self.object.dv_conc, 
-        #                     self.object.dna_conc,
-        #                     self.object.dntp_conc, 
-        #                     self.object.tm, 
-        #                     self.object.backbone_file.path, 
-        #                     self.object.insert_file.path, 
-        #                     db_list(self.object.addgene, self.object.igem, self.object.dnasu), 
-        #                     min_frag=self.object.min_blast, 
-        #                     max_frag=self.object.max_blast, 
-        #                     min_synth=self.object.min_synth, 
-        #                     max_synth=self.object.max_synth,
-        #                     overlap=self.object.overlap
-        # )
-        # results, error = gib_assembler.query()
-        # gib_assembler.solution_building(results)
-        # gib_assembly, gib_fragments = gib_assembler.design(solution=3)
-        # # save assembly parts with meta/annotations and their primers here
-        # # TODO update to have a match % and BLAST solution sequence
-        # # TODO add a foreach solution in for the assembly
-        # gibson_solution = GibsonSolution(
-        #     name=f'Solution - {self.object.title}',
-        #     backbone=gib_assembler.backbone.seq,
-        #     query=gib_assembler.query_record.seq,
-        #     solution='',
-        #     parts_count=len(gib_fragments),
-        #     primers_count=len(gib_fragments) * 2,
-        #     match=0.0,
-        #     assembly=self.object
-        # )
-        # gibson_solution.save()
-
-
-        # for i, part in enumerate(gib_assembly):
-        #     gibson_part_entry = GibsonPart(
-        #         name=part.name,
-        #         database=part.annotations['db'],
-        #         length=part.template.seq.length, 
-        #         length_extended=part.seq.length,
-        #         seq=part.template.seq,
-        #         seq_extended=part.seq,
-        #         position=i,
-        #         solution=gibson_solution,
-        #         query_start = part.annotations['query_start'],
-        #         query_end = part.annotations['query_end'],
-        #         subject_start = part.annotations['subject_start'],
-        #         subject_end = part.annotations['subject_end'] 
-        #     )
-        #     gibson_part_entry.save()
-
-        #     forward_primer = GibsonPrimer(
-        #         name= f'{gibson_part_entry.name} forward primer',
-        #         primer_type='fwd',
-        #         sequence=part.forward_primer.seq,
-        #         footprint=part.forward_primer.footprint,
-        #         tail=part.forward_primer.tail,
-        #         tm_total=part.annotations['forward_primer']['tm_total'],
-        #         tm_footprint=part.annotations['forward_primer']['tm_footprint'],
-        #         gc=part.annotations['forward_primer']['gc'],
-        #         hairpin=part.annotations['forward_primer']['hairpin'],
-        #         hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
-        #         hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
-        #         hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
-        #         hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
-        #         homodimer=part.annotations['forward_primer']['homodimer'],
-        #         homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
-        #         homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
-        #         homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
-        #         homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
-        #         part=gibson_part_entry
-        #     )
-        #     forward_primer.save()
-
-        #     reverse_primer = GibsonPrimer(
-        #         name= f'{gibson_part_entry.name} reverse primer ',
-        #         primer_type='rvs',
-        #         sequence=part.reverse_primer.seq,
-        #         footprint=part.reverse_primer.footprint,
-        #         tail=part.reverse_primer.tail,
-        #         tm_total=part.annotations['reverse_primer']['tm_total'],
-        #         tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
-        #         gc=part.annotations['reverse_primer']['gc'],
-        #         hairpin=part.annotations['reverse_primer']['hairpin'],
-        #         hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
-        #         hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
-        #         hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
-        #         hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
-        #         homodimer=part.annotations['reverse_primer']['homodimer'],
-        #         homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
-        #         homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
-        #         homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
-        #         homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
-        #         part=gibson_part_entry 
-        #     )
-        #     reverse_primer.save()
-
-        
+        return super().form_valid(form)  
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -530,104 +493,6 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
         self.object = form.save()
         goldengate_create_service(self.object)
         return super().form_valid(form)
-        # gg_assembler = GoldenGateAssembler(
-        #                     self.object.mv_conc, 
-        #                     self.object.dv_conc, 
-        #                     self.object.dna_conc,
-        #                     self.object.dntp_conc, 
-        #                     self.object.tm, 
-        #                     self.object.backbone_file.path, 
-        #                     self.object.insert_file.path, 
-        #                     db_list(self.object.addgene, self.object.igem, self.object.dnasu), 
-        #                     min_frag=self.object.min_blast, 
-        #                     max_frag=self.object.max_blast, 
-        #                     min_synth=self.object.min_synth, 
-        #                     max_synth=self.object.max_synth,
-        #                     ovhngs=self.object.overhangs
-        # )
-        
-        # results, error = gg_assembler.query()
-        # gg_assembler.solution_building(results)
-        # gg_assembly, gg_fragments = gg_assembler.design(solution=3)
-
-        # # TODO update to have a match % and BLAST solution sequence
-        # # TODO add a foreach solution in for the assembly
-        # goldengate_solution = GoldenGateSolution(
-        #     name=f'Solution - {self.object.title}',
-        #     backbone=gg_assembler.backbone.seq,
-        #     query=gg_assembler.query_record.seq,
-        #     solution='',
-        #     parts_count=len(gg_fragments),
-        #     primers_count=len(gg_fragments) * 2,
-        #     match=0.0,
-        #     assembly=self.object
-        # )
-        # goldengate_solution.save()
-
-        # for i, part in enumerate(gg_assembly):
-        #     goldengate_part_entry = GoldenGatePart(
-        #         name=part.name,
-        #         database=part.annotations['db'],
-        #         length=part.template.seq.length, 
-        #         length_extended=part.seq.length,
-        #         seq=part.template.seq,
-        #         seq_extended=part.seq,
-        #         position=i,
-        #         solution=goldengate_solution,
-        #         query_start = part.annotations['query_start'],
-        #         query_end = part.annotations['query_end'],
-        #         subject_start = part.annotations['subject_start'],
-        #         subject_end = part.annotations['subject_end']             
-        #     )
-        #     goldengate_part_entry.save()
-
-        #     forward_primer = GoldenGatePrimer(
-        #         name= f'{goldengate_part_entry.name} forward primer',
-        #         primer_type='fwd',
-        #         sequence=part.forward_primer.seq,
-        #         footprint=part.forward_primer.footprint,
-        #         tail=part.forward_primer.tail,
-        #         tm_total=part.annotations['forward_primer']['tm_total'],
-        #         tm_footprint=part.annotations['forward_primer']['tm_footprint'],
-        #         gc=part.annotations['forward_primer']['gc'],
-        #         hairpin=part.annotations['forward_primer']['hairpin'],
-        #         hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
-        #         hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
-        #         hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
-        #         hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
-        #         homodimer=part.annotations['forward_primer']['homodimer'],
-        #         homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
-        #         homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
-        #         homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
-        #         homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
-        #         part=goldengate_part_entry
-        #     )
-        #     forward_primer.save()
-
-        #     reverse_primer = GoldenGatePrimer(
-        #         name= f'{goldengate_part_entry.name} reverse primer ',
-        #         primer_type='rvs',
-        #         sequence=part.reverse_primer.seq,
-        #         footprint=part.reverse_primer.footprint,
-        #         tail=part.reverse_primer.tail,
-        #         tm_total=part.annotations['reverse_primer']['tm_total'],
-        #         tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
-        #         gc=part.annotations['reverse_primer']['gc'],
-        #         hairpin=part.annotations['reverse_primer']['hairpin'],
-        #         hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
-        #         hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
-        #         hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
-        #         hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
-        #         homodimer=part.annotations['reverse_primer']['homodimer'],
-        #         homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
-        #         homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
-        #         homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
-        #         homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
-        #         part=goldengate_part_entry 
-        #     )
-        #     reverse_primer.save()
-
-        
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

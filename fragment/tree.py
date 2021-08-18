@@ -209,9 +209,9 @@ class FragmentTree:
         None
         """
         temp = Alignment()
-        temp.title = 'FILLER'
-        temp.hit_id = 'FILLER'
-        temp.hit_def = 'FILLER'
+        temp.title = f'FILLER-{start}-{end}'
+        temp.hit_id = f'FILLER-{start}-{end}'
+        temp.hit_def = f'FILLER-{start}-{end}'
         temp.length = end - start
         temp_hsp = HSP()
         temp_hsp.score = 0
@@ -222,7 +222,7 @@ class FragmentTree:
         temp_hsp.sbjct_start = 0
         temp_hsp.sbjct_end = 0
         temp.hsps.append(temp_hsp)
-        self.node_list.append(FragmentNode(data=temp, start=start, end=end, score=0, i=f'FILLER'))
+        self.node_list.append(FragmentNode(data=temp, start=start, end=end, score=0, i=f'FILLER-{start}-{end}'))
 
     def blast_input(self, fragments):
         """
@@ -453,13 +453,21 @@ class FragmentTree:
         -------
         None
         """
-        for solution in self.solutions:
+        del_list = []
+        
+        for i, solution in enumerate(self.solutions):
             last = solution[-1]
             test = self.node_list[last].end
-            if test < self.query_len:
+            remainder = self.query_len - test
+            if remainder <= self.max_synth and remainder >= self.min_synth:
                 self.filler_node(test, self.query_len)
                 self.adjacency_set[last].add(len(self.node_list) - 1)
                 solution.append(len(self.node_list) - 1)
+            else: 
+                del_list.append(i)
+
+        self.solutions = [solution for i, solution in enumerate(self.solutions) if i not in del_list]        
+        pass
 
     def max_score(self, v, path=None):
         """

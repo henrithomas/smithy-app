@@ -73,6 +73,7 @@ class AssemblyPart(models.Model):
     query_end = models.PositiveIntegerField(default=0)
     subject_start = models.PositiveIntegerField(default=0)
     subject_end = models.PositiveIntegerField(default=0)
+    part_map = models.ImageField(default='default-part.png', upload_to='part-maps')
 
     class Meta:
         abstract = True
@@ -118,6 +119,7 @@ class AssemblySolution(models.Model):
     parts_count = models.PositiveIntegerField()
     primers_count = models.PositiveIntegerField()
     match = models.FloatField()
+    plasmid_map = models.ImageField(default='default-plasmid.png', upload_to='assembly-maps')
 
     class Meta:
         abstract = True

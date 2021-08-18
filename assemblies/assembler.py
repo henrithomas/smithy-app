@@ -546,6 +546,9 @@ class Assembler:
         A new Amplicon list for the assembly with annotations for names and database sources
         """
         new_assembly = assembly.copy()
+        backbone_start = self.query_record.seq.length + 1
+        backbone_end = backbone_start + self.backbone.seq.length
+
         data = [[
                 node.node_id, 
                 node.db,
@@ -554,7 +557,8 @@ class Assembler:
                 node.data.hsps[0].sbjct_start,
                 node.data.hsps[0].sbjct_end
                 ] for node in nodes]
-        data.append([self.backbone.name, 'NONE', 0, 0, 0, 0])
+        data.append([self.backbone.name, 'NONE', backbone_start, backbone_end, 0, 0])
+
         for i, amplicon in enumerate(new_assembly):
             amplicon.name = data[i][0]
             amplicon.annotations.update({'db': data[i][1]})
@@ -562,4 +566,5 @@ class Assembler:
             amplicon.annotations.update({'query_end': data[i][3]})
             amplicon.annotations.update({'subject_start': data[i][4]})
             amplicon.annotations.update({'subject_end': data[i][5]})
+            
         return new_assembly
