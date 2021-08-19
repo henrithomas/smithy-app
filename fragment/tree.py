@@ -3,6 +3,7 @@ from datetime import datetime
 from itertools import combinations
 from fragment.node import FragmentNode
 from Bio.Blast.Record import HSP, Alignment
+import random
 
 class FragmentTree:
     """
@@ -118,7 +119,7 @@ class FragmentTree:
         self.node_list = nodes
         self.min_synth = min_synth
         self.max_synth = max_synth
-        self.adjacency_set = defaultdict(set)
+        self.adjacency_set = defaultdict(set) 
         self.node_ends = set()
         self.visited = None
         self.solutions = []
@@ -126,6 +127,8 @@ class FragmentTree:
         self.query_len = query_len
         self.query = query
         self.max = 0
+        self.multi_query_node_list = []
+        self.multi_query_solutions = []
 
     def build_edge_set(self):
         """
@@ -194,7 +197,7 @@ class FragmentTree:
         root_data.hsps.append(temp_hsp)
         self.node_list.append(FragmentNode(data=root_data, start=0, end=0, score=0, i='ROOT'))
 
-    def filler_node(self, start, end):
+    def filler_node(self, start, end): 
         """
         Constructs and appends a filler/synthetic node for the solution tree to the nodes list
 
@@ -470,6 +473,7 @@ class FragmentTree:
         pass
 
     def max_score(self, v, path=None):
+
         """
         Performs a depth-first search on the FragmentTree to find the max solution score
 
@@ -504,3 +508,63 @@ class FragmentTree:
 
         path.pop()
         self.visited[v] = False
+
+    def multi_query_blast_input(self, fragment_lists, sequences):
+        for i, frag_list in enumerate(fragment_lists):
+            temp = []
+            if not frag_list:
+                # If there were no results in any of the databases make a filler node
+                seq_len = len(sequences[i])
+
+                temp_align = Alignment()
+                temp_align.title = f'FILLER-0-{seq_len}'
+                temp_align.hit_id = f'FILLER-0-{seq_len}'
+                temp_align.hit_def = f'FILLER-0-{seq_len}'
+                temp_align.length = seq_len
+                temp_hsp = HSP()
+                temp_hsp.score = 0
+                temp_hsp.query = sequences[i]
+                temp_hsp.sbjct = sequences[i]
+                temp_hsp.query_start = 0
+                temp_hsp.query_end = seq_len
+                temp_hsp.sbjct_start = 0
+                temp_hsp.sbjct_end = 0
+                temp_align.hsps.append(temp_hsp)
+                
+                temp.append(temp_align)
+            else:
+                for fragment in frag_list:
+                    temp.append(FragmentNode(data=fragment,
+                                            start=fragment.hsps[0].query_start,
+                                            end=fragment.hsps[0].query_end,
+                                            score=fragment.hsps[0].score,
+                                            i=fragment.hit_id,
+                                            db=fragment.hit_id.split('-')[1]))
+            self.multi_query_node_list.append(temp)
+
+    def solution_count(self, s):
+        minimum  = min([len(nodes) for nodes in self.multi_query_node_list])
+        if minimum < s:
+            s = minimum
+        return s 
+
+    def build_multi_query_solutions(self, maximum):
+        for i in range(maximum):
+            solution = []
+            for nodes in self.multi_query_node_list:
+                solution.append(random.randint(0, len(nodes) - 1))
+            self.multi_query_solutions.append(solution)
+
+    def multi_query_solution_seqs(self, s):
+        solution_indexes = self.multi_query_solutions[s]
+        seqs = []
+        for i, node_list in enumerate(self.multi_query_node_list):
+            seqs.append(node_list[solution_indexes[i]].subject_seq)
+        return seqs
+    
+    def multi_query_solution_nodes(self, s):
+        solution_indexes = self.multi_query_solutions[s]
+        nodes = []
+        for i, node_list in enumerate(self.multi_query_node_list):
+            nodes.append(node_list[solution_indexes[i]])
+        return nodes

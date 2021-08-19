@@ -144,7 +144,7 @@ class Assembler:
     
     cloning_type = 'Abstract'
 
-    def __init__(self, mv, dv, dna, dntp, tm, bb_file, q_file, db_list, min_frag=0, max_frag=1000, min_synth=0, max_synth=1000):
+    def __init__(self, mv, dv, dna, dntp, tm, backbone_file, query_file, db_list, min_frag=0, max_frag=1000, min_synth=0, max_synth=1000, multi_query=False):
         """
         Constructs all necessary attributes for the Assembler object.
 
@@ -208,18 +208,25 @@ class Assembler:
         self.dna_conc = dna
         self.dntp_conc = dntp
         self.tm = tm
-        self.backbone_file = bb_file    # 'C:\\Users\\mt200\\Desktop\\projects\\thesis\\input\\sequences\\backbone.fasta'
-        self.query_file = q_file    # 'C:\\Users\\mt200\\Desktop\\projects\\thesis\\input\\queries\\rpr1-dcas9mxi1-gfp-adh1.fasta'
-        self.dbs = db_list  # ['addgene', 'igem', 'dnasu']
+        self.backbone_file = backbone_file   
+        self.query_file = query_file    
+        self.dbs = db_list  
         self.min_frag = min_frag
         self.max_frag = max_frag
         self.min_synth = min_synth
         self.max_synth = max_synth
         self.max_seqs = 1000
-        self.query_record = Dseqrecord(SeqIO.read(q_file, 'fasta'), circular=False)
-        self.backbone = Dseqrecord(SeqIO.read(bb_file, 'fasta'), circular=False)
+        self.backbone = Dseqrecord(SeqIO.read(backbone_file, 'fasta'), circular=False)
         self.solution_tree = None
         self.insert = None
+        # self.query_record = None 
+        # self.query_records = []
+
+        if multi_query:
+            with open(query_file) as query_file:
+                self.query_records = [Dseqrecord(record) for record in SeqIO.parse(query_file, 'fasta')] 
+        else:
+            self.query_record = Dseqrecord(SeqIO.read(query_file, 'fasta'), circular=False)
         
     def tm_custom(
         self,
@@ -568,3 +575,23 @@ class Assembler:
             amplicon.annotations.update({'subject_end': data[i][5]})
             
         return new_assembly
+
+    def multi_query(self):
+        lengths = [record.seq.length for record in self.query_records]
+        num_fragments = len(self.query_records)
+        blaster = Blaster(self.max_seqs, self.dbs, self.min_frag, self.max_frag)
+        queries = blaster.queries(self.query_file)
+        query_results, stderr = blaster.run_multi_blastn(queries, lengths, num_fragments)
+        return query_results, stderr
+
+    def multi_query_solution_building(self, query_results, max_solutions):
+        sequences = [record.seq.watson for record in self.query_records]
+        sol_tree = FragmentTree('')
+        sol_tree.multi_query_blast_input(query_results, sequences)
+        sol_tree.build_multi_query_solutions(max_solutions)
+        self.solution_tree = sol_tree
+
+    def get_multi_query_solution(self, s):
+        tree_solution = self.solution_tree.multi_query_solution_seqs(s)
+        fragments = [Dseqrecord(record) for record in tree_solution]
+        return fragments 

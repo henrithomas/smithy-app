@@ -15,3 +15,4 @@ input/sequences/
 smithy/assembly/migrations/
 smithy/media/
 tests.py
+multi.fasta

@@ -334,7 +334,7 @@ class Blaster:
         return blast_hits_filtered
 
 
-    def query_blastn(self, cmd_params, batch=False):
+    def query_blastn(self, cmd_params):
         """
         Executes a local BLASTN search for the insert sequence
 
@@ -356,11 +356,7 @@ class Blaster:
         blastn_cmd = NcbiblastnCommandline(**cmd_params)
         stdout, stderr = blastn_cmd()
         if stdout:
-            # TODO what other out formats should we consider, or is always assuming XML for convenience alright?
-            if batch:
-                stdout = list(NCBIXML.parse(StringIO(stdout)))
-            else:
-                stdout = NCBIXML.read(StringIO(stdout))
+            stdout = NCBIXML.read(StringIO(stdout))
         return stdout, stderr
 
 
@@ -408,8 +404,8 @@ class Blaster:
         query_errors = []
         query_stderr = ''
 
-        for param in params_list:
-            stdout, stderr = self.query_blastn(param)
+        for params in params_list:
+            stdout, stderr = self.query_blastn(params)
             query_results.append(stdout)
             query_errors.append(stderr)
 
@@ -419,3 +415,39 @@ class Blaster:
 
         return filtered, query_stderr
 
+    def multi_query_filter_blastn(self, alignments, length):
+        blast_hits_filtered = []
+
+        for alignment in alignments:
+            if alignment.hsps[0].align_length == length:
+                blast_hits_filtered.append(alignment)
+        
+        return blast_hits_filtered
+
+    def run_multi_blastn(self, params_list, lengths, num_fragments):
+        query_results = []
+        query_errors = []
+        merged_query_results = []
+        filtered_query_results = []
+        query_stderr = ''
+
+        # run the multi-sequence query
+        for params in params_list:
+            stdout, stderr = self.multi_query_blastn(params)
+            query_results.append(stdout)
+            query_errors.append(stderr)
+
+        # for each database alignment set for a sequence, merge these results into a flattend list
+        for i in range(num_fragments):
+            merge_list = []
+            for results in query_results:
+                merge_list.append(results[i])
+            merged_query_results.append(self.merge_blastn(merge_list))
+
+        # filter out incomplete alignments for each sequence queried
+        for i, alignments in enumerate(merged_query_results):
+            temp = self.multi_query_filter_blastn(alignments, lengths[i])
+            filtered_query_results.append(temp)
+            
+
+        return filtered_query_results, query_stderr 
