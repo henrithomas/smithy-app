@@ -525,13 +525,18 @@ class FragmentTree:
                 temp_hsp.score = 0
                 temp_hsp.query = sequences[i]
                 temp_hsp.sbjct = sequences[i]
-                temp_hsp.query_start = 0
+                temp_hsp.query_start = 1
                 temp_hsp.query_end = seq_len
                 temp_hsp.sbjct_start = 0
                 temp_hsp.sbjct_end = 0
                 temp_align.hsps.append(temp_hsp)
                 
-                temp.append(temp_align)
+                temp.append(FragmentNode(data=temp_align,
+                                            start=temp_align.hsps[0].query_start,
+                                            end=temp_align.hsps[0].query_end,
+                                            score=temp_align.hsps[0].score,
+                                            i=temp_align.hit_id,
+                                            db=temp_align.hit_id.split('-')[1]))
             else:
                 for fragment in frag_list:
                     temp.append(FragmentNode(data=fragment,

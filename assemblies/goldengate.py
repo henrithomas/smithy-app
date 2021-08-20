@@ -1,3 +1,4 @@
+from pydna.dseqrecord import Dseqrecord
 from assemblies.assembler import Assembler
 from assemblies.traditional_re import TraditionalREAssembler
 from Bio.Seq import Seq
@@ -144,14 +145,23 @@ class GoldenGateAssembler(TraditionalREAssembler):
         A fully designed list of assembly parts for assembly with a list of the blast record data for each part (nodes) 
         """
         # return fragments and nodes
-        fragments = self.get_solution(solution)
-        nodes = self.solution_tree.solution_nodes(solution)
+        if self.multi_query:
+            fragments = self.get_multi_query_solution(solution)
+            nodes = self.solution_tree.multi_query_solution_nodes(solution)
+        else:
+            fragments = self.get_solution(solution)
+            nodes = self.solution_tree.solution_nodes(solution)
 
         # create assembly primer complements for backbone and fragments
         fragments_pcr, backbone_pcr = self.primer_complement(fragments, self.backbone)
         
         # create primer extensions
         assembly = self.primer_extension(fragments_pcr, backbone_pcr)
+
+        if self.multi_query:
+            frag_seqs = [record.seq.watson[7:-11] for record in assembly]
+            self.query_record = Dseqrecord(''.join(frag_seqs))
+            pass 
 
         # add simple annotations
         assembly = self.annotations(assembly, nodes)

@@ -219,7 +219,9 @@ class Assembler:
         self.backbone = Dseqrecord(SeqIO.read(backbone_file, 'fasta'), circular=False)
         self.solution_tree = None
         self.insert = None
-        # self.query_record = None 
+        self.multi_query = multi_query
+        self.max_solutions = 100
+        self.query_record = None 
         # self.query_records = []
 
         if multi_query:
@@ -576,7 +578,7 @@ class Assembler:
             
         return new_assembly
 
-    def multi_query(self):
+    def run_multi_query(self):
         lengths = [record.seq.length for record in self.query_records]
         num_fragments = len(self.query_records)
         blaster = Blaster(self.max_seqs, self.dbs, self.min_frag, self.max_frag)
@@ -584,11 +586,11 @@ class Assembler:
         query_results, stderr = blaster.run_multi_blastn(queries, lengths, num_fragments)
         return query_results, stderr
 
-    def multi_query_solution_building(self, query_results, max_solutions):
+    def multi_query_solution_building(self, query_results):
         sequences = [record.seq.watson for record in self.query_records]
         sol_tree = FragmentTree('')
         sol_tree.multi_query_blast_input(query_results, sequences)
-        sol_tree.build_multi_query_solutions(max_solutions)
+        sol_tree.build_multi_query_solutions(self.max_solutions)
         self.solution_tree = sol_tree
 
     def get_multi_query_solution(self, s):

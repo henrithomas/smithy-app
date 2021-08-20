@@ -62,10 +62,31 @@
                 {% endif %}
                 <h2 class="mt-3">Insert</h2>
                 <p>
-                    Upload a <strong>.fasta</strong> file containing a single entry of your full insert sequence.
-                    <a class="btn btn-link btn-lg shadow-none"  href="#exampleModalLabel" role="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        <i class="bi bi-info-circle"></i> 
-                    </a>
+                    <strong>Is this a multi-sequence query?</strong>
+                </p>
+                {{ form.multi_query.label_tag }}
+                <div id="multiCheck">
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ form.multi_query.html_name }}" 
+                        id="{{ form.multi_query.id_for_label }}" {% if form.is_bound %} value="{{ form.multi_query.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ form.multi_query.id_for_label }}">Multi-sequence</label>
+                    </div>
+                </div>
+                <p>
+                    <ul>
+                        <li>
+                            If you did not select <em>multi-sequence query</em>, upload a <strong>.fasta</strong> file containing a single sequence entry of your full insert sequence.
+                            <a class="btn btn-link btn-lg shadow-none"  href="#exampleModalLabel" role="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="bi bi-info-circle"></i> 
+                            </a>
+                        </li>
+                        <li>
+                            If you selected <em>multi-sequence query</em>, upload a <strong>.fasta</strong> file containing multiple sequence entries that will compose your construct.
+                            <a class="btn btn-link btn-lg shadow-none"  href="#exampleModalLabel" role="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="bi bi-info-circle"></i> 
+                            </a>
+                        </li>
+                    </ul>
                 </p>
                 {{ form.insert_file.label_tag }} 
                 <div id="{{ form.insert_file.id_for_label }}" class="mt-2">

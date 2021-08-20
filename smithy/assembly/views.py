@@ -161,15 +161,20 @@ def gibson_create_service(gibson_obj):
                         max_frag=gibson_obj.max_blast, 
                         min_synth=gibson_obj.min_synth, 
                         max_synth=gibson_obj.max_synth,
-                        overlap=gibson_obj.overlap
+                        overlap=gibson_obj.overlap,
+                        multi_query=gibson_obj.multi_query
     )
-    results, error = gib_assembler.query()
-    gib_assembler.solution_building(results)
+
+    if gibson_obj.multi_query:
+        results, error = gib_assembler.run_multi_query()
+        gib_assembler.multi_query_solution_building(results)
+    else:
+        results, error = gib_assembler.query()
+        gib_assembler.solution_building(results)
     gib_assembly, gib_fragments = gib_assembler.design(solution=0)
 
     total_len = gib_assembler.backbone.seq.length + gib_assembler.query_record.seq.length
 
-    
     # save assembly parts with meta/annotations and their primers here
     # TODO update to have a match % and BLAST solution sequence
     # TODO add a foreach solution in for the assembly
@@ -286,12 +291,19 @@ def goldengate_create_service(goldengate_obj):
                         max_frag=goldengate_obj.max_blast, 
                         min_synth=goldengate_obj.min_synth, 
                         max_synth=goldengate_obj.max_synth,
-                        ovhngs=goldengate_obj.overhangs
+                        ovhngs=goldengate_obj.overhangs,
+                        multi_query=goldengate_obj.multi_query
     )
     
-    results, error = gg_assembler.query()
-    gg_assembler.solution_building(results)
-    gg_assembly, gg_fragments = gg_assembler.design(solution=3)
+    if goldengate_obj.multi_query:
+        results, error = gg_assembler.run_multi_query()
+        gg_assembler.multi_query_solution_building(results)
+    else:
+        results, error = gg_assembler.query()
+        gg_assembler.solution_building(results)
+    gg_assembly, gg_fragments = gg_assembler.design(solution=0)
+
+    total_len = gg_assembler.backbone.seq.length + gg_assembler.query_record.seq.length
 
     # TODO update to have a match % and BLAST solution sequence
     # TODO add a foreach solution in for the assembly
@@ -306,6 +318,8 @@ def goldengate_create_service(goldengate_obj):
         assembly=goldengate_obj
     )
     goldengate_solution.save()
+
+    plasmid_map(goldengate_solution, gg_assembly, goldengate_obj.title, 4, total_len)
 
     for i, part in enumerate(gg_assembly):
         goldengate_part_entry = GoldenGatePart(
@@ -323,6 +337,25 @@ def goldengate_create_service(goldengate_obj):
             subject_end = part.annotations['subject_end']             
         )
         goldengate_part_entry.save()
+
+        if i == 0:
+            left_index = len(gg_assembly) - 1
+        else:
+            left_index = i - 1
+
+        if i == len(gg_assembly) - 1:
+            right_index = 0
+        else:
+            right_index = i + 1
+
+        part_map(
+            goldengate_part_entry, 
+            part, 
+            gg_assembly[left_index], 
+            gg_assembly[right_index], 
+            f'{part.name}-{i}', 
+            4
+        )
 
         forward_primer = GoldenGatePrimer(
             name= f'{goldengate_part_entry.name} forward primer',
@@ -409,7 +442,8 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
         'dntp_conc',
         'dna_conc', 
         'tm',
-        'overlap'
+        'overlap',
+        'multi_query'
     ]
 
     def form_valid(self, form):
@@ -486,7 +520,8 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
         'dntp_conc',
         'dna_conc', 
         'tm',
-        'overhangs'
+        'overhangs',
+        'multi_query'
     ]
 
     def form_valid(self, form):

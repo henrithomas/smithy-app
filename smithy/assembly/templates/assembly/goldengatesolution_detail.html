@@ -2,6 +2,16 @@
 {% block content %}
     <h1>{{ title }}</h1>
     <p>{{ goldengate_solution.date_created }}</p>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Plasmid Map</h2>
+            <div class="text-center">
+                <img src="{{ goldengate_solution.plasmid_map.url }}" class="img-fluid">
+            </div>
+        </div>
+    </div>
+
     <div class="row mb-4">
         <div class="col">
             <h2 class="mb-4">

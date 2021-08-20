@@ -52,6 +52,7 @@ class Assembly(models.Model):
                             fasta_validation
                         ],
                         blank=False)
+    multi_query = models.BooleanField(default=False)
     
     class Meta:
         abstract = True
