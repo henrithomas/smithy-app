@@ -159,12 +159,12 @@ class GoldenGateAssembler(TraditionalREAssembler):
         assembly = self.primer_extension(fragments_pcr, backbone_pcr)
 
         if self.multi_query:
-            frag_seqs = [record.seq.watson[7:-11] for record in assembly]
+            frag_seqs = [record.seq.watson[7:-11] for record in assembly[:-1]]
             self.query_record = Dseqrecord(''.join(frag_seqs))
             pass 
 
         # add simple annotations
-        assembly = self.annotations(assembly, nodes)
+        assembly = self.annotations(assembly, nodes, space=4)
         
         # run primer thermo analysis
         assembly = assembly_thermo(assembly, self.mv_conc, self.dv_conc, self.dna_conc, self.tm_custom)

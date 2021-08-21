@@ -536,7 +536,7 @@ class Assembler:
         sol_tree.build(query_results)
         self.solution_tree = sol_tree
 
-    def annotations(self, assembly, nodes):
+    def annotations(self, assembly, nodes, space=0):
         """
         Adds annotations to the Dseqrecords in the assembly from the BLAST alignment data in nodes.
 
@@ -555,8 +555,14 @@ class Assembler:
         A new Amplicon list for the assembly with annotations for names and database sources
         """
         new_assembly = assembly.copy()
-        backbone_start = self.query_record.seq.length + 1
+        backbone_start = self.query_record.seq.length + space
         backbone_end = backbone_start + self.backbone.seq.length
+
+        if self.multi_query:
+            for i, node in enumerate(nodes):
+                seq_lengths = sum([record.template.seq.length for record in assembly[:i]])
+                node.data.hsps[0].query_start = space * (i + 1) + seq_lengths
+                node.data.hsps[0].query_end = node.data.hsps[0].query_start + assembly[i].template.seq.length
 
         data = [[
                 node.node_id, 

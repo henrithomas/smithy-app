@@ -118,7 +118,6 @@ def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
     plot_name = f'{assembly_name}_map.png'
     temp_plot = f'/home/hthoma/projects/smithy-app/smithy/media/images/{plot_name}'   
     features = []
-    total_len += len(assembly) * space
     part_start = 0
     part_end = 0
 
@@ -303,7 +302,7 @@ def goldengate_create_service(goldengate_obj):
         gg_assembler.solution_building(results)
     gg_assembly, gg_fragments = gg_assembler.design(solution=0)
 
-    total_len = gg_assembler.backbone.seq.length + gg_assembler.query_record.seq.length
+    total_len = gg_assembler.backbone.seq.length + gg_assembler.query_record.seq.length + 4
 
     # TODO update to have a match % and BLAST solution sequence
     # TODO add a foreach solution in for the assembly
