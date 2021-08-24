@@ -49,8 +49,9 @@ def part_map(part_model, part, left, right, name, space):
     temp_plot = f'/home/hthoma/projects/smithy-app/smithy/media/images/{part_plot_name}'
 
     display_len = int(part.template.seq.length * 0.1)
-
-    part_start = left.annotations['query_start'] + display_len + space
+    seq_len = 2 * display_len + 2 * space + part.template.seq.length
+    
+    part_start = display_len + space
     part_end = part_start + part.template.seq.length
 
     right_start = part_end + space
@@ -62,29 +63,27 @@ def part_map(part_model, part, left, right, name, space):
     rvs_start = part_end - len(part.reverse_primer.tail)
     rvs_end = part_end + len(part.reverse_primer.tail)
 
-    seq_len = right_end - left.annotations['query_start']
-
     features = [
         GraphicFeature(
-            start=left.annotations['query_start'], 
-            end=left.annotations['query_start'] + display_len, 
+            start=0,
+            end=display_len, 
             strand=+1, 
             open_left=True, 
-            label=left.name,
+            label=f'{left.name}: ({left.annotations["query_start"]}, {left.annotations["query_end"]})',
             color='lightslategrey'
         ),
         GraphicFeature(
             start=part_start, 
             end=part_end, 
             strand=+1,  
-            label=part.name,
+            label=f'{part.name}: ({part.annotations["query_start"]}, {part.annotations["query_end"]})',
             color='darkseagreen'
         ),
         GraphicFeature(
             start=right_start, 
             end=right_end, 
             strand=+1,  
-            label=right.name,
+            label=f'{right.name}: ({right.annotations["query_start"]}, {right.annotations["query_end"]})',
             open_right=True,
             color='lightslategrey'
         ),
@@ -106,8 +105,10 @@ def part_map(part_model, part, left, right, name, space):
         )
     ] 
 
-    record = GraphicRecord(sequence_length=seq_len, features=features, first_index=left.annotations['query_start'])
+    record = GraphicRecord(sequence_length=seq_len, features=features)
     ax, _ = record.plot(figure_width=10)
+    ax.set_xticklabels([])
+    ax.set_xticks([])
     ax.figure.savefig(temp_plot)
 
     part_model.part_map.save(part_plot_name, File(open(temp_plot, 'rb')))
@@ -121,7 +122,8 @@ def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
     part_start = 0
     part_end = 0
 
-    for i, part in enumerate(assembly):
+    # set features and colorings for the insert
+    for i, part in enumerate(assembly[:-1]):
         part_end = part_start + part.template.seq.length
         if i % 2 == 0:
             part_color = 'darkseagreen'
@@ -137,6 +139,18 @@ def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
             )
         )
         part_start = part_end + space
+
+    # set the feature and coloring for the backbone
+    part_end = part_start + assembly[-1].template.seq.length
+    features.append(
+        GraphicFeature(
+            start=part_start,
+            end=part_end,
+            strand=+1,
+            label=assembly[-1].name,
+            color='lightblue'
+        )
+    )
 
     record = CircularGraphicRecord(sequence_length=total_len, features=features)
     ax, _ = record.plot(figure_width=10)

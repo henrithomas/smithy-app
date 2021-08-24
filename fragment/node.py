@@ -91,7 +91,7 @@ class FragmentNode:
         -------
         A formatted string label for the FragmentNode 
         """
-        return f'{self.node_id}-{self.start}-{self.end}'
+        return f'{self.node_id}: ({self.start}, {self.end})'
 
     @property
     def query_seq(self):
