@@ -1,7 +1,11 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
     <h1>{{ title }}</h1>
-    <div class="row mb-4">
+    <div class="btn-group" role="group" aria-label="fwd-rvs-primers">
+        <a class="btn btn-outline-primary" href="{% url 'goldengate-primer-detail' primers.0.pk %}">Forward Primer</a>
+        <a class="btn btn-outline-primary" href="{% url 'goldengate-primer-detail' primers.1.pk %}">Reverse Primer</a>
+    </div>
+    <div class="row my-4">
         <div class="col-md-3">
             <h2>Date Created</h2>
             <p>{{goldengate_part.date_created}}</p>
@@ -31,11 +35,59 @@
 
     <div class="row mb-4">
         <div class="col">
-            <h2>Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span></h2>
-            <p>{{goldengate_part.seq}}</p>
+            <p>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a class="btn btn-outline-dark btn-lg" data-bs-toggle="collapse" href="#seq" role="button" aria-expanded="false" aria-controls="seq">
+                        View Sequence
+                    </a>
+                    <a class="btn btn-outline-dark btn-lg" data-bs-toggle="collapse" href="#extended-seq" role="button" aria-expanded="false" aria-controls="extended-seq">
+                        View Extended Sequence
+                    </a>
+                </div>
+            </p>
+            <div class="collapse mb-2" id="seq">
+                <div class="card card-body">
+                    <h2>{{ goldengate_part.name }} Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Watson</span></h2></h2>
+                    <p>{{goldengate_part.seq}}</p>
+                </div>
+            </div>
+            <div class="collapse" id="extended-seq">
+                <div class="card card-body">
+                    <h2>{{ goldengate_part.name }} Extended Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Watson</span></h2></h2>
+                    <p>{{goldengate_part.seq_extended}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <h2>Extended Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span></h2>
-            <p>{{goldengate_part.seq_extended}}</p>
+    <div class="row mb-4">
+        <div class="col">
+            <p>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a class="btn btn-outline-dark btn-lg" data-bs-toggle="collapse" href="#forward" role="button" aria-expanded="false" aria-controls="forward">
+                        View Forward Primer
+                    </a>
+                    <a class="btn btn-outline-dark btn-lg" data-bs-toggle="collapse" href="#reverse" role="button" aria-expanded="false" aria-controls="reverse">
+                        View Reverse Primer
+                    </a>
+                </div>
+            </p>
+            <div class="collapse mb-2" id="forward">
+                <div class="card card-body">
+                    <h2>{{ primers.0.name }} <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Watson</span></h2>
+                    <p><strong>Sequence:</strong> {{ primers.0.sequence }}</p>
+                    <p><strong>Footprint:</strong> {{ primers.0.footprint }}</p>
+                    <p><strong>Tail:</strong> {{ primers.0.tail }}</p>
+                </div>
+            </div>
+            <div class="collapse" id="reverse">
+                <div class="card card-body">
+                    <h2>{{ primers.1.name }} <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Crick</span></h2>
+                    <p><strong>Sequence:</strong> {{ primers.1.sequence }}</p>
+                    <p><strong>Footprint:</strong> {{ primers.1.footprint }}</p>
+                    <p><strong>Tail:</strong> {{ primers.1.tail }}</p>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock content %}

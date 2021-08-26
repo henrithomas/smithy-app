@@ -18,7 +18,9 @@
     </div>
     <div class="row mb-4">
         <div class="col">
-            <h2>Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span></h2>
+            <h2>
+                Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">{% if goldengate_primer.primer_type == 'fwd' %} Watson {% else %} Crick {% endif %}</span>
+            </h2>
             <p>{{ goldengate_primer.sequence }}</p>
         </div>
     </div>

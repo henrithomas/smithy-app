@@ -212,9 +212,9 @@ class FragmentTree:
         None
         """
         temp = Alignment()
-        temp.title = f'FILLER-{start}.{end}'
-        temp.hit_id = f'FILLER-{start}.{end}'
-        temp.hit_def = f'FILLER-{start}.{end}'
+        temp.title = f'Synthetic-{start}.{end}'
+        temp.hit_id = f'Synthetic-{start}.{end}'
+        temp.hit_def = f'Synthetic-{start}.{end}'
         temp.length = end - start
         temp_hsp = HSP()
         temp_hsp.score = 0
@@ -225,7 +225,7 @@ class FragmentTree:
         temp_hsp.sbjct_start = 0
         temp_hsp.sbjct_end = 0
         temp.hsps.append(temp_hsp)
-        self.node_list.append(FragmentNode(data=temp, start=start, end=end, score=0, i=f'FILLER-{start}.{end}'))
+        self.node_list.append(FragmentNode(data=temp, start=start, end=end, score=0, i=f'Synthetic-{start}.{end}'))
 
     def blast_input(self, fragments):
         """
@@ -517,9 +517,9 @@ class FragmentTree:
                 seq_len = len(sequences[i])
 
                 temp_align = Alignment()
-                temp_align.title = f'FILLER-1.{seq_len}'
-                temp_align.hit_id = f'FILLER-1.{seq_len}'
-                temp_align.hit_def = f'FILLER-1.{seq_len}'
+                temp_align.title = f'Synthetic-1.{seq_len}'
+                temp_align.hit_id = f'Synthetic-1.{seq_len}'
+                temp_align.hit_def = f'Synthetic-1.{seq_len}'
                 temp_align.length = seq_len
                 temp_hsp = HSP()
                 temp_hsp.score = 0

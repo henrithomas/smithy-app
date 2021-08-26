@@ -489,6 +489,7 @@ class GibsonPartDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
+        context['primers'] = self.object.gibsonprimer_set.all()
         return context
 
 
@@ -567,6 +568,7 @@ class GoldenGatePartDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
+        context['primers'] = self.object.goldengateprimer_set.all()
         return context
 
 
