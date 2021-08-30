@@ -489,9 +489,9 @@ class Assembler:
         -------
         A tuple of a list of fragment Amplicons and a backbone Amplicon after non-extension primer design 
         """
-        fragments_pcr = [primer_design(fragment, target_tm=self.tm) for fragment in fragments]
-        backbone_pcr = primer_design(backbone, target_tm=self.tm)
-        # assembly_set = self.prepare_assembly(fragments_pcr, backbone_pcr, overlap)
+        fragments_pcr = [primer_design(fragment, target_tm=self.tm, tm_func=self.tm_custom) for fragment in fragments]
+        backbone_pcr = primer_design(backbone, target_tm=self.tm, tm_func=self.tm_custom)
+        
         return fragments_pcr, backbone_pcr
 
     def query(self):

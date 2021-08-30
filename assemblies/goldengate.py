@@ -1,9 +1,9 @@
+from pydna.design import primer_design
 from pydna.dseqrecord import Dseqrecord
-from assemblies.assembler import Assembler
 from assemblies.traditional_re import TraditionalREAssembler
 from Bio.Seq import Seq
 from pydna.primer import Primer
-from pydna.amplify import pcr
+from pydna.amplify import Anneal
 from importlib import import_module
 from primers.analysis import assembly_thermo
 import json
@@ -64,7 +64,7 @@ class GoldenGateAssembler(TraditionalREAssembler):
         '/home/hthoma/projects/smithy-app/assemblies/overhangs/goldengate/oh4.json'
     ]
 
-    def __init__(self, *args, ovhngs=0, re='BsaI', ligase='T4-DNA', **kwargs):
+    def __init__(self, *args, ovhngs=0, re='BsaI', ligase='T4-DNA', scarless=True, **kwargs):
         """
         Constructs all necessary attributes for the GoldenGateAssembler object
 
@@ -80,6 +80,9 @@ class GoldenGateAssembler(TraditionalREAssembler):
         ligase : str
             The name of the ligase to use for the assembly
 
+        scarless : bool
+            Boolean value that determines if scarless primer design is used
+
         *args
             See documentation for TraditionalREAssembler parent class
 
@@ -89,6 +92,8 @@ class GoldenGateAssembler(TraditionalREAssembler):
         super(GoldenGateAssembler, self).__init__(re, *args, ligase=ligase, **kwargs)
         with open(self.overhang_files[ovhngs]) as f:
             self.overhangs = json.load(f)
+
+        self.scarless = scarless
 
     def primer_extension(self, fragments_pcr, backbone_pcr):
         """
@@ -126,6 +131,124 @@ class GoldenGateAssembler(TraditionalREAssembler):
             
             assembly.append(amp_extended)
             
+        return assembly
+
+    def primer_complement_scarless(self, fragments, backbone, interval=10):
+        """
+
+
+        Parameters
+        ----------
+        fragments : list
+            List of Dseqrecords objects for the assembly
+
+        backbone : Dseqrecord
+            Dseqrecord of the backbone sequence
+
+
+        Returns
+        -------
+        """
+        fragments.append(backbone)
+        intervals = [[0, record.seq.length] for record in fragments]
+        overhang_set = set(self.overhangs['seq'])
+        extensions = [['',''] for _ in range(len(fragments))]
+
+        for i in range(len(fragments)):
+            found = False
+            if i == len(fragments) - 1:
+                i_next = 0
+            else:
+                i_next = i + 1
+
+            test_seq = fragments[i].seq.watson[-interval:] + fragments[i_next].seq.watson[:interval]
+
+            # search the sequence range for an overhang sequence in the 
+            # high fidelity set
+            for j in range(len(test_seq)):
+                test_ovhng = test_seq[j:j+4].upper()
+
+                if test_ovhng in overhang_set:
+                    found = True
+                    overhang_set.remove(test_ovhng)
+                    break
+
+            # if an overhang from the set is not found, choose a default 
+            # overhang of the last four bases of the left fragment 
+            if not found:
+                j = interval - 4
+
+            # set the overhang bounds if it is found in the neighbor fragment (i_next)
+            if j > interval - 1:
+                ovhng_start = j - interval
+                ovhng_end = (j + 4) - interval
+
+                intervals[i_next][0] = ovhng_start
+
+                current_extension = fragments[i_next].seq.watson[:ovhng_end] + self.re1.site
+                next_extension = self.re1.site
+            # set the overhang bounds if it is found in the current fragment (i)
+            else:
+                ovhng_start = -(interval - j)
+                ovhng_end = -(interval - (j + 4))
+
+                if ovhng_end != 0:
+                    intervals[i][1] = ovhng_end
+                
+                current_extension = self.re1.site
+                next_extension = self.re1.site + fragments[i].seq.watson[ovhng_start:]
+
+            extensions[i][1] = current_extension
+            extensions[i_next][0] = next_extension
+
+        fragments_pcr = [
+                            primer_design(fragment, target_tm=self.tm, tm_func=self.tm_custom) 
+                            for fragment in fragments
+                        ]
+
+        return fragments_pcr, extensions
+
+    def primer_extension_scarless(self, fragments_pcr, extensions):
+        """
+        
+
+
+        Parameters
+        ----------
+        fragments_pcr : List of pydna Amplicons  
+            A list of pydna Amplicons used for a given assembly solution
+
+
+        Returns
+        -------
+        """
+        assembly = []
+
+        # add proper extensions to each primer, either just the cutsite or additional
+        # bases from a neighboring fragment 
+        for extension, amp in zip(extensions, fragments_pcr):
+            extension_fwd = Seq(extension[0]) + amp.forward_primer
+            extension_rvs = Seq(extension[1]) + amp.reverse_primer
+        
+            # create the extension primers
+            ext_fwd_p = Primer(
+                            extension_fwd, 
+                            position=amp.forward_primer.position, 
+                            footprint=amp.forward_primer._fp,
+                            id=amp.forward_primer.id
+                        )
+            ext_rev_p = Primer(
+                            extension_rvs, 
+                            position=amp.reverse_primer.position, 
+                            footprint=amp.reverse_primer._fp,
+                            id=amp.reverse_primer.id
+                        )
+
+            # amplify the sequence with new extensions and save the new amplicon to 
+            # the fragments_pcr list
+            annealing = Anneal([ext_fwd_p, ext_rev_p], amp.template)
+            assembly.append(annealing.products[0])
+
         return assembly
 
     def design(self, solution=0):
