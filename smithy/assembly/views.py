@@ -162,20 +162,20 @@ def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
 
 def gibson_create_service(gibson_obj):
     gib_assembler = GibsonAssembler(
-                        gibson_obj.mv_conc, 
-                        gibson_obj.dv_conc, 
-                        gibson_obj.dna_conc,
-                        gibson_obj.dntp_conc, 
-                        gibson_obj.tm, 
-                        gibson_obj.backbone_file.path, 
-                        gibson_obj.insert_file.path, 
-                        db_list(gibson_obj.addgene, gibson_obj.igem, gibson_obj.dnasu), 
-                        min_frag=gibson_obj.min_blast, 
-                        max_frag=gibson_obj.max_blast, 
-                        min_synth=gibson_obj.min_synth, 
-                        max_synth=gibson_obj.max_synth,
-                        overlap=gibson_obj.overlap,
-                        multi_query=gibson_obj.multi_query
+        gibson_obj.mv_conc, 
+        gibson_obj.dv_conc, 
+        gibson_obj.dna_conc,
+        gibson_obj.dntp_conc, 
+        gibson_obj.tm, 
+        gibson_obj.backbone_file.path, 
+        gibson_obj.insert_file.path, 
+        db_list(gibson_obj.addgene, gibson_obj.igem, gibson_obj.dnasu), 
+        min_frag=gibson_obj.min_blast, 
+        max_frag=gibson_obj.max_blast, 
+        min_synth=gibson_obj.min_synth, 
+        max_synth=gibson_obj.max_synth,
+        overlap=gibson_obj.overlap,
+        multi_query=gibson_obj.multi_query
     )
 
     if gibson_obj.multi_query:
@@ -290,24 +290,26 @@ def gibson_create_service(gibson_obj):
     pass
 
 def goldengate_create_service(goldengate_obj):
-    pass
     gg_assembler = GoldenGateAssembler(
-                        goldengate_obj.mv_conc, 
-                        goldengate_obj.dv_conc, 
-                        goldengate_obj.dna_conc,
-                        goldengate_obj.dntp_conc, 
-                        goldengate_obj.tm, 
-                        goldengate_obj.backbone_file.path, 
-                        goldengate_obj.insert_file.path, 
-                        db_list(goldengate_obj.addgene,goldengate_obj.igem, goldengate_obj.dnasu), 
-                        min_frag=goldengate_obj.min_blast, 
-                        max_frag=goldengate_obj.max_blast, 
-                        min_synth=goldengate_obj.min_synth, 
-                        max_synth=goldengate_obj.max_synth,
-                        ovhngs=goldengate_obj.overhangs,
-                        multi_query=goldengate_obj.multi_query
+        goldengate_obj.mv_conc, 
+        goldengate_obj.dv_conc, 
+        goldengate_obj.dna_conc,
+        goldengate_obj.dntp_conc, 
+        goldengate_obj.tm, 
+        goldengate_obj.backbone_file.path, 
+        goldengate_obj.insert_file.path, 
+        db_list(goldengate_obj.addgene,goldengate_obj.igem, goldengate_obj.dnasu), 
+        min_frag=goldengate_obj.min_blast, 
+        max_frag=goldengate_obj.max_blast, 
+        min_synth=goldengate_obj.min_synth, 
+        max_synth=goldengate_obj.max_synth,
+        ovhngs=goldengate_obj.overhangs,
+        multi_query=goldengate_obj.multi_query,
+        scarless=goldengate_obj.scarless
     )
     
+    space = 0 if goldengate_obj.scarless else 4
+
     if goldengate_obj.multi_query:
         results, error = gg_assembler.run_multi_query()
         gg_assembler.multi_query_solution_building(results)
@@ -332,7 +334,7 @@ def goldengate_create_service(goldengate_obj):
     )
     goldengate_solution.save()
 
-    plasmid_map(goldengate_solution, gg_assembly, goldengate_obj.title, 4, total_len)
+    plasmid_map(goldengate_solution, gg_assembly, goldengate_obj.title, space, total_len)
 
     for i, part in enumerate(gg_assembly):
         goldengate_part_entry = GoldenGatePart(
@@ -367,7 +369,7 @@ def goldengate_create_service(goldengate_obj):
             gg_assembly[left_index], 
             gg_assembly[right_index], 
             f'{part.name}-{i}', 
-            4
+            space
         )
 
         forward_primer = GoldenGatePrimer(
@@ -535,7 +537,8 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
         'dna_conc', 
         'tm',
         'overhangs',
-        'multi_query'
+        'multi_query',
+        'scarless'
     ]
 
     def form_valid(self, form):

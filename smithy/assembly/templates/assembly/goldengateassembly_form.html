@@ -63,12 +63,12 @@
                 <p>
                     <strong>Is this a multi-sequence query?</strong>
                 </p>
-                {{ form.multi_query.label_tag }}
+                <label for="id_multi_query">Multi-sequence:</label>
                 <div id="multiCheck">
                     <div class="form-check form-check-inline form-switch">
                         <input class="form-check-input" type="checkbox" name="{{ form.multi_query.html_name }}" 
                         id="{{ form.multi_query.id_for_label }}" {% if form.is_bound %} value="{{ form.multi_query.value }}" {% endif %}>
-                        <label class="form-check-label" for="{{ form.multi_query.id_for_label }}">Multi-sequence</label>
+                        <label class="form-check-label" for="{{ form.multi_query.id_for_label }}">Yes</label>
                     </div>
                 </div>
                 <p>
@@ -106,9 +106,9 @@
             <h2>Overhangs</h2>
             <div class="col">
                 <p>
-                    How many overhangs are needed for your assembly?
-                </p>
-                {{ form.overhangs.label_tag }}
+                    Which high-fidelity overhang will you use for your experiment?
+                </p>        
+                <label for="id_overhangs">Overhangs set:</label>
                 <select class="form-select mt-2" name="{{ form.overhangs.html_name }}" required="" id="{{form.overhangs.id_for_label}}">
                     {% for value, text in form.fields.overhangs.choices %}
                         <option value="{{ value }}">{{ text }}</option>
@@ -121,6 +121,20 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
+                <p class="fw-light fst-italic">
+                    - Potapov et al 2018 <a href="https://pubs.acs.org/doi/10.1021/acssynbio.8b00333" target="_blank" rel="noopener noreferrer">Go to paper...</a>
+                 </p>
+                <p class="mt-4">
+                    <strong>Would you like scarless primer design?</strong>
+                </p>
+                {{ form.scarless.label_tag }}
+                <div id="scarCheck">
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ form.scarless.html_name }}" 
+                        id="{{ form.scarless.id_for_label }}" {% if form.is_bound %} value="{{ form.scarless.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ form.scarless.id_for_label }}">Yes</label>
+                    </div>
+                </div>
             </div>
         </div>
         

@@ -156,11 +156,7 @@ class GoldenGateAssembler(TraditionalREAssembler):
 
         for i in range(len(fragments)):
             found = False
-            if i == len(fragments) - 1:
-                i_next = 0
-            else:
-                i_next = i + 1
-
+            i_next = 0 if i == len(fragments) - 1 else i + 1
             test_seq = fragments[i].seq.watson[-interval:] + fragments[i_next].seq.watson[:interval]
 
             # search the sequence range for an overhang sequence in the 
@@ -185,8 +181,8 @@ class GoldenGateAssembler(TraditionalREAssembler):
 
                 intervals[i_next][0] = ovhng_start
 
-                current_extension = fragments[i_next].seq.watson[:ovhng_end] + self.re1.site
-                next_extension = self.re1.site
+                extensions[i][1] = self.re1.site + 'N' + fragments[i_next].seq.crick[-ovhng_end:]
+                extensions[i_next][0] = self.re1.site + 'N'
             # set the overhang bounds if it is found in the current fragment (i)
             else:
                 ovhng_start = -(interval - j)
@@ -195,16 +191,17 @@ class GoldenGateAssembler(TraditionalREAssembler):
                 if ovhng_end != 0:
                     intervals[i][1] = ovhng_end
                 
-                current_extension = self.re1.site
-                next_extension = self.re1.site + fragments[i].seq.watson[ovhng_start:]
-
-            extensions[i][1] = current_extension
-            extensions[i_next][0] = next_extension
+                extensions[i][1] = self.re1.site + 'N' 
+                extensions[i_next][0] = self.re1.site + 'N' + fragments[i].seq.watson[ovhng_start:]
 
         fragments_pcr = [
-                            primer_design(fragment, target_tm=self.tm, tm_func=self.tm_custom) 
-                            for fragment in fragments
-                        ]
+            primer_design(
+                fragment[intervals[i][0]:intervals[i][1]], 
+                target_tm=self.tm, 
+                tm_func=self.tm_custom
+            ) 
+            for i, fragment in enumerate(fragments)
+        ]
 
         return fragments_pcr, extensions
 
@@ -227,27 +224,8 @@ class GoldenGateAssembler(TraditionalREAssembler):
         # add proper extensions to each primer, either just the cutsite or additional
         # bases from a neighboring fragment 
         for extension, amp in zip(extensions, fragments_pcr):
-            extension_fwd = Seq(extension[0]) + amp.forward_primer
-            extension_rvs = Seq(extension[1]) + amp.reverse_primer
-        
-            # create the extension primers
-            ext_fwd_p = Primer(
-                            extension_fwd, 
-                            position=amp.forward_primer.position, 
-                            footprint=amp.forward_primer._fp,
-                            id=amp.forward_primer.id
-                        )
-            ext_rev_p = Primer(
-                            extension_rvs, 
-                            position=amp.reverse_primer.position, 
-                            footprint=amp.reverse_primer._fp,
-                            id=amp.reverse_primer.id
-                        )
-
-            # amplify the sequence with new extensions and save the new amplicon to 
-            # the fragments_pcr list
-            annealing = Anneal([ext_fwd_p, ext_rev_p], amp.template)
-            assembly.append(annealing.products[0])
+            amp_extended = self.add_cutsites(extension[0], extension[1], amp)
+            assembly.append(amp_extended)
 
         return assembly
 
@@ -275,11 +253,16 @@ class GoldenGateAssembler(TraditionalREAssembler):
             fragments = self.get_solution(solution)
             nodes = self.solution_tree.solution_nodes(solution)
 
-        # create assembly primer complements for backbone and fragments
-        fragments_pcr, backbone_pcr = self.primer_complement(fragments, self.backbone)
-        
-        # create primer extensions
-        assembly = self.primer_extension(fragments_pcr, backbone_pcr)
+        if self.scarless:
+            # create assembly primer complements for backbone and fragments
+            fragments_pcr, extensions = self.primer_complement_scarless(fragments, self.backbone, interval=20) 
+            # create primer extensions that facilitate scarless assembly
+            assembly = self.primer_extension_scarless(fragments_pcr, extensions)
+        else:
+            # create assembly primer complements for backbone and fragments
+            fragments_pcr, backbone_pcr = self.primer_complement(fragments, self.backbone)
+            # create primer extensions
+            assembly = self.primer_extension(fragments_pcr, backbone_pcr)
 
         if self.multi_query:
             frag_seqs = [record.seq.watson[7:-11] for record in assembly[:-1]]

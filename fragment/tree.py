@@ -195,7 +195,15 @@ class FragmentTree:
         temp_hsp.sbjct_start = 0
         temp_hsp.sbjct_end = 0
         root_data.hsps.append(temp_hsp)
-        self.node_list.append(FragmentNode(data=root_data, start=0, end=0, score=0, i='ROOT'))
+        self.node_list.append(
+            FragmentNode(
+                data=root_data, 
+                start=0, 
+                end=0, 
+                score=0, 
+                i='ROOT'
+            )
+        )
 
     def filler_node(self, start, end): 
         """
@@ -225,7 +233,15 @@ class FragmentTree:
         temp_hsp.sbjct_start = 0
         temp_hsp.sbjct_end = 0
         temp.hsps.append(temp_hsp)
-        self.node_list.append(FragmentNode(data=temp, start=start, end=end, score=0, i=f'Synthetic-{start}.{end}'))
+        self.node_list.append(
+            FragmentNode(
+                data=temp, 
+                start=start, 
+                end=end, 
+                score=0, 
+                i=f'Synthetic-{start}.{end}'
+            )
+        )
 
     def blast_input(self, fragments):
         """
@@ -244,12 +260,16 @@ class FragmentTree:
         """
         self.root_node()
         for fragment in fragments:
-            self.node_list.append(FragmentNode(data=fragment,
-                                               start=fragment.hsps[0].query_start,
-                                               end=fragment.hsps[0].query_end,
-                                               score=fragment.hsps[0].score,
-                                               i=fragment.hit_id,
-                                               db=fragment.hit_id.split('-')[1]))
+            self.node_list.append(
+                FragmentNode(
+                    data=fragment,
+                    start=fragment.hsps[0].query_start,
+                    end=fragment.hsps[0].query_end,
+                    score=fragment.hsps[0].score,
+                    i=fragment.hit_id,
+                    db=fragment.hit_id.split('-')[1]
+                )
+            )
             self.node_ends.add(fragment.hsps[0].query_end)
 
     def build(self, input):
@@ -389,7 +409,13 @@ class FragmentTree:
         Either a list of solution sequences or a string in comma-separated format of the sequences
         """
         if self.solutions:
-            seqs = [node.subject_seq for node in [self.node_list[i] for i in self.solutions[s][2:]]]
+            seqs = [
+                node.subject_seq.lower() 
+                for node in [
+                    self.node_list[i] 
+                    for i in self.solutions[s][2:]
+                ]
+            ]
             if text:
                 return ', '.join(seqs)
             else:
@@ -411,7 +437,13 @@ class FragmentTree:
         -------
         A list of FragmentNodes for a solution
         """
-        nodes = [node for node in [self.node_list[i] for i in self.solutions[s][2:]]]
+        nodes = [
+            node 
+            for node in [
+                self.node_list[i] 
+                for i in self.solutions[s][2:]
+            ]
+        ]
         return nodes
     
     def solution_names(self, s):
@@ -469,8 +501,11 @@ class FragmentTree:
             else: 
                 del_list.append(i)
 
-        self.solutions = [solution for i, solution in enumerate(self.solutions) if i not in del_list]        
-        pass
+        self.solutions = [
+            solution 
+            for i, solution in enumerate(self.solutions) 
+            if i not in del_list
+        ]       
 
     def max_score(self, v, path=None):
 
@@ -531,19 +566,27 @@ class FragmentTree:
                 temp_hsp.sbjct_end = 0
                 temp_align.hsps.append(temp_hsp)
                 
-                temp.append(FragmentNode(data=temp_align,
-                                            start=temp_align.hsps[0].query_start,
-                                            end=temp_align.hsps[0].query_end,
-                                            score=temp_align.hsps[0].score,
-                                            i=temp_align.hit_id))
+                temp.append(
+                    FragmentNode(
+                        data=temp_align,
+                        start=temp_align.hsps[0].query_start,
+                        end=temp_align.hsps[0].query_end,
+                        score=temp_align.hsps[0].score,
+                        i=temp_align.hit_id
+                    )
+                )
             else:
                 for fragment in frag_list:
-                    temp.append(FragmentNode(data=fragment,
-                                            start=fragment.hsps[0].query_start,
-                                            end=fragment.hsps[0].query_end,
-                                            score=fragment.hsps[0].score,
-                                            i=fragment.hit_id,
-                                            db=fragment.hit_id.split('-')[1]))
+                    temp.append(
+                        FragmentNode(
+                            data=fragment,
+                            start=fragment.hsps[0].query_start,
+                            end=fragment.hsps[0].query_end,
+                            score=fragment.hsps[0].score,
+                            i=fragment.hit_id,
+                            db=fragment.hit_id.split('-')[1]
+                        )
+                    )
             self.multi_query_node_list.append(temp)
 
     def solution_count(self, s):
@@ -563,7 +606,7 @@ class FragmentTree:
         solution_indexes = self.multi_query_solutions[s]
         seqs = []
         for i, node_list in enumerate(self.multi_query_node_list):
-            seqs.append(node_list[solution_indexes[i]].subject_seq)
+            seqs.append(node_list[solution_indexes[i]].subject_seq.lower())
         return seqs
     
     def multi_query_solution_nodes(self, s):

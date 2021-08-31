@@ -9,10 +9,10 @@ from django.utils import timezone
 from django.urls import reverse
 
 ovhngs = (
-    (0, '15 overhangs'),
-    (1, '20 overhangs'),
-    (2, '25 overhangs'),
-    (3, '30 overhangs'),
+    (0, '15 overhangs - 98.5% fidelity'),
+    (1, '20 overhangs - 98.1% fidelity'),
+    (2, '25 overhangs - 95.8% fidelity'),
+    (3, '30 overhangs - 91.7% fidelity'),
 )
 
 def fasta_validation(fa_file):
@@ -132,7 +132,8 @@ class AssemblySolution(models.Model):
 # specific classes/models in the db for supported assemblies, parts, and primers
 class GoldenGateAssembly(Assembly):
     overhangs = models.IntegerField(verbose_name='overhang count', choices=ovhngs)
-
+    scarless = models.BooleanField(default=False)
+   
     def get_absolute_url(self):
         return reverse('goldengate-detail', kwargs={'pk': self.pk})
 

@@ -489,7 +489,14 @@ class Assembler:
         -------
         A tuple of a list of fragment Amplicons and a backbone Amplicon after non-extension primer design 
         """
-        fragments_pcr = [primer_design(fragment, target_tm=self.tm, tm_func=self.tm_custom) for fragment in fragments]
+        fragments_pcr = [
+            primer_design(
+                fragment, 
+                target_tm=self.tm, 
+                tm_func=self.tm_custom
+            ) 
+            for fragment in fragments
+        ]
         backbone_pcr = primer_design(backbone, target_tm=self.tm, tm_func=self.tm_custom)
         
         return fragments_pcr, backbone_pcr
@@ -529,10 +536,11 @@ class Assembler:
         -------
         None        
         """
-        sol_tree = FragmentTree(self.query_record.seq.watson, nodes=[], 
-                        query_len=self.query_record.seq.length, 
-                        min_synth=self.min_synth, 
-                        max_synth=self.max_synth)
+        sol_tree = FragmentTree(
+            self.query_record.seq.watson, nodes=[], 
+            query_len=self.query_record.seq.length, 
+            min_synth=self.min_synth, 
+            max_synth=self.max_synth)
         sol_tree.build(query_results)
         self.solution_tree = sol_tree
 
@@ -565,13 +573,13 @@ class Assembler:
                 node.data.hsps[0].query_end = node.data.hsps[0].query_start + assembly[i].template.seq.length
 
         data = [[
-                node.node_id, 
-                node.db,
-                node.data.hsps[0].query_start,
-                node.data.hsps[0].query_end,
-                node.data.hsps[0].sbjct_start,
-                node.data.hsps[0].sbjct_end
-                ] for node in nodes]
+            node.node_id, 
+            node.db,
+            node.data.hsps[0].query_start,
+            node.data.hsps[0].query_end,
+            node.data.hsps[0].sbjct_start,
+            node.data.hsps[0].sbjct_end
+        ] for node in nodes]
         data.append([self.backbone.name, 'NONE', backbone_start, backbone_end, 0, 0])
 
         for i, amplicon in enumerate(new_assembly):
