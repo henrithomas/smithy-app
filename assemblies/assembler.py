@@ -593,6 +593,20 @@ class Assembler:
         return new_assembly
 
     def run_multi_query(self):
+        """
+        Creates a Blaster instance using attributes fron the current assembler object and runs BLAST
+        multi-sequence queries using Blaster.
+
+        
+        Parameters
+        ----------
+        None
+        
+
+        Returns
+        -------
+        Blaster query results from the BLAST query and stderr messages from run_blastn()
+        """
         lengths = [record.seq.length for record in self.query_records]
         num_fragments = len(self.query_records)
         blaster = Blaster(self.max_seqs, self.dbs, self.min_frag, self.max_frag)
@@ -601,6 +615,20 @@ class Assembler:
         return query_results, stderr
 
     def multi_query_solution_building(self, query_results):
+        """
+        Creates a Fragment tree using Blaster query_results and then initializes the assembler's solution_tree.
+
+
+        Parameters
+        ----------
+        query_results : list of lists
+            A long list of BLAST alignments for each part queried in the BLAST search
+
+
+        Returns
+        -------
+        None  
+        """
         sequences = [record.seq.watson for record in self.query_records]
         sol_tree = FragmentTree('')
         sol_tree.multi_query_blast_input(query_results, sequences)
@@ -608,6 +636,21 @@ class Assembler:
         self.solution_tree = sol_tree
 
     def get_multi_query_solution(self, s):
+        """
+        Collects a Dseqrecord list of assembly fragments from the solution tree.
+
+
+        Parameters
+        ----------
+        s : int
+            The solution index to retrieve from the solution tree 
+
+
+        Returns
+        -------
+        A Dseqrecord fragment list for the sequences of a solution        
+        -------
+        """
         tree_solution = self.solution_tree.multi_query_solution_seqs(s)
         fragments = [Dseqrecord(record) for record in tree_solution]
         return fragments 

@@ -392,7 +392,7 @@ class FragmentTree:
 
     def solution_seqs(self, s, text=False):
         """
-        Creates a list of all sequences for a solution to an assembly insert
+        Creates a list of all sequences for a solution (s) to an assembly insert
 
 
         Parameters
@@ -423,7 +423,7 @@ class FragmentTree:
 
     def solution_nodes(self, s):
         """
-        Creates a list of all FragmentNodes for a solution to an assembly insert
+        Creates a list of all FragmentNodes for a solution (s) to an assembly insert
 
 
 
@@ -435,7 +435,7 @@ class FragmentTree:
 
         Returns
         -------
-        A list of FragmentNodes for a solution
+        A list of FragmentNodes for a solution (s)
         """
         nodes = [
             node 
@@ -545,6 +545,24 @@ class FragmentTree:
         self.visited[v] = False
 
     def multi_query_blast_input(self, fragment_lists, sequences):
+        """
+        Takes the BLAST alignment lists and builds the multi_query_node_list, a list of lists where
+        each list contains BLAST results for each part (mapped one-to-one). 
+
+
+        Parameters
+        ----------
+        fragment_lists : list of lists
+            A list of Biopython BLAST alignment objects from the BLAST queries for each 
+            fragment queried
+
+        sequences : list
+            The original sequences used for the BLAST multi-sequence queries
+
+        Returns
+        -------
+        None
+        """
         for i, frag_list in enumerate(fragment_lists):
             temp = []
             if not frag_list:
@@ -589,13 +607,22 @@ class FragmentTree:
                     )
             self.multi_query_node_list.append(temp)
 
-    def solution_count(self, s):
-        minimum  = min([len(nodes) for nodes in self.multi_query_node_list])
-        if minimum < s:
-            s = minimum
-        return s 
-
     def build_multi_query_solutions(self, maximum):
+        """
+        Builds a limited, large set of solutions given the BLAST alignments in multi_query_node_list.
+        For each part position in the solution, the BLAST alignments are sampled randomly.
+
+
+        Parameters
+        ----------
+        maximum : int
+            The maximum amount of solutions to build.
+
+
+        Returns
+        -------
+        None
+        """
         for i in range(maximum):
             solution = []
             for nodes in self.multi_query_node_list:
@@ -603,6 +630,20 @@ class FragmentTree:
             self.multi_query_solutions.append(solution)
 
     def multi_query_solution_seqs(self, s):
+        """
+        Creates a list of all sequences for a solution (s) to an assembly insert
+
+
+        Parameters
+        ----------
+        s : int
+            The index for a solution in the solutions list
+
+
+        Returns
+        -------
+        A list of sequences for a solution (s)
+        """
         solution_indexes = self.multi_query_solutions[s]
         seqs = []
         for i, node_list in enumerate(self.multi_query_node_list):
@@ -610,6 +651,20 @@ class FragmentTree:
         return seqs
     
     def multi_query_solution_nodes(self, s):
+        """
+        Creates a list of all FragmentNodes for a solution (s) to an assembly insert
+
+
+        Parameters
+        ----------
+        s : int
+            The index for a solution in the solutions list
+
+
+        Returns
+        -------
+        A list of FragmentNodes for a solution (s)
+        """
         solution_indexes = self.multi_query_solutions[s]
         nodes = []
         for i, node_list in enumerate(self.multi_query_node_list):

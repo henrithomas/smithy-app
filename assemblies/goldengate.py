@@ -135,7 +135,51 @@ class GoldenGateAssembler(TraditionalREAssembler):
 
     def primer_complement_scarless(self, fragments, backbone, interval=10):
         """
+        Searches an interval on each side of a junction between two neighboring fragments for a 
+        four-base sequence matching an overhang sequence in the high-fidelity overhang set (self.overhangs).
+        
+        When an overhang is found in either the current fragment or it's right neighbor, the indexes of the 
+        overhang are recorded. These indexes are used for extracting sequences that extend either the current 
+        or neighboring fragment with the overhang at the end. If no overhang sequence is found, the search 
+        defaults to using the last four bases of the current fragment for the overhang sequence. Indexes of the 
+        overhangs are also used for properly PCR'ing each fragment if/when it must be trimmed for the neighboring
+        fragment to extend into the trimmed suences (saved to pcr_intervals). 
 
+        The extension sequences are extended further with the BsaI cutsite ('GGTCTCN'). 
+        
+        Finally, this designs non-extension primers for all fragments and the backbone for the assembly using the 
+        values in pcr_intervals.
+
+        Example:
+
+        cutsite = 'GGTCTCN'
+        interval = 10
+        test_seq = current[-interval:] + right[:interval]
+
+                       j=0        9          19
+                       |          |          |
+                      |---[----]---|----------| <--test_seq
+                           3    7   
+        current-----------[----]---|------------------right
+                           ^^^^
+                           overhang
+
+        Overhang found at j = 3 
+        ovhng_start = -(interval - j) = -7 
+        ovhng_end = -(interval - (j + 4)) = -3
+
+        current = current[:ovhng_end]
+        right += current[-ovhng_start:]
+        current_extension = cutsite
+        right_extension = cutsite + current[-ovhng_start:]
+
+                        ovhng_start
+                          |
+              |~~cutsite~~[----]---|------------------right
+
+        current-----------[----]~~cutsite~~|
+                               |
+                            ovhng_end 
 
         Parameters
         ----------
@@ -145,12 +189,13 @@ class GoldenGateAssembler(TraditionalREAssembler):
         backbone : Dseqrecord
             Dseqrecord of the backbone sequence
 
-
         Returns
         -------
+        A list of non-extension amplicons for the assembly (fragments_pcr) and the extensions to add to the primers
+        of fragments_pcr that facilitate assembly (extensions).
         """
         fragments.append(backbone)
-        intervals = [[0, record.seq.length] for record in fragments]
+        pcr_intervals = [[0, record.seq.length] for record in fragments]
         overhang_set = set(self.overhangs['seq'])
         extensions = [['',''] for _ in range(len(fragments))]
 
@@ -179,7 +224,7 @@ class GoldenGateAssembler(TraditionalREAssembler):
                 ovhng_start = j - interval
                 ovhng_end = (j + 4) - interval
 
-                intervals[i_next][0] = ovhng_start
+                pcr_intervals[i_next][0] = ovhng_start
 
                 extensions[i][1] = self.re1.site + 'N' + fragments[i_next].seq.crick[-ovhng_end:]
                 extensions[i_next][0] = self.re1.site + 'N'
@@ -189,14 +234,14 @@ class GoldenGateAssembler(TraditionalREAssembler):
                 ovhng_end = -(interval - (j + 4))
 
                 if ovhng_end != 0:
-                    intervals[i][1] = ovhng_end
+                    pcr_intervals[i][1] = ovhng_end
                 
                 extensions[i][1] = self.re1.site + 'N' 
                 extensions[i_next][0] = self.re1.site + 'N' + fragments[i].seq.watson[ovhng_start:]
 
         fragments_pcr = [
             primer_design(
-                fragment[intervals[i][0]:intervals[i][1]], 
+                fragment[pcr_intervals[i][0]:pcr_intervals[i][1]], 
                 target_tm=self.tm, 
                 tm_func=self.tm_custom
             ) 
@@ -207,17 +252,22 @@ class GoldenGateAssembler(TraditionalREAssembler):
 
     def primer_extension_scarless(self, fragments_pcr, extensions):
         """
-        
+        Extends each amplicon in fragments_pcr using extensions which contains the proper extension sequences to use for the 
+        forward and reverse primers of each amplicon that facilite proper scarless assembly.  
 
 
         Parameters
         ----------
-        fragments_pcr : List of pydna Amplicons  
+        fragments_pcr : list of pydna Amplicons  
             A list of pydna Amplicons used for a given assembly solution
 
+        extensions : list of lists 
+            Extension sequences for forward and reverse primer sequence extensions, [[extension_fwd, extension_rvs],...] 
 
         Returns
         -------
+        A list of new Amplicon objects, including fragments and backbone, that have gone through primer extension design and 
+        extended accordingly
         """
         assembly = []
 
