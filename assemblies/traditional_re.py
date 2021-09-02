@@ -268,12 +268,16 @@ class TraditionalREAssembler(Assembler):
         pass 
 
 
-class BioBrickAssembler(TraditionalREAssembler):
 
+class BioBrickAssembler(TraditionalREAssembler):
+    """
+    # citation: https://parts.igem.org/Help:BioBrick_Prefix_and_Suffix,
+                https://parts.igem.org/Assembly:Standard_assembly
+    """
     cloning_type = 'BioBrickAssembly'
     prefix = 'gaattcgcggccgcttctagag'
     prefix_cds = 'gaattcgcggccgcttctag'
-    suffix = 'tactagtagcggccgctgcag'
+    suffix = 'ctgcagcggccgctactagta'
 
     def __init__(self, *args, re1='EcoRI', re2='XbaI', re3='SpeI', re4='PstI', **kwargs):
         super(BioBrickAssembler, self).__init__(re1, *args, re2=re2, **kwargs)

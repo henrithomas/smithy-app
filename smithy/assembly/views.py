@@ -32,6 +32,18 @@ from django.core.files import File
 
 
 def db_list(addgene, igem, dnasu):
+    """
+    
+
+
+    Parameters
+    ----------
+
+
+
+    Returns
+    -------
+    """
     l = []
     if addgene:
         l.append('addgene')
@@ -45,6 +57,18 @@ def primer_map():
     pass
 
 def part_map(part_model, part, left, right, name, space):
+    """
+    
+
+
+    Parameters
+    ----------
+
+
+
+    Returns
+    -------
+    """
     part_plot_name = f'{name}-map.png'
     temp_plot = f'/home/hthoma/projects/smithy-app/smithy/media/images/{part_plot_name}'
 
@@ -116,6 +140,18 @@ def part_map(part_model, part, left, right, name, space):
     os.remove(temp_plot)
 
 def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
+    """
+    
+
+
+    Parameters
+    ----------
+
+
+
+    Returns
+    -------
+    """
     plot_name = f'{assembly_name}_map.png'
     temp_plot = f'/home/hthoma/projects/smithy-app/smithy/media/images/{plot_name}'   
     features = []
@@ -161,6 +197,18 @@ def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
     os.remove(temp_plot)
 
 def gibson_create_service(gibson_obj):
+    """
+    
+
+
+    Parameters
+    ----------
+
+
+
+    Returns
+    -------
+    """
     gib_assembler = GibsonAssembler(
         gibson_obj.mv_conc, 
         gibson_obj.dv_conc, 
@@ -290,6 +338,18 @@ def gibson_create_service(gibson_obj):
     pass
 
 def goldengate_create_service(goldengate_obj):
+    """
+    
+
+
+    Parameters
+    ----------
+
+
+
+    Returns
+    -------
+    """
     gg_assembler = GoldenGateAssembler(
         goldengate_obj.mv_conc, 
         goldengate_obj.dv_conc, 
