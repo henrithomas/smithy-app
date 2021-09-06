@@ -186,6 +186,27 @@ class GoldenGateSolution(AssemblySolution):
         return reverse('goldengate-solution-detail', kwargs={'pk': self.pk})
 
 
+class BioBricksSolution(AssemblySolution):
+    assembly = models.ForeignKey(BioBricksAssembly, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('biobricks-solution-detail', kwargs={'pk': self.pk})
+
+
+class PCRSolution(AssemblySolution):
+    assembly = models.ForeignKey(PCRAssembly, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('pcr-solution-detail', kwargs={'pk': self.pk})
+
+
+class SLICSolution(AssemblySolution):
+    assembly = models.ForeignKey(SLICAssembly, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('slic-solution-detail', kwargs={'pk': self.pk})
+
+
 class GoldenGatePart(AssemblyPart):
     solution = models.ForeignKey(GoldenGateSolution, on_delete=models.CASCADE)
     
@@ -198,6 +219,27 @@ class GibsonPart(AssemblyPart):
 
     def get_absolute_url(self):
         return reverse('gibson-part-detail', kwargs={'pk': self.pk})
+
+
+class BioBricksPart(AssemblyPart):
+    solution = models.ForeignKey(BioBricksSolution, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('biobricks-part-detail', kwargs={'pk': self.pk})
+
+
+class PCRPart(AssemblyPart):
+    solution = models.ForeignKey(PCRSolution, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('pcr-part-detail', kwargs={'pk': self.pk})
+
+
+class SLICPart(AssemblyPart):
+    solution = models.ForeignKey(SLICSolution, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+         return reverse('slic-part-detail', kwargs={'pk': self.pk})
 
 
 class GoldenGatePrimer(AssemblyPrimer):
@@ -213,3 +255,23 @@ class GibsonPrimer(AssemblyPrimer):
     def get_absolute_url(self):
         return reverse('gibson-primer-detail', kwargs={'pk': self.pk})
 
+
+class BioBricksPrimer(AssemblyPrimer):
+    part = models.ForeignKey(BioBricksPart, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('biobricks-primer-detail', kwargs={'pk': self.pk})
+
+
+class PCRPrimer(AssemblyPrimer):
+    part = models.ForeignKey(PCRPart, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('pcr-primer-detail', kwargs={'pk': self.pk})
+
+
+class SLICPrimer(AssemblyPrimer):
+    part = models.ForeignKey(SLICPart, on_delete=models.CASCADE)
+
+    def get_absolute_url(self):
+        return reverse('slic-primer-detail', kwargs={'pk': self.pk})
