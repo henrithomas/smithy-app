@@ -145,6 +145,33 @@ class GibsonAssembly(Assembly):
         return reverse('gibson-detail', kwargs={'pk': self.pk})   
 
 
+class BioBricksAssembly(Assembly):
+
+    def get_absolute_url(self):
+        return reverse('biobricks-detail', kwargs={'pk': self.pk})
+
+
+class PCRAssembly(Assembly):
+    overlap = models.PositiveIntegerField()
+
+    def get_absolute_url(self):
+        return reverse('pcr-detail', kwargs={'pk': self.pk})
+
+
+class SLICAssembly(Assembly):
+    overlap = models.PositiveIntegerField()
+
+    def get_absolute_url(self):
+        return reverse('slic-detail', kwargs={'pk': self.pk})
+
+
+# class YeastAssembly(Assembly):
+#     overlap = models.PositiveIntegerField()
+
+#     def get_absolute_url(self):
+#         return reverse('yeast-detail', kwargs={'pk': self.pk}) 
+
+
 class GibsonSolution(AssemblySolution):
     assembly = models.ForeignKey(GibsonAssembly, on_delete=models.CASCADE)
 
