@@ -3,9 +3,16 @@ from django.db.models.deletion import Collector
 from django.shortcuts import render,redirect
 from .service import (
     gibson_create_service,
-    goldengate_create_service
+    goldengate_create_service,
+    biobricks_create_service, 
+    pcr_create_service,
+    slic_create_service
 )
 from .models import (
+    BioBricksAssembly,
+    BioBricksPart,
+    BioBricksPrimer,
+    BioBricksSolution,
     GibsonAssembly, 
     GibsonPart,
     GibsonPrimer,
@@ -13,7 +20,15 @@ from .models import (
     GoldenGatePart,
     GoldenGatePrimer,
     GibsonSolution,
-    GoldenGateSolution
+    GoldenGateSolution,
+    PCRAssembly,
+    PCRSolution,
+    PCRPart,
+    PCRPrimer,
+    SLICAssembly,
+    SLICSolution,
+    SLICPart,
+    SLICPrimer
 )
 from django.views.generic import (
     DetailView,
@@ -29,7 +44,7 @@ def home(request):
 def about(request):
     return render(request, 'assembly/about.html', {'title': 'Assembly About'}) 
 
-
+# Gibson Assembly
 class GibsonDetailView(DetailView):
     model = GibsonAssembly
     context_object_name = 'gibson'
@@ -109,7 +124,7 @@ class GibsonPrimerDetailView(DetailView):
         context['title'] = self.object.name
         return context
 
-
+# Golden Gate Assembly
 class GoldenGateDetailView(DetailView):
     model = GoldenGateAssembly
     context_object_name = 'goldengate'
@@ -183,6 +198,242 @@ class GoldenGatePartDetailView(DetailView):
 class GoldenGatePrimerDetailView(DetailView):
     model = GoldenGatePrimer
     context_object_name = 'goldengate_primer'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        return context
+
+# Bio Bricks Assembly
+class BioBricksDetailView(DetailView):
+    model = BioBricksAssembly
+    context_object_name = 'biobrick'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.title
+        context['solutions'] = self.object.biobrickssolution_set.all()
+        return context
+
+
+class BioBricksCreateView(SuccessMessageMixin, CreateView):
+    model = BioBricksAssembly
+    success_message = 'View your new BioBricks assembly below...'
+    fields = [
+        'title',
+        'backbone_file',
+        'insert_file',
+        'addgene',
+        'igem',
+        'dnasu',
+        'min_blast',
+        'max_blast',
+        'min_synth',
+        'max_synth',
+        'mv_conc',
+        'dv_conc',
+        'dntp_conc',
+        'dntp_conc',
+        'dna_conc', 
+        'tm',
+        'multi_query'
+    ]
+
+    def form_valid(self, form):
+        self.object = form.save()
+        biobricks_create_service(self.object)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'New BioBricks Assembly'
+        return context
+
+
+class BioBricksSolutionDetailView(DetailView):
+    model = BioBricksSolution
+    context_object_name = 'biobricks_solution'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        context['parts'] = self.object.biobrickspart_set.all()
+        context['primer_sets'] =  [part.biobricksprimer_set.all() for part in context['parts']]
+        return context
+
+
+class BioBricksPartDetailView(DetailView):
+    model = BioBricksPart
+    context_object_name = 'biobricks_part'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        context['primers'] = self.object.biobricksprimer_set.all()
+        return context
+
+
+class BioBricksPrimerDetailView(DetailView):
+    model = BioBricksPrimer
+    context_object_name = 'biobricks_primer'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        return context
+
+# PCR Assembly
+class PCRDetailView(DetailView):
+    model = PCRAssembly
+    context_object_name = 'pcr'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.title
+        context['solutions'] = self.object.pcrsolution_set.all()
+        return context
+
+
+class PCRCreateView(SuccessMessageMixin, CreateView):
+    model = PCRAssembly
+    success_message = 'View your new PCR assembly below...'
+    fields = [
+        'title',
+        'backbone_file',
+        'insert_file',
+        'addgene',
+        'igem',
+        'dnasu',
+        'min_blast',
+        'max_blast',
+        'min_synth',
+        'max_synth',
+        'mv_conc',
+        'dv_conc',
+        'dntp_conc',
+        'dntp_conc',
+        'dna_conc', 
+        'tm',
+        'overlap',
+        'multi_query'
+    ]
+
+    def form_valid(self, form):
+        self.object = form.save()
+        pcr_create_service(self.object)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'New PCR Assembly'
+        return context
+
+
+class PCRSolutionDetailView(DetailView):
+    model = PCRSolution
+    context_object_name = 'pcr_solution'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        context['parts'] = self.object.pcrpart_set.all()
+        context['primer_sets'] =  [part.pcrprimer_set.all() for part in context['parts']]
+        return context
+
+
+class PCRPartDetailView(DetailView):
+    model = PCRPart
+    context_object_name = 'pcr_part'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        context['primers'] = self.object.pcrprimer_set.all()
+        return context
+
+
+class PCRPrimerDetailView(DetailView):
+    model = PCRPrimer
+    context_object_name = 'pcr_primer'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        return context
+
+# SLIC Assembly
+class SLICDetailView(DetailView):
+    model = SLICAssembly
+    context_object_name = 'slic'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.title
+        context['solutions'] = self.object.slicsolution_set.all()
+        return context
+
+
+class SLICCreateView(SuccessMessageMixin, CreateView):
+    model = SLICAssembly
+    success_message = 'View your new SLIC assembly below...'
+    fields = [
+        'title',
+        'backbone_file',
+        'insert_file',
+        'addgene',
+        'igem',
+        'dnasu',
+        'min_blast',
+        'max_blast',
+        'min_synth',
+        'max_synth',
+        'mv_conc',
+        'dv_conc',
+        'dntp_conc',
+        'dntp_conc',
+        'dna_conc', 
+        'tm',
+        'overlap',
+        'multi_query'
+    ]
+
+    def form_valid(self, form):
+        self.object = form.save()
+        slic_create_service(self.object)
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'New SLIC Assembly'
+        return context
+
+
+class SLICSolutionDetailView(DetailView):
+    model = SLICSolution
+    context_object_name = 'slic_solution'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        context['parts'] = self.object.slicpart_set.all()
+        context['primer_sets'] =  [part.slicprimer_set.all() for part in context['parts']]
+        return context
+
+
+class SLICPartDetailView(DetailView):
+    model = SLICPart
+    context_object_name = 'slic_part'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = self.object.name
+        context['primers'] = self.object.slicprimer_set.all()
+        return context
+
+
+class SLICPrimerDetailView(DetailView):
+    model = SLICPrimer
+    context_object_name = 'slic_primer'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
