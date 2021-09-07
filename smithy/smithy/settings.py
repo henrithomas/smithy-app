@@ -66,7 +66,13 @@ ROOT_URLCONF = 'smithy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            'smithy-app/smithy/assembly/templates/assembly/gibson',
+            'smithy-app/smithy/assembly/templates/assembly/goldengate',
+            'smithy-app/smithy/assembly/templates/assembly/biobricks',
+            'smithy-app/smithy/assembly/templates/assembly/pcr',
+            'smithy-app/smithy/assembly/templates/assembly/slic'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

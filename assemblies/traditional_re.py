@@ -5,6 +5,8 @@ from pydna.amplify import pcr, Anneal
 from importlib import import_module
 import json
 from primers.analysis import assembly_thermo
+from pydna.dseqrecord import Dseqrecord
+
 
 # TODO citation
 class TraditionalREAssembler(Assembler):
@@ -268,7 +270,6 @@ class TraditionalREAssembler(Assembler):
         pass 
 
 
-
 class BioBrickAssembler(TraditionalREAssembler):
     """
     # citation: https://parts.igem.org/Help:BioBrick_Prefix_and_Suffix,
@@ -336,8 +337,13 @@ class BioBrickAssembler(TraditionalREAssembler):
         A fully designed list of assembly parts for assembly with a list of the blast record data for each part (nodes) 
         """
         # return fragments and nodes
-        fragments = self.get_solution(solution)
-        nodes = self.solution_tree.solution_nodes(solution)
+        if self.multi_query:
+            fragments = self.get_multi_query_solution(solution)
+            nodes = self.solution_tree.multi_query_solution_nodes(solution)
+            self.query_record = Dseqrecord(''.join([record.seq.watson for record in self.query_records]))
+        else:
+            fragments = self.get_solution(solution)
+            nodes = self.solution_tree.solution_nodes(solution)
 
         # create assembly primer complements for backbone and fragments
         fragments_pcr, backbone_pcr = self.primer_complement(fragments, self.backbone)
