@@ -8,7 +8,11 @@
         <h2>General Info</h2>
         <div class="col">
             <ul class="list-group">
-                <li class="list-group-item"><strong>thing:</strong> thing</li>
+                <li class="list-group-item"><strong>Prefix Enzymes:</strong> EcoRI, XbaI</li>
+                <li class="list-group-item"><strong>Suffix Enzymes:</strong> SpeI, PstI</li>
+                <li class="list-group-item"><strong>Prefix Sequence:</strong> gaattcgcggccgcttctagag</li>
+                <li class="list-group-item"><strong>CDS Prefix Sequence:</strong> gaattcgcggccgcttctag</li>
+                <li class="list-group-item"><strong>Suffix Sequence:</strong> tactagtagcggccgctgcag</li>
             </ul>
         </div>
     </div>
@@ -94,28 +98,6 @@
                 {% if form.insert_file.errors %}
                     <ul class="errorList">
                         {% for error in form.insert_file.errors %}
-                            <li class="text-danger">{{ error|escape }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="row mb-5">
-            <h2>Overlap</h2>
-            <div class="col">
-                <p>
-                    How much of an overlap would you like between your parts?
-                </p>
-                {{ form.overlap.label_tag }}
-                <div class="input-group mt-2">
-                    <input type="number" name="{{ form.overlap.html_name }}" class="form-control" placeholder="30" 
-                    id="{{ form.overlap.id_for_label }}" {% if form.is_bound %} value="{{ form.overlap.value }}" {% endif %}>
-                    <span class="input-group-text" id="{{ form.overlap.id_for_label }}">nt</span>
-                </div>
-                {% if form.overlap.errors %}
-                    <ul class="errorList">
-                        {% for error in form.overlap.errors %}
                             <li class="text-danger">{{ error|escape }}</li>
                         {% endfor %}
                     </ul>

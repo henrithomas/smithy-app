@@ -11,6 +11,11 @@
             <h2>General Info</h2>
             <ul class="list-group">
                 <li class="list-group-item"><strong>Created:</strong> {{ biobrick.date_created|date:'F d, Y' }}</li>
+                <li class="list-group-item"><strong>Prefix Enzymes:</strong> EcoRI, XbaI</li>
+                <li class="list-group-item"><strong>Suffix Enzymes:</strong> SpeI, PstI</li>
+                <li class="list-group-item"><strong>Prefix Sequence:</strong> gaattcgcggccgcttctagag</li>
+                <li class="list-group-item"><strong>CDS Prefix Sequence:</strong> gaattcgcggccgcttctag</li>
+                <li class="list-group-item"><strong>Suffix Sequence:</strong> tactagtagcggccgctgcag</li>
             </ul>
         </div>
     </div>
@@ -34,7 +39,7 @@
                     <div class="card-body">
                         <h4 class="card-title">
                             {{solution.name}}
-                            <a href="{% url 'biobrick-solution-detail' solution.pk %}" class="btn btn-outline-primary float-end">View Solution</a>
+                            <a href="{% url 'biobricks-solution-detail' solution.pk %}" class="btn btn-outline-primary float-end">View Solution</a>
                         </h4>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">

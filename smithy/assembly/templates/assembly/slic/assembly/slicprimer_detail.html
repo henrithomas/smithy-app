@@ -1,4 +1,62 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
-
+<h1 class="mb-3">
+    {{ title }}
+    <span class="badge rounded-pill bg-secondary">
+        {{ slic_primer.primer_type }}
+    </span>
+</h1>
+<div class="row mb-4">
+    <div class="col-md-3">
+        <h2>Date Created</h2>
+        <p>{{ slic_primer.date_created }}</p>
+    </div>
+    <div class="col-md-3">
+        <h2>Primer Type</h2>
+        <p>{{ slic_primer.primer_type }}</p>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col">
+        <h2>
+            Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">{% if slic_primer.primer_type == 'fwd' %} Watson {% else %} Crick {% endif %}</span>
+        </h2>
+        <p>{{slic_primer.sequence}}</p>
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col">
+        <h2>Thermodynamic Analysis</h2>
+        <div class="table-responsive-md">
+            <table class="table table-striped">
+                <thead> 
+                    <th>Structure</th>
+                    <th>Structure Found</th>
+                    <th>Tm (C)</th>
+                    <th>&Delta;G</th>
+                    <th>&Delta;H</th>
+                    <th>&Delta;S</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Hairpin</td>
+                        <td>{{ slic_primer.hairpin }}</td>
+                        <td>{{ slic_primer.hairpin_tm }}</td>
+                        <td>{{ slic_primer.hairpin_dg }}</td>
+                        <td>{{ slic_primer.hairpin_dh }}</td>
+                        <td>{{ slic_primer.hairpin_ds }}</td>
+                    </tr>
+                    <tr>
+                        <td>Homodimer</td>
+                        <td>{{ slic_primer.homodimer}}</td>
+                        <td>{{ slic_primer.homodimer_tm }}</td>
+                        <td>{{ slic_primer.homodimer_dg }}</td>
+                        <td>{{ slic_primer.homodimer_dh }}</td>
+                        <td>{{ slic_primer.homodimer_ds }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock content %}

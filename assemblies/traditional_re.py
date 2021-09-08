@@ -319,6 +319,8 @@ class BioBrickAssembler(TraditionalREAssembler):
 
             assembly.append(amp_extended)
 
+        return assembly
+
         
     def design(self, solution=0):
         """

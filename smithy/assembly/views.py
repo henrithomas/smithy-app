@@ -296,7 +296,7 @@ class PCRDetailView(DetailView):
 
 class PCRCreateView(SuccessMessageMixin, CreateView):
     model = PCRAssembly
-    success_message = 'View your new PCR assembly below...'
+    success_message = 'View your new PCR-SOE assembly below...'
     fields = [
         'title',
         'backbone_file',
@@ -325,7 +325,7 @@ class PCRCreateView(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'New PCR Assembly'
+        context['title'] = 'New PCR-SOE Assembly'
         return context
 
 

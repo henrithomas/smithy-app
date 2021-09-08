@@ -508,7 +508,6 @@ def biobricks_create_service(biobricks_obj):
         max_frag=biobricks_obj.max_blast, 
         min_synth=biobricks_obj.min_synth, 
         max_synth=biobricks_obj.max_synth,
-        overlap=biobricks_obj.overlap,
         multi_query=biobricks_obj.multi_query  
     )
 

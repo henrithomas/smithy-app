@@ -1,4 +1,166 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
+    <h1>{{ title }}</h1>
+    <div class="row mb-4">
+        <div class="col">
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Created:</strong> {{ pcr_solution.date_created }}</li>
+                <li class="list-group-item"><strong>Parts:</strong> {{ pcr_solution.parts_count }}</li>
+                <li class="list-group-item"><strong>Primers:</strong> {{ pcr_solution.primers_count }}</li>
+            </ul>
+        </div>
+    </div>
 
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Plasmid Map</h2>
+            <div class="text-center">
+                <img src="{{ pcr_solution.plasmid_map.url }}" class="img-fluid">
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="mb-4">
+                Parts
+                <a href="#" class="btn btn-outline-primary float-end disabled">Download Parts</a> 
+            </h2>
+            <p>
+                Below is a summary table of the DNA sequences that make up this assembly solution. Further details on each part can be 
+                viewed by clicking <em>View Part</em> for each listed below this table.  
+            </p>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <caption>
+                        <u>Query Start/End:</u> The start/end index of the part on the insert sequence. Defaults to 0. <br>
+                        <u>Subject Start/End:</u> The start/end index of the part on its original sequence. Defaults to 0. <br>
+                        <u>Position:</u> The location of the part in the assembly solution.
+                    </caption>
+                    <thead>
+                        <th>Name</th>
+                        <th>Database</th>
+                        <th>Length</th>
+                        <th>Extended Length</th> 
+                        <th>Query Start</th>
+                        <th>Query End</th>
+                        <th>Subject Start</th>
+                        <th>Subject End</th>
+                        <th>Position</th>
+                    </thead>
+                    <tbody>
+                        {% for part in parts %}
+                            <tr>
+                                <td>{{ part.name }}</td>
+                                <td>{{ part.database }}</td>
+                                <td>{{ part.length }}</td>
+                                <td>{{ part.length_extended }}</td>
+                                <td>{{ part.query_start }}</td>
+                                <td>{{ part.query_end }}</td>
+                                <td>{{ part.subject_start }}</td>
+                                <td>{{ part.subject_end }}</td>
+                                <td>{{ part.position }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% for part in parts %}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            {{part.name}}
+                            <a href="{% url 'pcr-part-detail' part.pk %}" class="btn btn-outline-primary float-end">View Part</a>
+                        </h4>
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item">
+                                <strong>Database:</strong> {{part.database}}
+                            </li>
+                            <li class="list-inline-item">
+                                <strong>Sequence:</strong> {{ part.seq|slice:":50" }}...
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="mb-4">
+                Primers
+                <a href="#" class="btn btn-outline-primary float-end disabled">Download Primers</a>
+            </h2>
+            <p>
+                Below is a summary table of the primers needed for each part of this assembly solution (shown above). Further details on each primer can be 
+                viewed by clicking <em>View Primer</em> for each listed below this table.  
+            </p>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <caption>
+                        <u>hp Tm (C):</u> The melting temperature of the primer's hairpin (hp) structure. <br>
+                        <u>hp &Delta;G:</u> The Gibbs free energy of the primer's hairpin (hp) structure. <br>
+                        <u>hd Tm (C):</u> The melting temperature of the primer's homodimer (hd) structure. <br>
+                        <u>hd &Delta;G:</u> The Gibbs free energy of the primer's homodimer (hd) structure. <br>
+                    </caption>
+                    <thead>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Tm (C)</th>
+                        <th>GC%</th> 
+                        <th>Hairpin</th>
+                        <th>hp Tm (C)</th>
+                        <th>hp &Delta;G</th>
+                        <th>Homodimer</th>
+                        <th>hd Tm (C)</th>
+                        <th>hd &Delta;G</th>
+                    </thead>
+                    <tbody>
+                        {% for primers in primer_sets %}
+                            {% for primer in primers %}
+                                <tr>
+                                    <td>{{ primer.name }}</td>
+                                    <td>{{ primer.primer_type }}</td>
+                                    <td>{{ primer.tm_footprint|stringformat:".3f" }}</td>
+                                    <td>{{ primer.gc }}</td>
+                                    <td>{{ primer.hairpin }}</td>
+                                    <td>{{ primer.hairpin_tm|stringformat:".3f" }}</td>
+                                    <td>{{ primer.hairpin_dg|stringformat:".3f" }}</td>
+                                    <td>{{ primer.homodimer}}</td>
+                                    <td>{{ primer.homodimer_tm|stringformat:".3f" }}</td>
+                                    <td>{{ primer.homodimer_dg|stringformat:".3f" }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            {% for primers in primer_sets %}
+                {% for primer in primers %}
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                {{primer.name}}
+                                <a href="{% url 'pcr-primer-detail' primer.pk %}" class="btn btn-outline-primary float-end">View Primer</a> 
+                            </h4>
+                            <ul class="list-inline mb-0">
+                                <li class="list-inline-item">
+                                    <strong>Sequence:</strong> {{primer.sequence}}
+                                </li>
+                                <li class="list-inline-item">
+                                <strong>Tm (C):</strong> {{primer.tm_footprint|stringformat:".3f"}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
 {% endblock content %}
