@@ -280,37 +280,38 @@ class TraditionalREAssembler(Assembler):
         -------
         """
         site_len = len(enzyme.site)
+        fwd_tail_len = len(record.forward_primer.tail)
         enzyme_site_rc = str(Seq(enzyme.site).reverse_complement())
-        locations = []
+        extended_locations = []
         for i in  range(len(record.seq.watson)):
             test_seq = record.seq.watson[i:i + site_len].upper()
 
             if test_seq == enzyme.site or test_seq == enzyme_site_rc:
-                locations.append((i, i + site_len))
-        
-        filtered_locations = []
-        for i in range(len(locations) - 1):
-            site = locations[i]
-            next_site = locations[i + 1]
-            if site[1] > next_site[0]:
-                filtered_locations.append((site[0], next_site[1]))
-            else:
-                filtered_locations.append(site)
-                
-        if filtered_locations[-1][1] != locations[-1][1]:
-            filtered_locations.append(locations[-1])
+                extended_locations.append((i, i + site_len))
+
+        locations = [
+            (start - fwd_tail_len, end - fwd_tail_len)
+            for start, end in extended_locations[1:-1]
+        ]
 
         if json:
             json_locations = [
                 {
-                        'start': start,
-                        'end': end
+                    'start': start,
+                    'end': end
                 }
-            for start, end in filtered_locations]
+            for start, end in locations]
 
-            return json_locations
+            json_ext_locations = [
+                {
+                    'start': start,
+                    'end': end
+                }
+            for start, end in extended_locations]
+
+            return {'original': json_locations, 'extended': json_ext_locations}
         
-        return locations
+        return [extended_locations, locations]
 
     def cutsite_annotations(self, assembly, enzyme):
         for amplicon in assembly: 

@@ -5,22 +5,15 @@
         <a class="btn btn-outline-primary" href="{% url 'goldengate-primer-detail' primers.0.pk %}">Forward Primer</a>
         <a class="btn btn-outline-primary" href="{% url 'goldengate-primer-detail' primers.1.pk %}">Reverse Primer</a>
     </div>
+
     <div class="row my-4">
-        <div class="col-md-3">
-            <h2>Date Created</h2>
-            <p>{{goldengate_part.date_created}}</p>
-        </div>
-        <div class="col-md-3">
-            <h2>Database</h2>
-            <p>{{goldengate_part.database}}</p>
-        </div>
-        <div class="col-md-3">
-            <h2>Extended Length</h2>
-            <p>{{goldengate_part.length_extended}}</p>
-        </div>
-        <div class="col-md-3">
-            <h2>Length</h2>
-            <p>{{goldengate_part.length}}</p>
+        <div class="col">
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Date Created:</strong> {{goldengate_part.date_created}}</li>
+                <li class="list-group-item"><strong>Database: </strong> {{goldengate_part.database}}</li>
+                <li class="list-group-item"><strong>Extended Length:</strong> {{goldengate_part.length_extended}}</li>
+                <li class="list-group-item"><strong>Length:</strong> {{goldengate_part.length}}</li>
+            </ul>
         </div>
     </div>
 
@@ -47,13 +40,24 @@
             </p>
             <div class="collapse mb-2" id="extended-seq">
                 <div class="card card-body">
-                    <h2>{{ goldengate_part.name }} Extended Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Watson</span></h2></h2>
+                    <h2>
+                        {{ goldengate_part.name }} Extended Sequence 
+                        <span class="badge bg-light text-dark fs-6">5'-3'</span> 
+                        <span class="badge bg-light text-dark fs-6">Watson</span>
+                        <span class="badge bg-warning text-dark fs-6">{{ goldengate_part.cuts }} Cuts</span>
+                    </h2>
+                    <p><em>Cutsites shown in <span class="highlight">highlights</span>...</em></p>
                     <p id="seq_extended">{{goldengate_part.seq_extended}}</p>
                 </div>
             </div>
             <div class="collapse" id="seq">
                 <div class="card card-body">
-                    <h2>{{ goldengate_part.name }} Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Watson</span></h2></h2>
+                    <h2>{{ goldengate_part.name }} Original Sequence 
+                        <span class="badge bg-light text-dark fs-6">5'-3'</span> 
+                        <span class="badge bg-light text-dark fs-6">Watson</span>
+                        <span class="badge bg-warning text-dark fs-6">{{ goldengate_part.cuts|add:"-2" }} Cut(s)</span>
+                    </h2>
+                    <p><em>Cutsites shown in <span class="highlight">highlights</span>...</em></p>
                     <p id="seq_nonextended">{{goldengate_part.seq}}</p>
                 </div>
             </div>
@@ -74,7 +78,11 @@
             </p>
             <div class="collapse mb-2" id="forward">
                 <div class="card card-body">
-                    <h2>{{ primers.0.name }} <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Watson</span></h2>
+                    <h2>
+                        {{ primers.0.name }} 
+                        <span class="badge bg-light text-dark fs-6">5'-3'</span> 
+                        <span class="badge bg-light text-dark fs-6">Watson</span>
+                    </h2>
                     <p><strong>Sequence:</strong> {{ primers.0.sequence }}</p>
                     <p><strong>Footprint:</strong> {{ primers.0.footprint }}</p>
                     <p><strong>Tail:</strong> {{ primers.0.tail }}</p>
@@ -92,29 +100,35 @@
     </div>
     {{ goldengate_part.cut_locations|json_script:"cuts" }}
     <script>
+        function highlighting(text_html, cutsites) {
+            const segments = [];
+
+            for (let i = 0; i < cutsites.length; i++) {
+                cutsite = cutsites[i];
+
+                if (i == 0) {
+                    segments.push(text_html.substring(0, cutsite.start));
+                }
+                else {
+                    segments.push(text_html.substring(cutsites[i - 1].end, cutsite.start));
+                }
+                highlighted = "<span class='highlight'>" + text_html.substring(cutsite.start, cutsite.end) + "</span>";
+                segments.push(highlighted);
+            }
+            segments.push(text_html.substring(cutsites[cutsites.length - 1].end));
+            return segments.join('');
+        }
+
         const mydata = JSON.parse(JSON.parse(document.getElementById('cuts').textContent));
         const seq_elem = document.getElementById('seq_nonextended');
         const seq_html = seq_elem.innerHTML;
         const seq_ext_elem = document.getElementById('seq_extended');
         const seq_ext_html = seq_ext_elem.innerHTML;
 
-        const segments = [];
-
-        for (let i = 0; i < mydata.length; i++) {
-            cutsite = mydata[i];
-            cutsite_next = mydata[i + 1];
-
-            if (i == 0){
-                segments.push(seq_ext_html.substring(0, cutsite.start));
-            }
-            else {
-                segments.push(seq_ext_html.substring(mydata[i - 1].end, cutsite.start));
-            }
-            highlighted = "<span class='highlight'>" + seq_ext_html.substring(cutsite.start, cutsite.end) + "</span>";
-            segments.push(highlighted);
-        }
-        segments.push(seq_ext_html.substring(mydata[mydata.length - 1].end));
-        newHTML = segments.join('');
+        newHTML = highlighting(seq_ext_html, mydata.extended);
         seq_ext_elem.innerHTML = newHTML;
+
+        newHTML = highlighting(seq_html, mydata.original);
+        seq_elem.innerHTML = newHTML;
     </script>
 {% endblock content %}

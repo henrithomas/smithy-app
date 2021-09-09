@@ -227,6 +227,8 @@ class GibsonPart(AssemblyPart):
 
 class BioBricksPart(AssemblyPart):
     solution = models.ForeignKey(BioBricksSolution, on_delete=models.CASCADE)
+    cuts = models.PositiveIntegerField()
+    cut_locations = models.CharField(max_length=10000, default='{}')
 
     def get_absolute_url(self):
         return reverse('biobricks-part-detail', kwargs={'pk': self.pk})
