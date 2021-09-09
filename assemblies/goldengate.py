@@ -321,6 +321,7 @@ class GoldenGateAssembler(TraditionalREAssembler):
 
         # add simple annotations
         assembly = self.annotations(assembly, nodes, space=4)
+        self.cutsite_annotations(assembly, self.re1)
         
         # run primer thermo analysis
         assembly = assembly_thermo(assembly, self.mv_conc, self.dv_conc, self.dna_conc, self.tm_custom)

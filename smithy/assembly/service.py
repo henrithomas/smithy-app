@@ -1,4 +1,6 @@
 from django.db.models.deletion import Collector
+
+from tests import cut_locations
 from .models import (
     GibsonAssembly, 
     GibsonPart,
@@ -34,6 +36,7 @@ from dna_features_viewer import (
 )
 from django.core.files import File
 import os
+import json
 
 
 def db_list(addgene, igem, dnasu):
@@ -413,7 +416,9 @@ def goldengate_create_service(goldengate_obj):
             query_start = part.annotations['query_start'],
             query_end = part.annotations['query_end'],
             subject_start = part.annotations['subject_start'],
-            subject_end = part.annotations['subject_end']             
+            subject_end = part.annotations['subject_end'],
+            cuts=part.annotations['cuts'],
+            cut_locations=json.dumps(part.annotations['cut_locations'])           
         )
         goldengate_part_entry.save()
 

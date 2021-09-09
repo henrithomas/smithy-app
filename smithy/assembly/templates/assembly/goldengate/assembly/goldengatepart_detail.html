@@ -15,12 +15,12 @@
             <p>{{goldengate_part.database}}</p>
         </div>
         <div class="col-md-3">
-            <h2>Length</h2>
-            <p>{{goldengate_part.length}}</p>
-        </div>
-        <div class="col-md-3">
             <h2>Extended Length</h2>
             <p>{{goldengate_part.length_extended}}</p>
+        </div>
+        <div class="col-md-3">
+            <h2>Length</h2>
+            <p>{{goldengate_part.length}}</p>
         </div>
     </div>
 
@@ -37,24 +37,24 @@
         <div class="col">
             <p>
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <a class="btn btn-outline-dark btn-lg" data-bs-toggle="collapse" href="#seq" role="button" aria-expanded="false" aria-controls="seq">
-                        View Sequence
-                    </a>
                     <a class="btn btn-outline-dark btn-lg" data-bs-toggle="collapse" href="#extended-seq" role="button" aria-expanded="false" aria-controls="extended-seq">
                         View Extended Sequence
                     </a>
+                    <a class="btn btn-outline-dark btn-lg" data-bs-toggle="collapse" href="#seq" role="button" aria-expanded="false" aria-controls="seq">
+                        View Original Sequence
+                    </a>
                 </div>
             </p>
-            <div class="collapse mb-2" id="seq">
-                <div class="card card-body">
-                    <h2>{{ goldengate_part.name }} Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Watson</span></h2></h2>
-                    <p>{{goldengate_part.seq}}</p>
-                </div>
-            </div>
-            <div class="collapse" id="extended-seq">
+            <div class="collapse mb-2" id="extended-seq">
                 <div class="card card-body">
                     <h2>{{ goldengate_part.name }} Extended Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Watson</span></h2></h2>
-                    <p>{{goldengate_part.seq_extended}}</p>
+                    <p id="seq_extended">{{goldengate_part.seq_extended}}</p>
+                </div>
+            </div>
+            <div class="collapse" id="seq">
+                <div class="card card-body">
+                    <h2>{{ goldengate_part.name }} Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Watson</span></h2></h2>
+                    <p id="seq_nonextended">{{goldengate_part.seq}}</p>
                 </div>
             </div>
         </div>
@@ -90,4 +90,31 @@
             </div>
         </div>
     </div>
+    {{ goldengate_part.cut_locations|json_script:"cuts" }}
+    <script>
+        const mydata = JSON.parse(JSON.parse(document.getElementById('cuts').textContent));
+        const seq_elem = document.getElementById('seq_nonextended');
+        const seq_html = seq_elem.innerHTML;
+        const seq_ext_elem = document.getElementById('seq_extended');
+        const seq_ext_html = seq_ext_elem.innerHTML;
+
+        const segments = [];
+
+        for (let i = 0; i < mydata.length; i++) {
+            cutsite = mydata[i];
+            cutsite_next = mydata[i + 1];
+
+            if (i == 0){
+                segments.push(seq_ext_html.substring(0, cutsite.start));
+            }
+            else {
+                segments.push(seq_ext_html.substring(mydata[i - 1].end, cutsite.start));
+            }
+            highlighted = "<span class='highlight'>" + seq_ext_html.substring(cutsite.start, cutsite.end) + "</span>";
+            segments.push(highlighted);
+        }
+        segments.push(seq_ext_html.substring(mydata[mydata.length - 1].end));
+        newHTML = segments.join('');
+        seq_ext_elem.innerHTML = newHTML;
+    </script>
 {% endblock content %}

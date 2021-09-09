@@ -8,6 +8,8 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.urls import reverse
 
+from tests import cut_locations
+
 ovhngs = (
     (0, '15 overhangs - 98.5% fidelity'),
     (1, '20 overhangs - 98.1% fidelity'),
@@ -209,6 +211,8 @@ class SLICSolution(AssemblySolution):
 
 class GoldenGatePart(AssemblyPart):
     solution = models.ForeignKey(GoldenGateSolution, on_delete=models.CASCADE)
+    cuts = models.PositiveIntegerField()
+    cut_locations = models.CharField(max_length=10000, default='{}')
     
     def get_absolute_url(self):
         return reverse('goldengate-part-detail', kwargs={'pk': self.pk})

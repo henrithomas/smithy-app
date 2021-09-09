@@ -38,6 +38,10 @@ body {
     margin-bottom: 20px;
   }
 
+.highlight {
+    background-color:paleturquoise;
+}
+
 /* .card {
     overflow: hidden;
 }
