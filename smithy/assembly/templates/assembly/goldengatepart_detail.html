@@ -55,7 +55,15 @@
                     <h2>{{ goldengate_part.name }} Original Sequence 
                         <span class="badge bg-light text-dark fs-6">5'-3'</span> 
                         <span class="badge bg-light text-dark fs-6">Watson</span>
-                        <span class="badge bg-warning text-dark fs-6">{{ goldengate_part.cuts|add:"-2" }} Cut(s)</span>
+                        <span class="badge bg-warning text-dark fs-6">
+                            {% if goldengate_part.cuts < 3 %}
+                                0 Cuts
+                            {% elif goldengate_part.cuts == 3 %}
+                                1 Cut
+                            {% else %}
+                                {{ goldengate_part.cuts|add:"-2" }} Cuts
+                            {% endif %}
+                        </span>
                     </h2>
                     <p><em>Cutsites shown in <span class="highlight">highlights</span>...</em></p>
                     <p id="seq_nonextended">{{goldengate_part.seq}}</p>

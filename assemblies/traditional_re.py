@@ -282,6 +282,9 @@ class TraditionalREAssembler(Assembler):
         site_len = len(enzyme.site)
         fwd_tail_len = len(record.forward_primer.tail)
         enzyme_site_rc = str(Seq(enzyme.site).reverse_complement())
+
+        # Check each 6nt subsequence for a match with the normal or reverse complement
+        # of the restriction enzyme site 
         extended_locations = []
         for i in  range(len(record.seq.watson)):
             test_seq = record.seq.watson[i:i + site_len].upper()
@@ -289,6 +292,7 @@ class TraditionalREAssembler(Assembler):
             if test_seq == enzyme.site or test_seq == enzyme_site_rc:
                 extended_locations.append((i, i + site_len))
 
+        # Adjust the indexes to remove the 5' end extension amount
         locations = [
             (start - fwd_tail_len, end - fwd_tail_len)
             for start, end in extended_locations[1:-1]
@@ -311,7 +315,7 @@ class TraditionalREAssembler(Assembler):
 
             return {'original': json_locations, 'extended': json_ext_locations}
         
-        return [extended_locations, locations]
+        return [extended_locations, extended_locations]
 
     def cutsite_annotations(self, assembly, enzyme):
         for amplicon in assembly: 
