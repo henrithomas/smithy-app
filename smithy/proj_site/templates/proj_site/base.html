@@ -58,9 +58,18 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'site-home' %}">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'assembly-home' %}">Assembly</a>
-                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Assembly
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <li><a class="dropdown-item" href="{% url 'assembly-home' %}">Make Assembly</a></li>
+                          <li><a class="dropdown-item" href="{% url 'assembly-bundle' %}">Make Assembly Bundle</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="#">View Assemblies</a></li>
+                          <li><a class="dropdown-item" href="#">View Assembly Bundles</a></li>
+                        </ul>
+                      </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'site-about' %}">About</a>
                     </li>

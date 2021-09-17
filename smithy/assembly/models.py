@@ -21,6 +21,7 @@ def fasta_validation(fa_file):
     if fa_file.file.content_type != 'application/octet-stream':
         raise ValidationError(_('Please choose a valid .fasta file.'), code='invalid')
 
+
 # abstract base classes for assemblies, parts, and primers
 class Assembly(models.Model):
     title = models.CharField(max_length=250)
@@ -172,6 +173,17 @@ class SLICAssembly(Assembly):
 
 #     def get_absolute_url(self):
 #         return reverse('yeast-detail', kwargs={'pk': self.pk}) 
+
+
+class AssemblyBundle(models.Model):
+    title = models.CharField(max_length=250)
+    date_created = models.DateTimeField(default=timezone.now)
+    description = models.CharField(max_length=1000)
+    gibson = models.ManyToManyField(GibsonAssembly)
+    goldengate = models.ManyToManyField(GoldenGateAssembly)
+    slic = models.ManyToManyField(SLICAssembly)
+    pcr = models.ManyToManyField(PCRAssembly)
+    biobricks = models.ManyToManyField(BioBricksAssembly)
 
 
 class GibsonSolution(AssemblySolution):

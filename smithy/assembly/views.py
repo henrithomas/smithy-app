@@ -1,4 +1,5 @@
 from Bio.Blast import Record
+from django.utils import timezone
 from django.db.models.deletion import Collector
 from django.shortcuts import render,redirect
 from .service import (
@@ -9,6 +10,7 @@ from .service import (
     slic_create_service
 )
 from .models import (
+    AssemblyBundle,
     BioBricksAssembly,
     BioBricksPart,
     BioBricksPrimer,
@@ -36,6 +38,7 @@ from django.views.generic import (
 )
 from django.contrib.messages.views import SuccessMessageMixin 
 import os
+from .forms import BundleForm
 
 
 def home(request):
@@ -440,3 +443,19 @@ class SLICPrimerDetailView(DetailView):
         context['title'] = self.object.name
         return context
 
+
+def assembly_bundle(request):
+    if request.method == 'POST':
+        bundle_form = BundleForm(request.POST, request.FILES)
+
+        if bundle_form.is_valid():
+            # TODO add bundle service and assembly building here
+            pass
+    else:
+        bundle_form = BundleForm()
+    return render(request, 'assembly/assemblybundle_form.html', {'bundle_form': bundle_form})
+
+
+class AssemblyBundleDetailView(DetailView):
+    model = AssemblyBundle
+    context_object_name = 'assembly_bundle'

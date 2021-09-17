@@ -1,0 +1,403 @@
+{% extends 'proj_site/base.html' %}
+{% block content %}
+    <h1>Assembly Bundle</h1>
+
+    <form method="POST" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {{ bundle_form.non_field_errors }}
+
+        <div class="row mb-5">
+            <div class="col">
+                <h2>Title & Description</h2>
+                <div id="div_id_title" class="mb-3"> 
+                    <p>
+                        Enter a useful title for this assembly.
+                    </p>
+                    {{ bundle_form.title.label_tag }}
+                    <input type="text" name="{{ bundle_form.title.html_name}}" maxlength="250" class="form-control mt-2" id="{{ bundle_form.title.id_for_label }}"> 
+                    {% if bundle_form.title.errors %}
+                        <ul class="errorList">
+                            {% for error in bundle_form.title.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div id="div_id_description" class="mb-3">
+                    {{ bundle_form.description.label_tag }}
+                    <input type="text" name="{{ bundle_form.description.html_name}}" maxlength="250" class="form-control mt-2" id="{{ bundle_form.description.id_for_label }}"> 
+                    {% if bundle_form.description.errors %}
+                        <ul class="errorList">
+                            {% for error in bundle_form.description.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <hr/>
+
+        <div class="row mb-5">
+            <div class="col">
+                <h2>Cloning Methods</h2> 
+                <p>
+                    Which cloning methods would you like to include?
+                </p>
+                <label for="methodCheck" class="form-label">Cloning Methods:</label>
+                <div id="methodCheck">
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ bundle_form.gibson.html_name }}" 
+                        id="{{ bundle_form.gibson.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gibson.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ bundle_form.gibson.id_for_label }}">Gibson</label>
+                    </div>
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ bundle_form.goldengate.html_name }}" 
+                        id="{{ bundle_form.goldengate.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.goldengate.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ bundle_form.goldengate.id_for_label }}">Golden Gate</label>
+                    </div>
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ bundle_form.slic.html_name }}" 
+                        id="{{ bundle_form.slic.id_for_label}}" {% if bundle_form.is_bound %} value="{{ bundle_form.slic.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ bundle_form.slic.id_for_label}}">SLIC</label>
+                    </div>
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ bundle_form.pcr.html_name }}" 
+                        id="{{ bundle_form.pcr.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.pcr.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ bundle_form.pcr.id_for_label }}">PCR</label>
+                    </div>
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ bundle_form.biobricks.html_name }}" 
+                        id="{{ bundle_form.biobricks.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.biobricks.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ bundle_form.biobricks.id_for_label }}">BioBricks</label>
+                    </div>
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="select-all" id="select-all-switch">
+                        <label class="form-check-label" for="select-all-switch"><strong>Select All</strong></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+
+        <div class="row mb-5">
+            <div class="col">
+                <h2>Backbone</h2> 
+                <p>
+                    Upload a <strong>.fasta</strong> file containing a single entry of your backbone sequence.
+                    <a class="btn btn-link btn-lg shadow-none"  href="#exampleModalLabel" role="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <i class="bi bi-info-circle"></i> 
+                    </a>
+                </p>
+                {{ bundle_form.backbone_file.label_tag }} 
+                <div id="{{ bundle_form.backbone_file.id_for_label }}" class="mt-2">
+                     <input type="file" name="{{ bundle_form.backbone_file.html_name }}" class="form-control" required 
+                     id="{{ bundle_form.backbone_file.id_for_label }}" {% if form.is_bound %} value="{{ bundle_form.backbone_file.value }}" {% endif %}> 
+                </div>
+                {% if bundle_form.backbone_file.errors %}
+                    <ul class="errorList">
+                        {% for error in bundle_form.backbone_file.errors %}
+                            <li class="text-danger">{{ error|escape }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <h2 class="mt-3">Insert</h2>
+                <p>
+                    <strong>Is this a multi-sequence query?</strong>
+                </p>
+                <label for="id_multi_query">Multi-sequence:</label>
+                <div id="multiCheck">
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ bundle_form.multi_query.html_name }}" 
+                        id="{{ bundle_form.multi_query.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.multi_query.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ bundle_form.multi_query.id_for_label }}">Yes</label>
+                    </div>
+                </div>
+                <p>
+                    <ul>
+                        <li>
+                            If you did not select <em>multi-sequence query</em>, upload a <strong>.fasta</strong> file containing a single sequence entry of your full insert sequence.
+                            <a class="btn btn-link btn-lg shadow-none"  href="#exampleModalLabel" role="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="bi bi-info-circle"></i> 
+                            </a>
+                        </li>
+                        <li>
+                            If you selected <em>multi-sequence query</em>, upload a <strong>.fasta</strong> file containing multiple sequence entries that will compose your construct.
+                            <a class="btn btn-link btn-lg shadow-none"  href="#exampleModalLabel" role="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="bi bi-info-circle"></i> 
+                            </a>
+                        </li>
+                    </ul>
+                </p>
+                {{ form.insert_file.label_tag }} 
+                <div id="{{ bundle_form.insert_file.id_for_label }}" class="mt-2">
+                     <input type="file" name="{{ bundle_form.insert_file.html_name }}" class="form-control" required 
+                     id="{{ bundle_form.insert_file.id_for_label }}" {% if form.is_bound %} value="{{ bundle_form.insert_file.value }}" {% endif %}> 
+                </div>
+                {% if bundle_form.insert_file.errors %}
+                    <ul class="errorList">
+                        {% for error in form.insert_file.errors %}
+                            <li class="text-danger">{{ error|escape }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+        <hr/>
+
+        <div class="row mb-5">
+            <h2>Overlap</h2>
+            <div class="col">
+                <p>
+                    How much of an overlap would you like between your parts?
+                </p>
+                {{ bundle_form.overlap.label_tag }}
+                <div class="input-group mt-2">
+                    <input type="number" name="{{ bundle_form.overlap.html_name }}" class="form-control" placeholder="30" 
+                    id="{{ bundle_form.overlap.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.overlap.value }}" {% endif %}>
+                    <span class="input-group-text" id="{{ bundle_form.overlap.id_for_label }}">nt</span>
+                </div>
+                {% if bundle_form.overlap.errors %}
+                    <ul class="errorList">
+                        {% for error in bundle_form.overlap.errors %}
+                            <li class="text-danger">{{ error|escape }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+        <hr/>
+
+        <div class="row mb-5">
+            <h2>Overhangs</h2>
+            <div class="col">
+                <p>
+                    Which high-fidelity overhang set will you use for your experiment?
+                </p>        
+                <label for="id_overhangs">Overhangs set:</label>
+                <select class="form-select mt-2" name="{{ bundle_form.overhangs.html_name }}" required="" id="{{bundle_form.overhangs.id_for_label}}">
+                    {% for value, text in bundle_form.fields.overhangs.choices %}
+                        <option value="{{ value }}">{{ text }}</option>
+                    {% endfor %}
+                </select>
+                {% if bundle_form.overhangs.errors %}
+                    <ul class="errorList">
+                        {% for error in bundle_form.overhangs.errors %}
+                            <li class="text-danger">{{ error|escape }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p class="fw-light fst-italic">
+                    - Potapov et al 2018 <a href="https://pubs.acs.org/doi/10.1021/acssynbio.8b00333" target="_blank" rel="noopener noreferrer">Go to paper...</a>
+                 </p>
+                <p class="mt-4">
+                    <strong>Would you like scarless primer design?</strong>
+                </p>
+                {{ bundle_form.scarless.label_tag }}
+                <div id="scarCheck">
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ bundle_form.scarless.html_name }}" 
+                        id="{{ bundle_form.scarless.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.scarless.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ bundle_form.scarless.id_for_label }}">Yes</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+
+        <div class="row mb-5">
+            <h2>BLAST Query</h2>
+            <div class="col">
+                <p>
+                    Which <strong>BLAST</strong> databases would you like to query from to find parts?
+                </p>
+                <label for="dbCheck" class="form-label">Databases:</label>
+                <div id="dbCheck">
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ bundle_form.addgene.html_name }}" 
+                        id="{{ bundle_form.addgene.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.addgene.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ bundle_form.addgene.id_for_label }}">AddGene</label>
+                    </div>
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ bundle_form.dnasu.html_name }}" 
+                        id="{{ bundle_form.dnasu.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.dnasu.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ bundle_form.dnasu.id_for_label }}">DNASU</label>
+                    </div>
+                    <div class="form-check form-check-inline form-switch">
+                        <input class="form-check-input" type="checkbox" name="{{ bundle_form.igem.html_name }}" 
+                        id="{{ bundle_form.igem.id_for_label}}" {% if bundle_form.is_bound %} value="{{ bundle_form.igem.value }}" {% endif %}>
+                        <label class="form-check-label" for="{{ bundle_form.igem.id_for_label}}">iGEM</label>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <p>
+                        Enter the minimum and maximum nucleotide sequence sizes to use that are returned from the database(s). 
+                        BLAST alignment query results are filtered according to these sizes. 
+                    </p>
+                    <div class="col-md-6">
+                        {{ bundle_form.min_blast.label_tag }}
+                        <div class="input-group mt-2" id="{{ bundle_form.min_blast.id_for_label }}">
+                            <input type="number" name="{{ bundle_form.min_blast.html_name }}" min="0" placeholder="100" class="form-control" required 
+                            id="{{ bundle_form.min_blast.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.min_blast.value }}" {% endif %}>
+                            <span class="input-group-text">nt</span>
+                        </div>
+                        {% if bundle_form.min_blast.errors %}
+                        <ul class="errorList">
+                            {% for error in bundle_form.min_blast.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                        <ul class="errorList" hidden></ul>
+                    </div>
+                    <div class="col-md-6">
+                        {{ bundle_form.max_blast.label_tag }}
+                        <div class="input-group mt-2" id="{{ bundle_form.max_blast.id_for_label }}">
+                            <input type="number" name="{{ bundle_form.max_blast.html_name }}" class="form-control" placeholder="1000" required 
+                            id="{{ bundle_form.max_blast.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.max_blast.value }}" {% endif %}>
+                            <span class="input-group-text">nt</span>
+                        </div>
+                        {% if bundle_form.max_blast.errors %}
+                        <ul class="errorList">
+                            {% for error in bundle_form.max_blast.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <p>
+                        Enter the minimum and maximum nucleotide sequence sizes to use for synthesized assembly sequences.
+                    </p>
+                    <div class="col-md-6">
+                        {{ bundle_form.min_synth.label_tag }}
+                        <div class="input-group mt-2" id="{{ bundle_form.min_synth.id_for_label }}">
+                            <input type="number" name="{{ bundle_form.min_synth.html_name }}" min="0" placeholder="100" class="form-control" required 
+                            id="{{ bundle_form.min_synth.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.min_synth.value }}" {% endif %}>
+                            <span class="input-group-text">nt</span>
+                        </div>
+                        {% if bundle_form.min_synth.errors %}
+                        <ul class="errorList">
+                            {% for error in bundle_form.min_synth.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                        <ul class="errorList" hidden></ul>
+                    </div>
+                    <div class="col-md-6">
+                        {{ bundle_form.max_synth.label_tag }}
+                        <div class="input-group mt-2" id="{{ bundle_form.max_synth.id_for_label }}">
+                            <input type="number" name="{{ bundle_form.max_synth.html_name }}" class="form-control" placeholder="1000" required 
+                            id="{{ bundle_form.max_synth.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.max_synth.value }}" {% endif %}>
+                            <span class="input-group-text">nt</span>
+                        </div>
+                        {% if bundle_form.max_synth.errors %}
+                        <ul class="errorList">
+                            {% for error in bundle_form.max_synth.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+
+        <div class="row mb-5">
+            <h2>Experiment</h2>
+            <p>
+                Enter experimental parameters you will be using for your assembly experiment in the lab.
+                These values are important for primer desing and thermodynamic analysis.
+            </p>
+            <div class="col">
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        {{ bundle_form.mv_conc.label_tag }}
+                        <div class="input-group mt-2" id="{{ bundle_form.mv_conc.id_for_label }}">
+                            <input type="number" name="{{ bundle_form.mv_conc.html_name }}" class="form-control" placeholder="50" required
+                            id="{{ bundle_form.mv_conc.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.mv_conc.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ bundle_form.mv_conc.id_for_label }}">mM</span>
+                        </div>
+                        {% if bundle_form.mv_conc.errors %}
+                        <ul class="errorList">
+                            {% for error in bundle_form.mv_conc.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        {{ bundle_form.dv_conc.label_tag }}
+                        <div class="input-group mt-2" id="{{ bundle_form.dv_conc.id_for_label }}">
+                            <input type="number" name="{{ bundle_form.dv_conc.html_name }}" class="form-control" placeholder="1.5" required
+                            id="{{ bundle_form.dv_conc.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.dv_conc.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ bundle_form.dv_conc.id_for_label }}">mM</span>
+                        </div>
+                        {% if bundle_form.dv_conc.errors %}
+                        <ul class="errorList">
+                            {% for error in bundle_form.dv_conc.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        {{ bundle_form.dntp_conc.label_tag }}
+                        <div class="input-group mt-2" id="{{ bundle_form.dntp_conc.id_for_label }}">
+                            <input type="number" name="{{ bundle_form.dntp_conc.html_name }}" class="form-control" placeholder="0.8" required
+                            id="{{ bundle_form.dntp_conc.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.dntp_conc.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ bundle_form.dntp_conc.id_for_label }}">mM</span>
+                        </div>
+                        {% if bundle_form.dntp_conc.errors %}
+                        <ul class="errorList">
+                            {% for error in bundle_form.dntp_conc.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        {{ bundle_form.dna_conc.label_tag }}
+                        <div class="input-group mt-2" id="{{ bundle_form.dna_conc.id_for_label }}">
+                            <input type="number" name="{{ bundle_form.dna_conc.html_name }}" class="form-control" placeholder="50" required
+                            id="{{ bundle_form.dna_conc.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.dna_conc.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ bundle_form.dna_conc.id_for_label }}">nM</span>
+                        </div>
+                        {% if bundle_form.dna_conc.errors %}
+                        <ul class="errorList">
+                            {% for error in bundle_form.dna_conc.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ bundle_form.tm.label_tag }}
+                        <div class="input-group mt-2" id="{{ bundle_form.tm.id_for_label }}">
+                            <input type="number" name="{{ bundle_form.tm.html_name }}" class="form-control" placeholder="60" required
+                            id="{{ bundle_form.tm.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.tm.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ bundle_form.tm.id_for_label }}">mM</span>
+                        </div>
+                        {% if bundle_form.tm.errors %}
+                        <ul class="errorList">
+                            {% for error in bundle_form.tm.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+
+        <button type="submit" id="formButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assemblyModal">Assemble</button>
+    </form>
+{% endblock content %}
