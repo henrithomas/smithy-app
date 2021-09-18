@@ -11,6 +11,7 @@ from .models import (
     GoldenGatePrimer,
     GibsonSolution,
     GoldenGateSolution,
+    PCRAssembly,
     PCRPart,
     PCRPrimer,
     PCRSolution,
@@ -39,7 +40,13 @@ from dna_features_viewer import (
 from django.core.files import File
 import os
 import json
+from datetime import datetime
 
+
+def write_uploaded_file(f, fname):
+    with open(fname, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
 
 def db_list(addgene, igem, dnasu):
     """
@@ -914,18 +921,19 @@ def slic_solution_service(obj, assembler, assembly, fragments):
         reverse_primer.save()
 
 def bundle_create_service(bundle_data):
-    t = bundle_data['title']
-    pass
-
+    assemblies = []
+    assemblers = []
+    assembly_solutions = []
     # save backbone and insert files here
     # smithy-app/smithy/media
-    # ~/projects/smithy-app/smithy/media
-
-    bundle = AssemblyBundle(
-        title=bundle_data['title'],
-        description=bundle_data['description']
-    )
-    bundle.save()
+    path = '/home/hthoma/projects/smithy-app/smithy/media/fasta'
+    backbone_name, backbone_extension = os.path.splitext(bundle_data['backbone_file'].name) 
+    insert_name, insert_extension = os.path.splitext(bundle_data['insert_file'].name)
+    backbone_file_path = f'{path}/backbones/{backbone_name}_{datetime.now():%S%f}{backbone_extension}'
+    insert_file_path = f'{path}/queries/{insert_name}_{datetime.now():%S%f}{insert_extension}'
+    
+    write_uploaded_file(bundle_data['backbone_file'], backbone_file_path)
+    write_uploaded_file(bundle_data['insert_file'], insert_file_path)
 
     # create base assembler object for running queries and creating
     # a solution tree
@@ -935,8 +943,8 @@ def bundle_create_service(bundle_data):
         bundle_data['dna_conc'],
         bundle_data['dntp_conc'], 
         bundle_data['tm'], 
-        obj.backbone_file.path, 
-        obj.insert_file.path, 
+        backbone_file_path, 
+        insert_file_path, 
         db_list(bundle_data['addgene'], bundle_data['igem'], bundle_data['dnasu']), 
         min_frag=bundle_data['min_blast'], 
         max_frag=bundle_data['max_blast'], 
@@ -951,20 +959,49 @@ def bundle_create_service(bundle_data):
         results, error = query_assembler.query()
         query_assembler.solution_building(results)
 
+    bundle = AssemblyBundle(
+        title=bundle_data['title'],
+        description=bundle_data['description']
+    )
+    bundle.save()
+
     # create and save models for all selected methods
-
-
     # make assembler objects for each method
     # add solution trees to assembler objects
+    # run the design routines for each assembler
+    # pass each design to new x_bundle_service to create solution, parts,
+    # and primer objects and maps 
+    # add new x_obj to bundle
     if bundle_data['gibson']:
+        gibson_obj = GibsonAssembly(
+            title=bundle_data['title'],
+            multipart=bundle_data['multipart'],
+            addgene=bundle_data['addgene'],
+            igem=bundle_data['igem'],
+            dnasu=bundle_data['dnasu'],
+            min_blast=bundle_data['min_blast'],
+            max_blast=bundle_data['max_blast'],
+            min_synth=bundle_data['min_synth'],
+            max_synth=bundle_data['max_synth'],
+            mv_conc=bundle_data['mv_conc'],
+            dntp_conc=bundle_data['dntp_conc'],
+            dna_conc=bundle_data['dna_conc'],
+            tm=bundle_data['tm'],
+            backbone_file=File(open(backbone_file_path, 'rb')),
+            insert_file=File(open(insert_file_path, 'rb')),
+            multi_query=bundle_data['multi_query'],
+            overlap=bundle_data['overlap']
+        )
+        gibson_obj.save()
+
         gibson_assembler = GibsonAssembler(
             bundle_data['mv_conc'], 
             bundle_data['dv_conc'], 
             bundle_data['dna_conc'],
             bundle_data['dntp_conc'], 
             bundle_data['tm'], 
-            obj.backbone_file.path, 
-            obj.insert_file.path, 
+            backbone_file_path, 
+            insert_file_path, 
             db_list(bundle_data['addgene'], bundle_data['igem'], bundle_data['dnasu']), 
             min_frag=bundle_data['min_blast'], 
             max_frag=bundle_data['max_blast'], 
@@ -974,16 +1011,40 @@ def bundle_create_service(bundle_data):
             multi_query=bundle_data['multi_query']
         )
         gibson_assembler.solution_tree = query_assembler.solution_tree
-        pass
+        gibson_assembly, gibson_fragments = gibson_assembler.design(solution=0)
+        gibson_solution_service(gibson_obj, gibson_assembler, gibson_assembly, gibson_fragments)
+        bundle.gibsons.add(gibson_obj)
     if bundle_data['goldengate']:
+        goldengate_obj = GoldenGateAssembly(
+            title=bundle_data['title'],
+            multipart=bundle_data['multipart'],
+            addgene=bundle_data['addgene'],
+            igem=bundle_data['igem'],
+            dnasu=bundle_data['dnasu'],
+            min_blast=bundle_data['min_blast'],
+            max_blast=bundle_data['max_blast'],
+            min_synth=bundle_data['min_synth'],
+            max_synth=bundle_data['max_synth'],
+            mv_conc=bundle_data['mv_conc'],
+            dntp_conc=bundle_data['dntp_conc'],
+            dna_conc=bundle_data['dna_conc'],
+            tm=bundle_data['tm'],
+            backbone_file=File(open(backbone_file_path, 'rb')),
+            insert_file=File(open(insert_file_path, 'rb')),
+            multi_query=bundle_data['multi_query'],
+            overhangs=bundle_data['overhangs'],
+            scarless=bundle_data['scarless']
+        )
+        goldengate_obj.save()
+
         goldengate_assembler = GoldenGateAssembler(
             bundle_data['mv_conc'], 
             bundle_data['dv_conc'], 
             bundle_data['dna_conc'],
             bundle_data['dntp_conc'], 
             bundle_data['tm'], 
-            obj.backbone_file.path, 
-            obj.insert_file.path, 
+            backbone_file_path, 
+            insert_file_path, 
             db_list(bundle_data['addgene'], bundle_data['igem'], bundle_data['dnasu']), 
             min_frag=bundle_data['min_blast'], 
             max_frag=bundle_data['max_blast'], 
@@ -994,16 +1055,39 @@ def bundle_create_service(bundle_data):
             scarless=bundle_data['scarless']
         )
         goldengate_assembler.solution_tree = query_assembler.solution_tree
-        pass
+        goldengate_assembly, goldengate_fragments = goldengate_assembler.design(solution=0)
+        goldengate_solution_service(goldengate_obj, goldengate_assembler, goldengate_assembly, goldengate_fragments)
+        bundle.goldengates.add(goldengate_obj)
     if bundle_data['biobricks']:
+        biobricks_obj = BioBricksAssembly(
+            title=bundle_data['title'],
+            multipart=bundle_data['multipart'],
+            addgene=bundle_data['addgene'],
+            igem=bundle_data['igem'],
+            dnasu=bundle_data['dnasu'],
+            min_blast=bundle_data['min_blast'],
+            max_blast=bundle_data['max_blast'],
+            min_synth=bundle_data['min_synth'],
+            max_synth=bundle_data['max_synth'],
+            mv_conc=bundle_data['mv_conc'],
+            dntp_conc=bundle_data['dntp_conc'],
+            dna_conc=bundle_data['dna_conc'],
+            tm=bundle_data['tm'],
+            backbone_file=File(open(backbone_file_path, 'rb')),
+            insert_file=File(open(insert_file_path, 'rb')),
+            multi_query=bundle_data['multi_query'],
+            overlap=bundle_data['overlap']
+        )
+        biobricks_obj.save()
+
         biobricks_assembler = BioBrickAssembler(
             bundle_data['mv_conc'], 
             bundle_data['dv_conc'], 
             bundle_data['dna_conc'],
             bundle_data['dntp_conc'], 
             bundle_data['tm'], 
-            obj.backbone_file.path, 
-            obj.insert_file.path, 
+            backbone_file_path, 
+            insert_file_path, 
             db_list(bundle_data['addgene'], bundle_data['igem'], bundle_data['dnasu']), 
             min_frag=bundle_data['min_blast'], 
             max_frag=bundle_data['max_blast'], 
@@ -1012,16 +1096,39 @@ def bundle_create_service(bundle_data):
             multi_query=bundle_data['multi_query']
         )
         biobricks_assembler.solution_tree = query_assembler.solution_tree
-        pass
+        biobricks_assembly, biobricks_fragments = biobricks_assembler.design(solution=0)
+        biobricks_solution_service(biobricks_obj, biobricks_assembler, biobricks_assembly, biobricks_fragments)
+        bundle.biobrickss.add(biobricks_obj)
     if bundle_data['pcr']:
+        pcr_obj = PCRAssembly(
+            title=bundle_data['title'],
+            multipart=bundle_data['multipart'],
+            addgene=bundle_data['addgene'],
+            igem=bundle_data['igem'],
+            dnasu=bundle_data['dnasu'],
+            min_blast=bundle_data['min_blast'],
+            max_blast=bundle_data['max_blast'],
+            min_synth=bundle_data['min_synth'],
+            max_synth=bundle_data['max_synth'],
+            mv_conc=bundle_data['mv_conc'],
+            dntp_conc=bundle_data['dntp_conc'],
+            dna_conc=bundle_data['dna_conc'],
+            tm=bundle_data['tm'],
+            backbone_file=File(open(backbone_file_path, 'rb')),
+            insert_file=File(open(insert_file_path, 'rb')),
+            multi_query=bundle_data['multi_query'],
+            overlap=bundle_data['overlap']
+        )
+        pcr_obj.save()
+
         pcr_assembler = PCRAssembler(
             bundle_data['mv_conc'], 
             bundle_data['dv_conc'], 
             bundle_data['dna_conc'],
             bundle_data['dntp_conc'], 
             bundle_data['tm'], 
-            obj.backbone_file.path, 
-            obj.insert_file.path, 
+            backbone_file_path, 
+            insert_file_path, 
             db_list(bundle_data['addgene'], bundle_data['igem'], bundle_data['dnasu']), 
             min_frag=bundle_data['min_blast'], 
             max_frag=bundle_data['max_blast'], 
@@ -1031,16 +1138,39 @@ def bundle_create_service(bundle_data):
             multi_query=bundle_data['multi_query']
         )
         pcr_assembler.solution_tree = query_assembler.solution_tree
-        pass
+        pcr_assembly, pcr_fragments = pcr_assembler.design(solution=0)
+        pcr_solution_service(pcr_obj, pcr_assembler, pcr_assembly, pcr_fragments)
+        bundle.pcrs.add(pcr_obj)
     if bundle_data['slic']:
+        slic_obj = SLICAssembly(
+            title=bundle_data['title'],
+            multipart=bundle_data['multipart'],
+            addgene=bundle_data['addgene'],
+            igem=bundle_data['igem'],
+            dnasu=bundle_data['dnasu'],
+            min_blast=bundle_data['min_blast'],
+            max_blast=bundle_data['max_blast'],
+            min_synth=bundle_data['min_synth'],
+            max_synth=bundle_data['max_synth'],
+            mv_conc=bundle_data['mv_conc'],
+            dntp_conc=bundle_data['dntp_conc'],
+            dna_conc=bundle_data['dna_conc'],
+            tm=bundle_data['tm'],
+            backbone_file=File(open(backbone_file_path, 'rb')),
+            insert_file=File(open(insert_file_path, 'rb')),
+            multi_query=bundle_data['multi_query'],
+            overlap=bundle_data['overlap']
+        )
+        slic_obj.save()
+
         slic_assembler = SLICAssembler(
             bundle_data['mv_conc'], 
             bundle_data['dv_conc'], 
             bundle_data['dna_conc'],
             bundle_data['dntp_conc'], 
             bundle_data['tm'], 
-            obj.backbone_file.path, 
-            obj.insert_file.path, 
+            backbone_file_path, 
+            insert_file_path, 
             db_list(bundle_data['addgene'], bundle_data['igem'], bundle_data['dnasu']), 
             min_frag=bundle_data['min_blast'], 
             max_frag=bundle_data['max_blast'], 
@@ -1050,13 +1180,13 @@ def bundle_create_service(bundle_data):
             multi_query=bundle_data['multi_query']
         )
         slic_assembler.solution_tree = query_assembler.solution_tree
-        pass
+        slic_assembly, slic_fragments = slic_assembler.design(solution=0)
+        slic_solution_service(slic_obj, slic_assembler, slic_assembly, slic_fragments)
+        bundle.slics.add(slic_obj)
 
 
-    # run the design routines for each assembler
-    # pass each design to new x_bundle_service to create solution, parts,
-    # and primer objects and maps
-    # 
+
+
 
 
 
