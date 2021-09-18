@@ -2,6 +2,7 @@ from django.db.models.deletion import Collector
 
 from tests import cut_locations
 from .models import (
+    AssemblyBundle,
     GibsonAssembly, 
     GibsonPart,
     GibsonPrimer,
@@ -29,6 +30,7 @@ from assemblies.gibson import (
 )
 from assemblies.goldengate import GoldenGateAssembler
 from assemblies.traditional_re import BioBrickAssembler
+from assemblies.assembler import Assembler
 from dna_features_viewer import (
     GraphicFeature, 
     GraphicRecord, 
@@ -204,7 +206,7 @@ def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
     solution_model.save()
     os.remove(temp_plot)
 
-def gibson_create_service(gibson_obj):
+def gibson_create_service(obj):
     """
     
 
@@ -217,52 +219,215 @@ def gibson_create_service(gibson_obj):
     Returns
     -------
     """
-    gib_assembler = GibsonAssembler(
-        gibson_obj.mv_conc, 
-        gibson_obj.dv_conc, 
-        gibson_obj.dna_conc,
-        gibson_obj.dntp_conc, 
-        gibson_obj.tm, 
-        gibson_obj.backbone_file.path, 
-        gibson_obj.insert_file.path, 
-        db_list(gibson_obj.addgene, gibson_obj.igem, gibson_obj.dnasu), 
-        min_frag=gibson_obj.min_blast, 
-        max_frag=gibson_obj.max_blast, 
-        min_synth=gibson_obj.min_synth, 
-        max_synth=gibson_obj.max_synth,
-        overlap=gibson_obj.overlap,
-        multi_query=gibson_obj.multi_query
+    assembler = GibsonAssembler(
+        obj.mv_conc, 
+        obj.dv_conc, 
+        obj.dna_conc,
+        obj.dntp_conc, 
+        obj.tm, 
+        obj.backbone_file.path, 
+        obj.insert_file.path, 
+        db_list(obj.addgene, obj.igem, obj.dnasu), 
+        min_frag=obj.min_blast, 
+        max_frag=obj.max_blast, 
+        min_synth=obj.min_synth, 
+        max_synth=obj.max_synth,
+        overlap=obj.overlap,
+        multi_query=obj.multi_query
     )
 
-    if gibson_obj.multi_query:
-        results, error = gib_assembler.run_multi_query()
-        gib_assembler.multi_query_solution_building(results)
+    if obj.multi_query:
+        results, error = assembler.run_multi_query()
+        assembler.multi_query_solution_building(results)
     else:
-        results, error = gib_assembler.query()
-        gib_assembler.solution_building(results)
-    gib_assembly, gib_fragments = gib_assembler.design(solution=0)
+        results, error = assembler.query()
+        assembler.solution_building(results)
+    assembly, fragments = assembler.design(solution=0)
 
-    total_len = gib_assembler.backbone.seq.length + gib_assembler.query_record.seq.length
+    gibson_solution_service(obj, assembler, assembly, fragments)
+
+def goldengate_create_service(obj):
+    """
+    
+
+
+    Parameters
+    ----------
+
+
+
+    Returns
+    -------
+    """
+    assembler = GoldenGateAssembler(
+        obj.mv_conc, 
+        obj.dv_conc, 
+        obj.dna_conc,
+        obj.dntp_conc, 
+        obj.tm, 
+        obj.backbone_file.path, 
+        obj.insert_file.path, 
+        db_list(obj.addgene,obj.igem, obj.dnasu), 
+        min_frag=obj.min_blast, 
+        max_frag=obj.max_blast, 
+        min_synth=obj.min_synth, 
+        max_synth=obj.max_synth,
+        ovhngs=obj.overhangs,
+        multi_query=obj.multi_query,
+        scarless=obj.scarless
+    )
+
+    if obj.multi_query:
+        results, error = assembler.run_multi_query()
+        assembler.multi_query_solution_building(results)
+    else:
+        results, error = assembler.query()
+        assembler.solution_building(results)
+    assembly, fragments = assembler.design(solution=0)
+
+    goldengate_solution_service(obj, assembler, assembly, fragments)
+
+def biobricks_create_service(obj):
+    """
+    
+
+
+    Parameters
+    ----------
+
+
+
+    Returns
+    -------
+    """
+    assembler = BioBrickAssembler(
+        obj.mv_conc, 
+        obj.dv_conc, 
+        obj.dna_conc,
+        obj.dntp_conc, 
+        obj.tm, 
+        obj.backbone_file.path, 
+        obj.insert_file.path, 
+        db_list(obj.addgene, obj.igem, obj.dnasu), 
+        min_frag=obj.min_blast, 
+        max_frag=obj.max_blast, 
+        min_synth=obj.min_synth, 
+        max_synth=obj.max_synth,
+        multi_query=obj.multi_query  
+    )
+
+    if obj.multi_query:
+        results, error = assembler.run_multi_query()
+        assembler.multi_query_solution_building(results)
+    else:
+        results, error = assembler.query()
+        assembler.solution_building(results)
+    assembly, fragments = assembler.design(solution=0)
+
+    biobricks_solution_service(obj, assembler, assembly, fragments)   
+
+def pcr_create_service(obj):
+    """
+    
+
+
+    Parameters
+    ----------
+
+
+
+    Returns
+    -------
+    """
+    assembler = PCRAssembler(
+        obj.mv_conc,
+        obj.dv_conc,
+        obj.dna_conc,
+        obj.dntp_conc,
+        obj.tm,
+        obj.backbone_file.path,
+        obj.insert_file.path,
+        db_list(obj.addgene, obj.igem, obj.dnasu),
+        min_frag=obj.min_blast,
+        max_frag=obj.max_blast,
+        min_synth=obj.min_synth,
+        max_synth=obj.max_synth,
+        overlap=obj.overlap,
+        multi_query=obj.multi_query
+    )
+
+    if obj.multi_query:
+        results, error = assembler.run_multi_query()
+        assembler.multi_query_solution_building(results)
+    else:
+        results, error = assembler.query()
+        assembler.solution_building(results)
+    assembly, fragments = assembler.design(solution=0)
+
+    pcr_solution_service(obj, assembler, assembly, fragments)
+
+def slic_create_service(obj):
+    """
+    
+
+
+    Parameters
+    ----------
+
+
+
+    Returns
+    -------
+    """
+    assembler = SLICAssembler(
+        obj.mv_conc,
+        obj.dv_conc,
+        obj.dna_conc,
+        obj.dntp_conc,
+        obj.tm,
+        obj.backbone_file.path,
+        obj.insert_file.path,
+        db_list(obj.addgene, obj.igem, obj.dnasu),
+        min_frag=obj.min_blast,
+        max_frag=obj.max_blast,
+        min_synth=obj.min_synth,
+        max_synth=obj.max_synth,
+        overlap=obj.overlap,
+        multi_query=obj.multi_query
+    )
+
+    if obj.multi_query:
+        results, error = assembler.run_multi_query()
+        assembler.multi_query_solution_building(results)
+    else:
+        results, error = assembler.query()
+        assembler.solution_building(results)
+    assembly, fragments = assembler.design(solution=0)
+
+    slic_solution_service(obj, assembler, assembly, fragments)    
+
+def gibson_solution_service(obj, assembler, assembly, fragments):
+    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
 
     # save assembly parts with meta/annotations and their primers here
     # TODO update to have a match % and BLAST solution sequence
     # TODO add a foreach solution in for the assembly
     gibson_solution = GibsonSolution(
-        name=f'Solution - {gibson_obj.title}',
-        backbone=gib_assembler.backbone.seq,
-        query=gib_assembler.query_record.seq,
+        name=f'Solution - {obj.title}',
+        backbone=assembler.backbone.seq,
+        query=assembler.query_record.seq,
         solution='',
-        parts_count=len(gib_fragments),
-        primers_count=len(gib_fragments) * 2,
+        parts_count=len(fragments),
+        primers_count=len(fragments) * 2,
         match=0.0,
-        assembly=gibson_obj
+        assembly=obj
     )
     gibson_solution.save()
 
-    plasmid_map(gibson_solution, gib_assembly, gibson_obj.title, 0, total_len)
+    plasmid_map(gibson_solution, assembly, obj.title, 0, total_len)
 
 
-    for i, part in enumerate(gib_assembly):
+    for i, part in enumerate(assembly):
         gibson_part_entry = GibsonPart(
             name=part.name,
             database=part.annotations['db'],
@@ -280,11 +445,11 @@ def gibson_create_service(gibson_obj):
         gibson_part_entry.save()
 
         if i == 0:
-            left_index = len(gib_assembly) - 1
+            left_index = len(assembly) - 1
         else:
             left_index = i - 1
 
-        if i == len(gib_assembly) - 1:
+        if i == len(assembly) - 1:
             right_index = 0
         else:
             right_index = i + 1
@@ -292,8 +457,8 @@ def gibson_create_service(gibson_obj):
         part_map(
             gibson_part_entry, 
             part, 
-            gib_assembly[left_index], 
-            gib_assembly[right_index], 
+            assembly[left_index], 
+            assembly[right_index], 
             f'{part.name}-{i}', 
             0
         )
@@ -344,66 +509,27 @@ def gibson_create_service(gibson_obj):
         )
         reverse_primer.save()
 
-def goldengate_create_service(goldengate_obj):
-    """
-    
-
-
-    Parameters
-    ----------
-
-
-
-    Returns
-    -------
-    """
-    gg_assembler = GoldenGateAssembler(
-        goldengate_obj.mv_conc, 
-        goldengate_obj.dv_conc, 
-        goldengate_obj.dna_conc,
-        goldengate_obj.dntp_conc, 
-        goldengate_obj.tm, 
-        goldengate_obj.backbone_file.path, 
-        goldengate_obj.insert_file.path, 
-        db_list(goldengate_obj.addgene,goldengate_obj.igem, goldengate_obj.dnasu), 
-        min_frag=goldengate_obj.min_blast, 
-        max_frag=goldengate_obj.max_blast, 
-        min_synth=goldengate_obj.min_synth, 
-        max_synth=goldengate_obj.max_synth,
-        ovhngs=goldengate_obj.overhangs,
-        multi_query=goldengate_obj.multi_query,
-        scarless=goldengate_obj.scarless
-    )
-    
-    space = 0 if goldengate_obj.scarless else 4
-
-    if goldengate_obj.multi_query:
-        results, error = gg_assembler.run_multi_query()
-        gg_assembler.multi_query_solution_building(results)
-    else:
-        results, error = gg_assembler.query()
-        gg_assembler.solution_building(results)
-    gg_assembly, gg_fragments = gg_assembler.design(solution=0)
-
-    total_len = gg_assembler.backbone.seq.length + gg_assembler.query_record.seq.length + 4
+def goldengate_solution_service(obj, assembler, assembly, fragments):
+    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length + 4
+    space = 0 if obj.scarless else 4
 
     # TODO update to have a match % and BLAST solution sequence
     # TODO add a foreach solution in for the assembly
     goldengate_solution = GoldenGateSolution(
-        name=f'Solution - {goldengate_obj.title}',
-        backbone=gg_assembler.backbone.seq,
-        query=gg_assembler.query_record.seq,
+        name=f'Solution - {obj.title}',
+        backbone=assembler.backbone.seq,
+        query=assembler.query_record.seq,
         solution='',
-        parts_count=len(gg_fragments),
-        primers_count=len(gg_fragments) * 2,
+        parts_count=len(fragments),
+        primers_count=len(fragments) * 2,
         match=0.0,
-        assembly=goldengate_obj
+        assembly=obj
     )
     goldengate_solution.save()
 
-    plasmid_map(goldengate_solution, gg_assembly, goldengate_obj.title, space, total_len)
+    plasmid_map(goldengate_solution, assembly, obj.title, space, total_len)
 
-    for i, part in enumerate(gg_assembly):
+    for i, part in enumerate(assembly):
         goldengate_part_entry = GoldenGatePart(
             name=part.name,
             database=part.annotations['db'],
@@ -423,11 +549,11 @@ def goldengate_create_service(goldengate_obj):
         goldengate_part_entry.save()
 
         if i == 0:
-            left_index = len(gg_assembly) - 1
+            left_index = len(assembly) - 1
         else:
             left_index = i - 1
 
-        if i == len(gg_assembly) - 1:
+        if i == len(assembly) - 1:
             right_index = 0
         else:
             right_index = i + 1
@@ -435,8 +561,8 @@ def goldengate_create_service(goldengate_obj):
         part_map(
             goldengate_part_entry, 
             part, 
-            gg_assembly[left_index], 
-            gg_assembly[right_index], 
+            assembly[left_index], 
+            assembly[right_index], 
             f'{part.name}-{i}', 
             space
         )
@@ -487,61 +613,25 @@ def goldengate_create_service(goldengate_obj):
         )
         reverse_primer.save()
 
-def biobricks_create_service(biobricks_obj):
-    """
-    
-
-
-    Parameters
-    ----------
-
-
-
-    Returns
-    -------
-    """
-    biobricks_assembler = BioBrickAssembler(
-        biobricks_obj.mv_conc, 
-        biobricks_obj.dv_conc, 
-        biobricks_obj.dna_conc,
-        biobricks_obj.dntp_conc, 
-        biobricks_obj.tm, 
-        biobricks_obj.backbone_file.path, 
-        biobricks_obj.insert_file.path, 
-        db_list(biobricks_obj.addgene, biobricks_obj.igem, biobricks_obj.dnasu), 
-        min_frag=biobricks_obj.min_blast, 
-        max_frag=biobricks_obj.max_blast, 
-        min_synth=biobricks_obj.min_synth, 
-        max_synth=biobricks_obj.max_synth,
-        multi_query=biobricks_obj.multi_query  
-    )
-
-    if biobricks_obj.multi_query:
-        results, error = biobricks_assembler.run_multi_query()
-        biobricks_assembler.multi_query_solution_building(results)
-    else:
-        results, error = biobricks_assembler.query()
-        biobricks_assembler.solution_building(results)
-    biobricks_assembly, biobricks_fragments = biobricks_assembler.design(solution=0)
-
-    total_len = biobricks_assembler.backbone.seq.length + biobricks_assembler.query_record.seq.length
+def biobricks_solution_service(obj, assembler, assembly, fragments):
+    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
 
     biobricks_solution = BioBricksSolution(
-        name=f'Solution - {biobricks_obj.title}',
-        backbone=biobricks_assembler.backbone.seq,
-        query=biobricks_assembler.query_record.seq,
+        name=f'Solution - {obj.title}',
+        backbone=assembler.backbone.seq,
+        query=assembler.query_record.seq,
         solution='',
-        parts_count=len(biobricks_fragments),
-        primers_count=len(biobricks_fragments) * 2,
+        parts_count=len(fragments),
+        primers_count=len(fragments) * 2,
         match=0.0,
-        assembly=biobricks_obj
+        assembly=obj
     )
     biobricks_solution.save()
 
-    plasmid_map(biobricks_solution, biobricks_assembly, biobricks_obj.title, 0, total_len)
+    plasmid_map(biobricks_solution, assembly, obj.title, 0, total_len)
 
 
-    for i, part in enumerate(biobricks_assembly):
+    for i, part in enumerate(assembly):
         biobricks_part_entry = BioBricksPart(
             name=part.name,
             database=part.annotations['db'],
@@ -559,11 +649,11 @@ def biobricks_create_service(biobricks_obj):
         biobricks_part_entry.save()
 
         if i == 0:
-            left_index = len(biobricks_assembly) - 1
+            left_index = len(assembly) - 1
         else:
             left_index = i - 1
 
-        if i == len(biobricks_assembly) - 1:
+        if i == len(assembly) - 1:
             right_index = 0
         else:
             right_index = i + 1
@@ -571,8 +661,8 @@ def biobricks_create_service(biobricks_obj):
         part_map(
             biobricks_part_entry, 
             part, 
-            biobricks_assembly[left_index], 
-            biobricks_assembly[right_index], 
+            assembly[left_index], 
+            assembly[right_index], 
             f'{part.name}-{i}', 
             0
         )
@@ -621,64 +711,27 @@ def biobricks_create_service(biobricks_obj):
             homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
             part=biobricks_part_entry 
         )
-        reverse_primer.save()    
+        reverse_primer.save()  
 
-def pcr_create_service(pcr_obj):
-    """
-    
-
-
-    Parameters
-    ----------
-
-
-
-    Returns
-    -------
-    """
-    pcr_assembler = PCRAssembler(
-        pcr_obj.mv_conc,
-        pcr_obj.dv_conc,
-        pcr_obj.dna_conc,
-        pcr_obj.dntp_conc,
-        pcr_obj.tm,
-        pcr_obj.backbone_file.path,
-        pcr_obj.insert_file.path,
-        db_list(pcr_obj.addgene, pcr_obj.igem, pcr_obj.dnasu),
-        min_frag=pcr_obj.min_blast,
-        max_frag=pcr_obj.max_blast,
-        min_synth=pcr_obj.min_synth,
-        max_synth=pcr_obj.max_synth,
-        overlap=pcr_obj.overlap,
-        multi_query=pcr_obj.multi_query
-    )
-
-    if pcr_obj.multi_query:
-        results, error = pcr_assembler.run_multi_query()
-        pcr_assembler.multi_query_solution_building(results)
-    else:
-        results, error = pcr_assembler.query()
-        pcr_assembler.solution_building(results)
-    pcr_assembly, pcr_fragments = pcr_assembler.design(solution=0)
-
-    total_len = pcr_assembler.backbone.seq.length + pcr_assembler.query_record.seq.length
+def pcr_solution_service(obj, assembler, assembly, fragments):
+    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
 
     pcr_solution = PCRSolution(
-        name=f'Solution - {pcr_obj.title}',
-        backbone=pcr_assembler.backbone.seq,
-        query=pcr_assembler.query_record.seq,
+        name=f'Solution - {obj.title}',
+        backbone=assembler.backbone.seq,
+        query=assembler.query_record.seq,
         solution='',
-        parts_count=len(pcr_fragments),
-        primers_count=len(pcr_fragments) * 2, 
+        parts_count=len(fragments),
+        primers_count=len(fragments) * 2, 
         match=0.0,
-        assembly=pcr_obj
+        assembly=obj
     )
     pcr_solution.save()
 
-    plasmid_map(pcr_solution, pcr_assembly, pcr_obj.title, 0, total_len)
+    plasmid_map(pcr_solution, assembly, obj.title, 0, total_len)
 
 
-    for i, part in enumerate(pcr_assembly):
+    for i, part in enumerate(assembly):
         pcr_part_entry = PCRPart(
             name=part.name,
             database=part.annotations['db'],
@@ -696,11 +749,11 @@ def pcr_create_service(pcr_obj):
         pcr_part_entry.save()
 
         if i == 0:
-            left_index = len(pcr_assembly) - 1
+            left_index = len(assembly) - 1
         else:
             left_index = i - 1
 
-        if i == len(pcr_assembly) - 1:
+        if i == len(assembly) - 1:
             right_index = 0
         else:
             right_index = i + 1
@@ -708,8 +761,8 @@ def pcr_create_service(pcr_obj):
         part_map(
             pcr_part_entry, 
             part, 
-            pcr_assembly[left_index], 
-            pcr_assembly[right_index], 
+            assembly[left_index], 
+            assembly[right_index], 
             f'{part.name}-{i}', 
             0
         )
@@ -760,62 +813,25 @@ def pcr_create_service(pcr_obj):
         )
         reverse_primer.save()
 
-def slic_create_service(slic_obj):
-    """
-    
-
-
-    Parameters
-    ----------
-
-
-
-    Returns
-    -------
-    """
-    slic_assembler = SLICAssembler(
-        slic_obj.mv_conc,
-        slic_obj.dv_conc,
-        slic_obj.dna_conc,
-        slic_obj.dntp_conc,
-        slic_obj.tm,
-        slic_obj.backbone_file.path,
-        slic_obj.insert_file.path,
-        db_list(slic_obj.addgene, slic_obj.igem, slic_obj.dnasu),
-        min_frag=slic_obj.min_blast,
-        max_frag=slic_obj.max_blast,
-        min_synth=slic_obj.min_synth,
-        max_synth=slic_obj.max_synth,
-        overlap=slic_obj.overlap,
-        multi_query=slic_obj.multi_query
-    )
-
-    if slic_obj.multi_query:
-        results, error = slic_assembler.run_multi_query()
-        slic_assembler.multi_query_solution_building(results)
-    else:
-        results, error = slic_assembler.query()
-        slic_assembler.solution_building(results)
-    slic_assembly, slic_fragments = slic_assembler.design(solution=0)
-
-    total_len = slic_assembler.backbone.seq.length + slic_assembler.query_record.seq.length
+def slic_solution_service(obj, assembler, assembly, fragments):
+    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
 
     slic_solution = SLICSolution(
-        name=f'Solution - {slic_obj.title}',
-        backbone=slic_assembler.backbone.seq,
-        query=slic_assembler.query_record.seq,
+        name=f'Solution - {obj.title}',
+        backbone=assembler.backbone.seq,
+        query=assembler.query_record.seq,
         solution='',
-        parts_count=len(slic_fragments),
-        primers_count=len(slic_fragments) * 2, 
+        parts_count=len(fragments),
+        primers_count=len(fragments) * 2, 
         match=0.0,
-        assembly=slic_obj
+        assembly=obj
     )
     slic_solution.save()
 
-    plasmid_map(slic_solution, slic_assembly, slic_obj.title, 0, total_len)
+    plasmid_map(slic_solution, assembly, obj.title, 0, total_len)
 
 
-    for i, part in enumerate(slic_assembly):
+    for i, part in enumerate(assembly):
         slic_part_entry = SLICPart(
             name=part.name,
             database=part.annotations['db'],
@@ -833,11 +849,11 @@ def slic_create_service(slic_obj):
         slic_part_entry.save()
 
         if i == 0:
-            left_index = len(slic_assembly) - 1
+            left_index = len(assembly) - 1
         else:
             left_index = i - 1
 
-        if i == len(slic_assembly) - 1:
+        if i == len(assembly) - 1:
             right_index = 0
         else:
             right_index = i + 1
@@ -845,8 +861,8 @@ def slic_create_service(slic_obj):
         part_map(
             slic_part_entry, 
             part, 
-            slic_assembly[left_index], 
-            slic_assembly[right_index], 
+            assembly[left_index], 
+            assembly[right_index], 
             f'{part.name}-{i}', 
             0
         )
@@ -896,3 +912,151 @@ def slic_create_service(slic_obj):
             part=slic_part_entry 
         )
         reverse_primer.save()
+
+def bundle_create_service(bundle_data):
+    t = bundle_data['title']
+    pass
+
+    # save backbone and insert files here
+    # smithy-app/smithy/media
+    # ~/projects/smithy-app/smithy/media
+
+    bundle = AssemblyBundle(
+        title=bundle_data['title'],
+        description=bundle_data['description']
+    )
+    bundle.save()
+
+    # create base assembler object for running queries and creating
+    # a solution tree
+    query_assembler = Assembler(
+        bundle_data['mv_conc'], 
+        bundle_data['dv_conc'], 
+        bundle_data['dna_conc'],
+        bundle_data['dntp_conc'], 
+        bundle_data['tm'], 
+        obj.backbone_file.path, 
+        obj.insert_file.path, 
+        db_list(bundle_data['addgene'], bundle_data['igem'], bundle_data['dnasu']), 
+        min_frag=bundle_data['min_blast'], 
+        max_frag=bundle_data['max_blast'], 
+        min_synth=bundle_data['min_synth'], 
+        max_synth=bundle_data['max_synth'],
+        multi_query=bundle_data['multi_query']
+    )
+    if bundle_data['multi_query']:
+        results, error = query_assembler.run_multi_query()
+        query_assembler.multi_query_solution_building(results)
+    else:
+        results, error = query_assembler.query()
+        query_assembler.solution_building(results)
+
+    # create and save models for all selected methods
+
+
+    # make assembler objects for each method
+    # add solution trees to assembler objects
+    if bundle_data['gibson']:
+        gibson_assembler = GibsonAssembler(
+            bundle_data['mv_conc'], 
+            bundle_data['dv_conc'], 
+            bundle_data['dna_conc'],
+            bundle_data['dntp_conc'], 
+            bundle_data['tm'], 
+            obj.backbone_file.path, 
+            obj.insert_file.path, 
+            db_list(bundle_data['addgene'], bundle_data['igem'], bundle_data['dnasu']), 
+            min_frag=bundle_data['min_blast'], 
+            max_frag=bundle_data['max_blast'], 
+            min_synth=bundle_data['min_synth'], 
+            max_synth=bundle_data['max_synth'],
+            overlap=bundle_data['overlap'],
+            multi_query=bundle_data['multi_query']
+        )
+        gibson_assembler.solution_tree = query_assembler.solution_tree
+        pass
+    if bundle_data['goldengate']:
+        goldengate_assembler = GoldenGateAssembler(
+            bundle_data['mv_conc'], 
+            bundle_data['dv_conc'], 
+            bundle_data['dna_conc'],
+            bundle_data['dntp_conc'], 
+            bundle_data['tm'], 
+            obj.backbone_file.path, 
+            obj.insert_file.path, 
+            db_list(bundle_data['addgene'], bundle_data['igem'], bundle_data['dnasu']), 
+            min_frag=bundle_data['min_blast'], 
+            max_frag=bundle_data['max_blast'], 
+            min_synth=bundle_data['min_synth'], 
+            max_synth=bundle_data['max_synth'],
+            overhangs=bundle_data['overhangs'],
+            multi_query=bundle_data['multi_query'],
+            scarless=bundle_data['scarless']
+        )
+        goldengate_assembler.solution_tree = query_assembler.solution_tree
+        pass
+    if bundle_data['biobricks']:
+        biobricks_assembler = BioBrickAssembler(
+            bundle_data['mv_conc'], 
+            bundle_data['dv_conc'], 
+            bundle_data['dna_conc'],
+            bundle_data['dntp_conc'], 
+            bundle_data['tm'], 
+            obj.backbone_file.path, 
+            obj.insert_file.path, 
+            db_list(bundle_data['addgene'], bundle_data['igem'], bundle_data['dnasu']), 
+            min_frag=bundle_data['min_blast'], 
+            max_frag=bundle_data['max_blast'], 
+            min_synth=bundle_data['min_synth'], 
+            max_synth=bundle_data['max_synth'],
+            multi_query=bundle_data['multi_query']
+        )
+        biobricks_assembler.solution_tree = query_assembler.solution_tree
+        pass
+    if bundle_data['pcr']:
+        pcr_assembler = PCRAssembler(
+            bundle_data['mv_conc'], 
+            bundle_data['dv_conc'], 
+            bundle_data['dna_conc'],
+            bundle_data['dntp_conc'], 
+            bundle_data['tm'], 
+            obj.backbone_file.path, 
+            obj.insert_file.path, 
+            db_list(bundle_data['addgene'], bundle_data['igem'], bundle_data['dnasu']), 
+            min_frag=bundle_data['min_blast'], 
+            max_frag=bundle_data['max_blast'], 
+            min_synth=bundle_data['min_synth'], 
+            max_synth=bundle_data['max_synth'],
+            overlap=bundle_data['overlap'],
+            multi_query=bundle_data['multi_query']
+        )
+        pcr_assembler.solution_tree = query_assembler.solution_tree
+        pass
+    if bundle_data['slic']:
+        slic_assembler = SLICAssembler(
+            bundle_data['mv_conc'], 
+            bundle_data['dv_conc'], 
+            bundle_data['dna_conc'],
+            bundle_data['dntp_conc'], 
+            bundle_data['tm'], 
+            obj.backbone_file.path, 
+            obj.insert_file.path, 
+            db_list(bundle_data['addgene'], bundle_data['igem'], bundle_data['dnasu']), 
+            min_frag=bundle_data['min_blast'], 
+            max_frag=bundle_data['max_blast'], 
+            min_synth=bundle_data['min_synth'], 
+            max_synth=bundle_data['max_synth'],
+            overlap=bundle_data['overlap'],
+            multi_query=bundle_data['multi_query']
+        )
+        slic_assembler.solution_tree = query_assembler.solution_tree
+        pass
+
+
+    # run the design routines for each assembler
+    # pass each design to new x_bundle_service to create solution, parts,
+    # and primer objects and maps
+    # 
+
+
+

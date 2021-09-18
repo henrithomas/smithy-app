@@ -7,7 +7,8 @@ from .service import (
     goldengate_create_service,
     biobricks_create_service, 
     pcr_create_service,
-    slic_create_service
+    slic_create_service,
+    bundle_create_service
 )
 from .models import (
     AssemblyBundle,
@@ -450,6 +451,7 @@ def assembly_bundle(request):
 
         if bundle_form.is_valid():
             # TODO add bundle service and assembly building here
+            bundle_create_service(bundle_form.cleaned_data)
             pass
     else:
         bundle_form = BundleForm()
@@ -459,3 +461,10 @@ def assembly_bundle(request):
 class AssemblyBundleDetailView(DetailView):
     model = AssemblyBundle
     context_object_name = 'assembly_bundle'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # TODO change how the queries happen here, maybe change to code in the GET request
+        context['title'] = self.object.title 
+        # context['solutions'] = self.object.gibsonsolution_set.all()
+        return context
