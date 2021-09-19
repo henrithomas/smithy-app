@@ -28,13 +28,14 @@ from .views import (
     SLICSolutionDetailView,
     SLICPartDetailView,
     SLICPrimerDetailView,
-    assembly_bundle
+    AssemblyBundleDetailView,
 )
 
 urlpatterns = [
     path('', views.home, name='assembly-home'),
     path('about/', views.about, name='assembly-about'),
     path('bundle/', views.assembly_bundle, name='assembly-bundle'),
+    path('bundle/<int:pk>/', AssemblyBundleDetailView.as_view(), name='bundle-detail'),
     path('gibson/<int:pk>/', GibsonDetailView.as_view(), name='gibson-detail'),
     path('gibson/new/', GibsonCreateView.as_view(), name='gibson-create'),
     path('gibson/solution/<int:pk>/', GibsonSolutionDetailView.as_view(), name='gibson-solution-detail'),

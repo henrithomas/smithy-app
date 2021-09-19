@@ -921,16 +921,13 @@ def slic_solution_service(obj, assembler, assembly, fragments):
         reverse_primer.save()
 
 def bundle_create_service(bundle_data):
-    assemblies = []
-    assemblers = []
-    assembly_solutions = []
     # save backbone and insert files here
     # smithy-app/smithy/media
     path = '/home/hthoma/projects/smithy-app/smithy/media/fasta'
     backbone_name, backbone_extension = os.path.splitext(bundle_data['backbone_file'].name) 
     insert_name, insert_extension = os.path.splitext(bundle_data['insert_file'].name)
-    backbone_file_path = f'{path}/backbones/{backbone_name}_{datetime.now():%S%f}{backbone_extension}'
-    insert_file_path = f'{path}/queries/{insert_name}_{datetime.now():%S%f}{insert_extension}'
+    backbone_file_path = f'{path}/{backbone_name}_{datetime.now():%S%f}{backbone_extension}'
+    insert_file_path = f'{path}/{insert_name}_{datetime.now():%S%f}{insert_extension}'
     
     write_uploaded_file(bundle_data['backbone_file'], backbone_file_path)
     write_uploaded_file(bundle_data['insert_file'], insert_file_path)
@@ -984,14 +981,15 @@ def bundle_create_service(bundle_data):
             min_synth=bundle_data['min_synth'],
             max_synth=bundle_data['max_synth'],
             mv_conc=bundle_data['mv_conc'],
+            dv_conc=bundle_data['dv_conc'],
             dntp_conc=bundle_data['dntp_conc'],
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
-            backbone_file=File(open(backbone_file_path, 'rb')),
-            insert_file=File(open(insert_file_path, 'rb')),
             multi_query=bundle_data['multi_query'],
             overlap=bundle_data['overlap']
         )
+        gibson_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
+        gibson_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
         gibson_obj.save()
 
         gibson_assembler = GibsonAssembler(
@@ -1013,7 +1011,7 @@ def bundle_create_service(bundle_data):
         gibson_assembler.solution_tree = query_assembler.solution_tree
         gibson_assembly, gibson_fragments = gibson_assembler.design(solution=0)
         gibson_solution_service(gibson_obj, gibson_assembler, gibson_assembly, gibson_fragments)
-        bundle.gibsons.add(gibson_obj)
+        bundle.gibson.add(gibson_obj)
     if bundle_data['goldengate']:
         goldengate_obj = GoldenGateAssembly(
             title=bundle_data['title'],
@@ -1026,15 +1024,16 @@ def bundle_create_service(bundle_data):
             min_synth=bundle_data['min_synth'],
             max_synth=bundle_data['max_synth'],
             mv_conc=bundle_data['mv_conc'],
+            dv_conc=bundle_data['dv_conc'],
             dntp_conc=bundle_data['dntp_conc'],
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
-            backbone_file=File(open(backbone_file_path, 'rb')),
-            insert_file=File(open(insert_file_path, 'rb')),
             multi_query=bundle_data['multi_query'],
             overhangs=bundle_data['overhangs'],
             scarless=bundle_data['scarless']
         )
+        goldengate_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
+        goldengate_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
         goldengate_obj.save()
 
         goldengate_assembler = GoldenGateAssembler(
@@ -1057,7 +1056,7 @@ def bundle_create_service(bundle_data):
         goldengate_assembler.solution_tree = query_assembler.solution_tree
         goldengate_assembly, goldengate_fragments = goldengate_assembler.design(solution=0)
         goldengate_solution_service(goldengate_obj, goldengate_assembler, goldengate_assembly, goldengate_fragments)
-        bundle.goldengates.add(goldengate_obj)
+        bundle.goldengate.add(goldengate_obj)
     if bundle_data['biobricks']:
         biobricks_obj = BioBricksAssembly(
             title=bundle_data['title'],
@@ -1070,14 +1069,15 @@ def bundle_create_service(bundle_data):
             min_synth=bundle_data['min_synth'],
             max_synth=bundle_data['max_synth'],
             mv_conc=bundle_data['mv_conc'],
+            dv_conc=bundle_data['dv_conc'],
             dntp_conc=bundle_data['dntp_conc'],
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
-            backbone_file=File(open(backbone_file_path, 'rb')),
-            insert_file=File(open(insert_file_path, 'rb')),
             multi_query=bundle_data['multi_query'],
             overlap=bundle_data['overlap']
         )
+        biobricks_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
+        biobricks_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))        
         biobricks_obj.save()
 
         biobricks_assembler = BioBrickAssembler(
@@ -1098,7 +1098,7 @@ def bundle_create_service(bundle_data):
         biobricks_assembler.solution_tree = query_assembler.solution_tree
         biobricks_assembly, biobricks_fragments = biobricks_assembler.design(solution=0)
         biobricks_solution_service(biobricks_obj, biobricks_assembler, biobricks_assembly, biobricks_fragments)
-        bundle.biobrickss.add(biobricks_obj)
+        bundle.biobricks.add(biobricks_obj)
     if bundle_data['pcr']:
         pcr_obj = PCRAssembly(
             title=bundle_data['title'],
@@ -1111,14 +1111,15 @@ def bundle_create_service(bundle_data):
             min_synth=bundle_data['min_synth'],
             max_synth=bundle_data['max_synth'],
             mv_conc=bundle_data['mv_conc'],
+            dv_conc=bundle_data['dv_conc'],
             dntp_conc=bundle_data['dntp_conc'],
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
-            backbone_file=File(open(backbone_file_path, 'rb')),
-            insert_file=File(open(insert_file_path, 'rb')),
             multi_query=bundle_data['multi_query'],
             overlap=bundle_data['overlap']
         )
+        pcr_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
+        pcr_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
         pcr_obj.save()
 
         pcr_assembler = PCRAssembler(
@@ -1140,7 +1141,7 @@ def bundle_create_service(bundle_data):
         pcr_assembler.solution_tree = query_assembler.solution_tree
         pcr_assembly, pcr_fragments = pcr_assembler.design(solution=0)
         pcr_solution_service(pcr_obj, pcr_assembler, pcr_assembly, pcr_fragments)
-        bundle.pcrs.add(pcr_obj)
+        bundle.pcr.add(pcr_obj)
     if bundle_data['slic']:
         slic_obj = SLICAssembly(
             title=bundle_data['title'],
@@ -1153,14 +1154,15 @@ def bundle_create_service(bundle_data):
             min_synth=bundle_data['min_synth'],
             max_synth=bundle_data['max_synth'],
             mv_conc=bundle_data['mv_conc'],
+            dv_conc=bundle_data['dv_conc'],
             dntp_conc=bundle_data['dntp_conc'],
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
-            backbone_file=File(open(backbone_file_path, 'rb')),
-            insert_file=File(open(insert_file_path, 'rb')),
             multi_query=bundle_data['multi_query'],
             overlap=bundle_data['overlap']
         )
+        slic_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
+        slic_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
         slic_obj.save()
 
         slic_assembler = SLICAssembler(
@@ -1182,10 +1184,12 @@ def bundle_create_service(bundle_data):
         slic_assembler.solution_tree = query_assembler.solution_tree
         slic_assembly, slic_fragments = slic_assembler.design(solution=0)
         slic_solution_service(slic_obj, slic_assembler, slic_assembly, slic_fragments)
-        bundle.slics.add(slic_obj)
+        bundle.slic.add(slic_obj)
 
+    os.remove(backbone_file_path)
+    os.remove(insert_file_path)
 
-
+    return bundle.pk
 
 
 
