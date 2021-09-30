@@ -481,10 +481,10 @@ class AssemblyBundleDetailView(DetailView):
         
         context['pcr'] = self.object.pcr.filter().first()
         if context['pcr']:
-            context['pcr_solutions'] = context['pcr'].slicsolution_set.all()
+            context['pcr_solutions'] = context['pcr'].pcrsolution_set.all()
 
         context['biobrick'] = self.object.biobricks.filter().first()
         if context['biobrick']:
-            context['biobrick_solutions'] = context['biobrick'].slicsolution_set.all()
+            context['biobrick_solutions'] = context['biobrick'].biobrickssolution_set.all()
 
         return context
