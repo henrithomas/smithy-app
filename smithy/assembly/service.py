@@ -651,7 +651,8 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
             query_start = part.annotations['query_start'],
             query_end = part.annotations['query_end'],
             subject_start = part.annotations['subject_start'],
-            subject_end = part.annotations['subject_end'] 
+            subject_end = part.annotations['subject_end'] ,
+            cuts=0
         )
         biobricks_part_entry.save()
 
@@ -1049,7 +1050,7 @@ def bundle_create_service(bundle_data):
             max_frag=bundle_data['max_blast'], 
             min_synth=bundle_data['min_synth'], 
             max_synth=bundle_data['max_synth'],
-            overhangs=bundle_data['overhangs'],
+            ovhngs=int(bundle_data['overhangs']),
             multi_query=bundle_data['multi_query'],
             scarless=bundle_data['scarless']
         )
@@ -1074,7 +1075,6 @@ def bundle_create_service(bundle_data):
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
             multi_query=bundle_data['multi_query'],
-            overlap=bundle_data['overlap']
         )
         biobricks_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         biobricks_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))        

@@ -1,16 +1,14 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
-    <h1>{{ assembly_bundle.title }}</h1>
+    <h1>{{ assembly_bundle.title }} <span class="badge rounded-pill bg-secondary">Bundle</span></h1>
     <p>{{ assembly_bundle.description}}</p>
     <p>{{ assembly_bundle.date_created }}</p>   
     <hr/>
+
     <div class="row mb-4">
         {% if gibson %}
-            <div class="col">
-                <h2>{{ gibson.title }} - Gibson</h2>
-                <p>
-                    <a href="{% url 'gibson-detail' gibson.pk %}">View Assembly</a>
-                </p>
+            <div class="col-lg-2">
+                <h3>Gibson <a class="btn btn-link btn-lg shadow-none px-1" href="{% url 'gibson-detail' gibson.pk %}"><i class="bi bi-eye"></i></a></h3>
 
                 {% for gibson_solution in gibson_solutions %}
                     <div class="card">
@@ -19,11 +17,17 @@
                             <h6 class="card-subtitle mb-2 text-muted">A Gibson solution</h6>
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><strong>Parts:</strong> {{ gibson_solution.parts_count }}</li>
-                            <li class="list-group-item"><strong>Primers:</strong> {{ gibson_solution.primers_count }}</li>
+                            <li class="list-group-item">
+                                <span class="badge bg-primary">{{ gibson_solution.parts_count }} Parts</span>
+                                <span class="badge bg-primary">{{ gibson_solution.primers_count }} Primers</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge bg-days text-dark">X Days</span>
+                                <span class="badge bg-experiments text-dark">Y Experiments</span>
+                            </li>
                         </ul>
                         <div class="card-body">
-                            <a href="{% url 'gibson-solution-detail' gibson_solution.pk %}" class="card-link">View</a>
+                            <a href="{% url 'gibson-solution-detail' gibson_solution.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i> View Solution</a>
                         </div>
                     </div>
                 {% endfor %}
@@ -31,24 +35,27 @@
         {% endif %}
 
         {% if goldengate %}
-            <div class="col">
-                <h2>{{ goldengate.title }} - Golden Gate</h2>
-                <p>
-                    <a href="{% url 'goldengate-detail' goldengate.pk %}">View Assembly</a>
-                </p>
+            <div class="col-lg-2">
+                <h3>Golden Gate <a class="btn btn-link btn-lg shadow-none px-1" href="{% url 'goldengate-detail' goldengate.pk %}"><i class="bi bi-eye"></i></a></h3>
 
                 {% for goldengate_solution in goldengate_solutions %}
-                    <div class="card">
+                    <div class="card mb-2">
                         <div class="card-body">
                             <h5 class="card-title">{{ goldengate_solution.name }}</h5>
                             <h6 class="card-subtitle mb-2 text-muted">A Golden Gate solution</h6>
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><strong>Parts:</strong> {{ goldengate_solution.parts_count }}</li>
-                            <li class="list-group-item"><strong>Primers:</strong> {{ goldengate_solution.primers_count }}</li>
+                            <li class="list-group-item">
+                                <span class="badge bg-primary">{{ goldengate_solution.parts_count }} Parts</span>
+                                <span class="badge bg-primary">{{ goldengate_solution.primers_count }} Primers</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge bg-days text-dark">X Days</span>
+                                <span class="badge bg-experiments text-dark">Y Experiments</span>
+                            </li>
                         </ul>
                         <div class="card-body">
-                            <a href="{% url 'goldengate-solution-detail' goldengate_solution.pk %}" class="card-link">View</a>
+                            <a href="{% url 'goldengate-solution-detail' goldengate_solution.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i> View Solution</a>
                         </div>
                     </div>
                 {% endfor %}
@@ -56,11 +63,8 @@
         {% endif %}
         
         {% if slic %}
-            <div class="col">
-                <h2>{{ slic.title }} - SLIC</h2>
-                <p>
-                    <a href="{% url 'slic-detail' slic.pk %}">View Assembly</a>
-                </p>
+            <div class="col-lg-2">
+                <h3>SLIC <a class="btn btn-link btn-lg shadow-none px-1" href="{% url 'slic-detail' slic.pk %}"><i class="bi bi-eye"></i></a></h3>
 
                 {% for slic_solution in slic_solutions %}
                     <div class="card">
@@ -69,23 +73,26 @@
                             <h6 class="card-subtitle mb-2 text-muted">A SLIC solution</h6>
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><strong>Parts:</strong> {{ slic_solution.parts_count }}</li>
-                            <li class="list-group-item"><strong>Primers:</strong> {{ slic_solution.primers_count }}</li>
+                            <li class="list-group-item">
+                                <span class="badge bg-primary">{{ slic_solution.parts_count }} Parts</span>
+                                <span class="badge bg-primary">{{ slic_solution.primers_count }} Primers</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge bg-days text-dark">X Days</span>
+                                <span class="badge bg-experiments text-dark">Y Experiments</span>
+                            </li>
                         </ul>
                         <div class="card-body">
-                            <a href="{% url 'slic-solution-detail' slic_solution.pk %}" class="card-link">View</a>
+                            <a href="{% url 'slic-solution-detail' slic_solution.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i> View Solution</a>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
-        
+
         {% if pcr %}
-            <div class="col">
-                <h2>{{ pcr.title }} - PCR</h2>
-                <p>
-                    <a href="{% url 'pcr-detail' pcr.pk %}">View Assembly</a>
-                </p>
+            <div class="col-lg-2">
+                <h3>PCR <a class="btn btn-link btn-lg shadow-none px-1" href="{% url 'pcr-detail' pcr.pk %}"><i class="bi bi-eye"></i></a></h3>
 
                 {% for pcr_solution in pcr_solutions %}
                     <div class="card">
@@ -94,11 +101,17 @@
                             <h6 class="card-subtitle mb-2 text-muted">A PCR solution</h6>
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><strong>Parts:</strong> {{ pcr_solution.parts_count }}</li>
-                            <li class="list-group-item"><strong>Primers:</strong> {{ pcr_solution.primers_count }}</li>
+                            <li class="list-group-item">
+                                <span class="badge bg-primary">{{ pcr_solution.parts_count }} Parts</span>
+                                <span class="badge bg-primary">{{ pcr_solution.primers_count }} Primers</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge bg-days text-dark">X Days</span>
+                                <span class="badge bg-experiments text-dark">Y Experiments</span>
+                            </li>
                         </ul>
                         <div class="card-body">
-                            <a href="{% url 'pcr-solution-detail' pcr_solution.pk %}" class="card-link">View</a>
+                            <a href="{% url 'pcr-solution-detail' pcr_solution.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i> View Solution</a>
                         </div>
                     </div>
                 {% endfor %}
@@ -106,28 +119,32 @@
         {% endif %}
         
         {% if biobrick %}
-            <div class="col">
-                <h2>{{ biobrick.title }} - BioBrick</h2>
-                <p>
-                    <a href="{% url 'biobrick-detail' biobrick.pk %}">View Assembly</a>
-                </p>
-            </div>
+            <div class="col-lg-2">
+                <h3>BioBricks <a class="btn btn-link btn-lg shadow-none px-1" href="{% url 'biobricks-detail' biobrick.pk %}"><i class="bi bi-eye"></i></a></h3>
+            
 
-            {% for biobrick_solution in biobrick_solutions %}
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ biobrick_solution.name }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">A BioBrick solution</h6>
+                {% for biobrick_solution in biobrick_solutions %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ biobrick_solution.name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">A BioBricks solution</h6>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <span class="badge bg-primary">{{ biobrick_solution.parts_count }} Parts</span>
+                                <span class="badge bg-primary">{{ biobrick_solution.primers_count }} Primers</span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge bg-days text-dark">X Days</span>
+                                <span class="badge bg-experiments text-dark">Y Experiments</span>
+                            </li>
+                        </ul>
+                        <div class="card-body">
+                            <a href="{% url 'biobricks-solution-detail' biobrick_solution.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i> View Solution</a>
+                        </div>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Parts:</strong> {{ biobrick_solution.parts_count }}</li>
-                        <li class="list-group-item"><strong>Primers:</strong> {{ biobrick_solution.primers_count }}</li>
-                    </ul>
-                    <div class="card-body">
-                        <a href="{% url 'biobrick-solution-detail' pcr_solution.pk %}" class="card-link">View</a>
-                    </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         {% endif %}
     </div>
     

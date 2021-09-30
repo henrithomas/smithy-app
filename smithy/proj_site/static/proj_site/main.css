@@ -41,3 +41,23 @@ body {
 .highlight {
     background-color:paleturquoise;
 }
+
+.bg-igem {
+    background-color: rgb(255, 243, 218)!important;
+}
+
+.bg-addgene {
+    background-color: rgb(220, 255, 215)!important;
+}
+
+.bg-dnasu {
+    background-color: rgb(213, 254, 255)!important;
+}
+
+.bg-experiments {
+    background-color: #7fe2f6e5!important;
+}
+
+.bg-days {
+    background-color: #f6da7fea!important;
+}

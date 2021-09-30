@@ -452,7 +452,7 @@ def assembly_bundle(request):
         if bundle_form.is_valid():
             # TODO add bundle service and assembly building here
             bundle_pk = bundle_create_service(bundle_form.cleaned_data)
-            redirect('bundle-detail', bundle_pk)
+            return redirect('bundle-detail', bundle_pk)
     else:
         bundle_form = BundleForm()
     return render(request, 'assembly/assemblybundle_form.html', {'bundle_form': bundle_form})
