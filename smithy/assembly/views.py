@@ -466,5 +466,25 @@ class AssemblyBundleDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         # TODO change how the queries happen here, maybe change to code in the GET request
         context['title'] = self.object.title 
-        # context['solutions'] = self.object.gibsonsolution_set.all()
+        
+        context['gibson'] = self.object.gibson.filter().first()
+        if context['gibson']:
+            context['gibson_solutions'] = context['gibson'].gibsonsolution_set.all()
+        
+        context['goldengate'] = self.object.goldengate.filter().first()
+        if context['goldengate']:
+            context['goldengate_solutions'] = context['goldengate'].goldengatesolution_set.all()
+
+        context['slic'] = self.object.slic.filter().first()
+        if context['slic']:
+            context['slic_solutions'] = context['slic'].slicsolution_set.all()
+        
+        context['pcr'] = self.object.pcr.filter().first()
+        if context['pcr']:
+            context['pcr_solutions'] = context['pcr'].slicsolution_set.all()
+
+        context['biobrick'] = self.object.biobricks.filter().first()
+        if context['biobrick']:
+            context['biobrick_solutions'] = context['biobrick'].slicsolution_set.all()
+
         return context

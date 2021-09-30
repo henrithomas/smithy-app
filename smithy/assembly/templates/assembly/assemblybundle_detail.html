@@ -1,4 +1,134 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
     <h1>{{ assembly_bundle.title }}</h1>
+    <p>{{ assembly_bundle.description}}</p>
+    <p>{{ assembly_bundle.date_created }}</p>   
+    <hr/>
+    <div class="row mb-4">
+        {% if gibson %}
+            <div class="col">
+                <h2>{{ gibson.title }} - Gibson</h2>
+                <p>
+                    <a href="{% url 'gibson-detail' gibson.pk %}">View Assembly</a>
+                </p>
+
+                {% for gibson_solution in gibson_solutions %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ gibson_solution.name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">A Gibson solution</h6>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Parts:</strong> {{ gibson_solution.parts_count }}</li>
+                            <li class="list-group-item"><strong>Primers:</strong> {{ gibson_solution.primers_count }}</li>
+                        </ul>
+                        <div class="card-body">
+                            <a href="{% url 'gibson-solution-detail' gibson_solution.pk %}" class="card-link">View</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if goldengate %}
+            <div class="col">
+                <h2>{{ goldengate.title }} - Golden Gate</h2>
+                <p>
+                    <a href="{% url 'goldengate-detail' goldengate.pk %}">View Assembly</a>
+                </p>
+
+                {% for goldengate_solution in goldengate_solutions %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ goldengate_solution.name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">A Golden Gate solution</h6>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Parts:</strong> {{ goldengate_solution.parts_count }}</li>
+                            <li class="list-group-item"><strong>Primers:</strong> {{ goldengate_solution.primers_count }}</li>
+                        </ul>
+                        <div class="card-body">
+                            <a href="{% url 'goldengate-solution-detail' goldengate_solution.pk %}" class="card-link">View</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% if slic %}
+            <div class="col">
+                <h2>{{ slic.title }} - SLIC</h2>
+                <p>
+                    <a href="{% url 'slic-detail' slic.pk %}">View Assembly</a>
+                </p>
+
+                {% for slic_solution in slic_solutions %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ slic_solution.name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">A SLIC solution</h6>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Parts:</strong> {{ slic_solution.parts_count }}</li>
+                            <li class="list-group-item"><strong>Primers:</strong> {{ slic_solution.primers_count }}</li>
+                        </ul>
+                        <div class="card-body">
+                            <a href="{% url 'slic-solution-detail' slic_solution.pk %}" class="card-link">View</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% if pcr %}
+            <div class="col">
+                <h2>{{ pcr.title }} - PCR</h2>
+                <p>
+                    <a href="{% url 'pcr-detail' pcr.pk %}">View Assembly</a>
+                </p>
+
+                {% for pcr_solution in pcr_solutions %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ pcr_solution.name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">A PCR solution</h6>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Parts:</strong> {{ pcr_solution.parts_count }}</li>
+                            <li class="list-group-item"><strong>Primers:</strong> {{ pcr_solution.primers_count }}</li>
+                        </ul>
+                        <div class="card-body">
+                            <a href="{% url 'pcr-solution-detail' pcr_solution.pk %}" class="card-link">View</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% if biobrick %}
+            <div class="col">
+                <h2>{{ biobrick.title }} - BioBrick</h2>
+                <p>
+                    <a href="{% url 'biobrick-detail' biobrick.pk %}">View Assembly</a>
+                </p>
+            </div>
+
+            {% for biobrick_solution in biobrick_solutions %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ biobrick_solution.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">A BioBrick solution</h6>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Parts:</strong> {{ biobrick_solution.parts_count }}</li>
+                        <li class="list-group-item"><strong>Primers:</strong> {{ biobrick_solution.primers_count }}</li>
+                    </ul>
+                    <div class="card-body">
+                        <a href="{% url 'biobrick-solution-detail' pcr_solution.pk %}" class="card-link">View</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
 {% endblock content %}
