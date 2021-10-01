@@ -963,13 +963,6 @@ def bundle_create_service(bundle_data):
     )
     bundle.save()
 
-    # create and save models for all selected methods
-    # make assembler objects for each method
-    # add solution trees to assembler objects
-    # run the design routines for each assembler
-    # pass each design to new x_bundle_service to create solution, parts,
-    # and primer objects and maps 
-    # add new x_obj to bundle
     if bundle_data['gibson']:
         gibson_obj = GibsonAssembly(
             title=bundle_data['title'],
