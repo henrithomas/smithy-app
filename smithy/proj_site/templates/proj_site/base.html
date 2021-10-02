@@ -30,7 +30,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="d-flex justify-content-center mb-4">
-                            <div class="spinner-border text-secondary" role="status" style="width: 3rem; height: 3rem;">
+                            <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
                               <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
@@ -66,8 +66,14 @@
                           <li><a class="dropdown-item" href="{% url 'assembly-home' %}">Make Assembly</a></li>
                           <li><a class="dropdown-item" href="{% url 'assembly-bundle' %}">Make Assembly Bundle</a></li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="#">View Assemblies</a></li>
-                          <li><a class="dropdown-item" href="#">View Assembly Bundles</a></li>
+                          <li><a class="dropdown-item" href="#">All Assemblies</a></li>
+                          <li><a class="dropdown-item" href="{% url 'gibson-list' %}">Gibson Assemblies</a></li>
+                          <li><a class="dropdown-item" href="{% url 'goldengate-list' %}">Golden Gate Assemblies</a></li>
+                          <li><a class="dropdown-item" href="{% url 'pcr-list' %}">PCR Assemblies</a></li>
+                          <li><a class="dropdown-item" href="{% url 'slic-list' %}">SLIC Assemblies</a></li>
+                          <li><a class="dropdown-item" href="{% url 'biobricks-list' %}">BioBricks Assemblies</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="{% url 'bundle-list' %}">Assembly Bundles</a></li>
                         </ul>
                       </li>
                     <li class="nav-item">

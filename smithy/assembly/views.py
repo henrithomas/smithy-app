@@ -1,3 +1,4 @@
+from typing import List
 from Bio.Blast import Record
 from django.utils import timezone
 from django.db.models.deletion import Collector
@@ -35,11 +36,13 @@ from .models import (
 )
 from django.views.generic import (
     DetailView,
-    CreateView
+    CreateView,
+    ListView
 )
 from django.contrib.messages.views import SuccessMessageMixin 
 import os
 from .forms import BundleForm
+from itertools import chain
 
 
 def home(request):
@@ -128,6 +131,22 @@ class GibsonPrimerDetailView(DetailView):
         context['title'] = self.object.name
         return context
 
+
+class GibsonListView(ListView):
+    model = GibsonAssembly
+    context_object_name = 'gibsons'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.all() \
+            .only('title', 'date_created') \
+            .order_by('-date_created')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Gibson Assemblies'
+        return context
+
 # Golden Gate Assembly
 class GoldenGateDetailView(DetailView):
     model = GoldenGateAssembly
@@ -208,6 +227,22 @@ class GoldenGatePrimerDetailView(DetailView):
         context['title'] = self.object.name
         return context
 
+
+class GoldenGateListView(ListView):
+    model = GoldenGateAssembly
+    context_object_name = 'goldengates'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.all() \
+            .only('title', 'date_created') \
+            .order_by('-date_created')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Golden Gate Assemblies'
+        return context
+
 # Bio Bricks Assembly
 class BioBricksDetailView(DetailView):
     model = BioBricksAssembly
@@ -284,6 +319,22 @@ class BioBricksPrimerDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
+        return context
+
+
+class BioBricksListView(ListView):
+    model = BioBricksAssembly
+    context_object_name = 'biobricks'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.all() \
+            .only('title', 'date_created') \
+            .order_by('-date_created')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'BioBricks Assemblies'
         return context
 
 # PCR Assembly
@@ -363,6 +414,22 @@ class PCRPrimerDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
+        return context
+
+
+class PCRListView(ListView):
+    model = PCRAssembly
+    context_object_name = 'pcrs'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.all() \
+            .only('title', 'date_created') \
+            .order_by('-date_created')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'PCR-SOE Assemblies'
         return context
 
 # SLIC Assembly
@@ -445,12 +512,27 @@ class SLICPrimerDetailView(DetailView):
         return context
 
 
+class SLICListView(ListView):
+    model = SLICAssembly
+    context_object_name = 'slics'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.all() \
+            .only('title', 'date_created') \
+            .order_by('-date_created')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'SLIC Assemblies'
+        return context
+
+# Assembly Bundles
 def assembly_bundle(request):
     if request.method == 'POST':
         bundle_form = BundleForm(request.POST, request.FILES)
 
         if bundle_form.is_valid():
-            # TODO add bundle service and assembly building here
             bundle_pk = bundle_create_service(bundle_form.cleaned_data)
             return redirect('bundle-detail', bundle_pk)
     else:
@@ -463,6 +545,7 @@ class AssemblyBundleDetailView(DetailView):
     context_object_name = 'assembly_bundle'
 
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
         # TODO change how the queries happen here, maybe change to code in the GET request
         context['title'] = self.object.title 
@@ -488,3 +571,34 @@ class AssemblyBundleDetailView(DetailView):
             context['biobrick_solutions'] = context['biobrick'].biobrickssolution_set.all()
 
         return context
+
+
+class AssemblyBundleListView(ListView):
+    model = AssemblyBundle
+    context_object_name = 'bundles'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.all() \
+            .only('title', 'date_created', 'description') \
+            .order_by('-date_created')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Assembly Bundles'
+        return context
+
+def assemblies_list(request):
+    gibsons = GibsonAssembly.objects.all()
+    goldengates = GoldenGateAssembly.objects.all()
+    pcrs = PCRAssembly.objects.all()
+    slics = SLICAssembly.objects.all()
+    biobricks = BioBricksAssembly.objects.all()
+
+    assemblies = sorted(
+        chain(gibsons, goldengates, pcrs, slics, biobricks),
+        key=lambda assembly: assembly.date_created, reverse=True
+    )
+
+    return render(request, 'assemblies_list.html', { 'assemblies': assemblies})
+    

@@ -1,0 +1,27 @@
+{% extends 'proj_site/base.html' %}
+{% block content %}
+    <h1>{{ title }}</h1>
+    <p>
+        Below is a listing of existing assembly bundles.
+    </p>
+    <div class="row mb-4">
+        <div class="col">
+            {% for bundle in bundles %}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h4 class="card-title"> 
+                            {{ bundle.title }} 
+                            <a href="{% url 'bundle-detail' bundle.pk %}" class="btn btn-outline-primary float-end"><i class="bi bi-eye"></i> View Bundle</a>
+                        </h4>
+                        <h6 class="card-subtitle mb-2 text-muted"> 
+                            <small>{{ bundle.date_created }}</small> 
+                        </h6>
+                        <p class="card-text">
+                            {{ bundle.description }}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

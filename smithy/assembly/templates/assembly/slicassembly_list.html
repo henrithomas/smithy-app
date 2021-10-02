@@ -1,0 +1,24 @@
+{% extends 'proj_site/base.html' %}
+{% block content %}
+    <h1>{{ title }}</h1>
+    <p>
+        Below is a listing of existing SLIC assemblies.
+    </p>
+    <div class="row mb-4">
+        <div class="col">
+            {% for slic in slics %}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h4 class="card-title"> 
+                            {{ slic.title }} 
+                            <a href="{% url 'slic-detail' slic.pk %}" class="btn btn-outline-primary float-end"><i class="bi bi-eye"></i> View Assembly</a>
+                        </h4>
+                        <h6 class="card-subtitle mb-2 text-muted"> 
+                            <small>{{ slic.date_created }}</small> 
+                        </h6>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
