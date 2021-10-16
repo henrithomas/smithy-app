@@ -39,6 +39,7 @@ from .views import (
 
 urlpatterns = [
     path('', views.home, name='assembly-home'),
+    path('all/', views.assemblies_list, name='assemblies-list'),
     path('about/', views.about, name='assembly-about'),
     path('bundle/', views.assembly_bundle, name='assembly-bundle'),
     path('bundle/<int:pk>/', AssemblyBundleDetailView.as_view(), name='bundle-detail'),

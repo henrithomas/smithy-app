@@ -600,5 +600,5 @@ def assemblies_list(request):
         key=lambda assembly: assembly.date_created, reverse=True
     )
 
-    return render(request, 'assemblies_list.html', { 'assemblies': assemblies})
+    return render(request, 'assembly/assemblies_list.html', { 'assemblies': assemblies})
     

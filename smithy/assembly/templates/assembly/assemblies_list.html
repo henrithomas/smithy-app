@@ -1,4 +1,5 @@
 {% extends 'proj_site/base.html' %}
+{% load assembly_extras %}
 {% block content %}
     <h1>{{ title }}</h1>
     <p>
@@ -10,12 +11,21 @@
                 <div class="card mb-2">
                     <div class="card-body">
                         <h4 class="card-title"> 
-                            {{ assembly.title }} 
-                            <a href="{% url 'assembly-detail' assembly.pk %}" class="btn btn-outline-primary float-end"><i class="bi bi-eye"></i> View Assembly</a>
+                            {{ assembly.title }}
+                            <span class="badge rounded-pill bg-secondary">{% assembly_type assembly %}</span>
+                            <a href="{% assembly_obj_url assembly %}" class="btn btn-outline-primary float-end"><i class="bi bi-eye"></i> View Assembly</a>
                         </h4>
                         <h6 class="card-subtitle mb-2 text-muted"> 
                             <small>{{ assembly.date_created }}</small> 
                         </h6>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h4 class="card-title"> 
+                            Sorry, there are no assemblies.
+                        </h4>
                     </div>
                 </div>
             {% endfor %}

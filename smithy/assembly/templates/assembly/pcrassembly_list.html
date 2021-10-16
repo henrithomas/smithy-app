@@ -18,6 +18,14 @@
                         </h6>
                     </div>
                 </div>
+            {% empty %}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h4 class="card-title"> 
+                            Sorry, there are no PCR assemblies.
+                        </h4>
+                    </div>
+                </div>
             {% endfor %}
         </div>
     </div>
