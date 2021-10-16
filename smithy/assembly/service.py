@@ -41,7 +41,134 @@ from django.core.files import File
 import os
 import json
 from datetime import datetime
+import csv
+import matplotlib.pyplot as plt
 
+
+def parts_csv(solution_model, parts):
+    """
+    Exports the assembly parts data to the chosen file in csv format.
+
+
+    Parameters
+    ----------
+    solution_model : AssemblySolution
+
+    parts : list
+        List of Amplicon objects of the assembly
+        
+
+
+    Returns
+    -------
+    None
+    """
+    file_name = f'solution-parts-{solution_model.pk}.csv'
+    temp_file = f'/home/hthoma/projects/smithy-app/smithy/media/csv/{file_name}'
+
+    fields = ['id', 'length', 'length_ext', 'seq', 'seq_ext', 'query_start', 'query_end', 'subject_start', 'subject_end']
+    csv_list = [
+        {
+            'id': part.name, 
+            'length': part.template.seq.length, 
+            'length_ext': part.seq.length, 
+            'seq': part.template.seq.watson, 
+            'seq_ext': part.seq.watson,
+            'query_start': part.annotations['query_start'],
+            'query_end': part.annotations['query_end'],
+            'subject_start': part.annotations['subject_start'],
+            'subject_end': part.annotations['subject_end']
+        }
+        for part in parts
+    ]
+    
+    with open(temp_file, 'w', newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fields, restval='NONE')
+        writer.writeheader()
+        writer.writerows(csv_list)
+
+    solution_model.parts_file.save(file_name, File(open(temp_file, newline='')))
+    solution_model.save()
+    os.remove(temp_file)
+
+def primers_csv(solution_model, parts):
+    """
+    Exports the assembly primers to the chosen file in csv format.
+
+
+    Parameters
+    ----------
+    solution_model : AssemblySolution
+    
+    parts : list
+        List of Amplicon objects of the assembly
+
+
+
+    Returns
+    -------        
+    None
+    """
+    file_name = f'solution-primers-{solution_model.pk}.csv'
+    temp_file = f'/home/hthoma/projects/smithy-app/smithy/media/csv/{file_name}'
+
+    fields = ['id', 'primer_type', 'sequence', 'footprint', 'tail', 'tm_footprint', 'tm_total', 'gc', 
+              'hairpin', 'hairpin_tm', 'hairpin_dg', 'hairpin_dh', 'hairpin_ds',
+              'homodimer', 'homodimer_tm', 'homodimer_dg', 'homodimer_dh', 'homodimer_ds'
+    ]
+    csv_list = []
+
+    for part in parts:
+        csv_list.extend([{
+                'id': f'{part.name}-fwd',
+                'primer_type': 'fwd',
+                'sequence': part.forward_primer.seq,
+                'footprint': part.forward_primer.footprint,
+                'tail': part.forward_primer.tail,
+                'tm_footprint': part.annotations['forward_primer']['tm_footprint'], 
+                'tm_total': part.annotations['forward_primer']['tm_total'], 
+                'gc': part.annotations['forward_primer']['gc'], 
+                'hairpin': part.annotations['forward_primer']['hairpin'], 
+                'hairpin_tm': part.annotations['forward_primer']['hairpin_tm'], 
+                'hairpin_dg': part.annotations['forward_primer']['hairpin_dg'], 
+                'hairpin_dh': part.annotations['forward_primer']['hairpin_dh'], 
+                'hairpin_ds': part.annotations['forward_primer']['hairpin_ds'],
+                'homodimer': part.annotations['forward_primer']['homodimer'], 
+                'homodimer_tm': part.annotations['forward_primer']['homodimer_tm'], 
+                'homodimer_dg': part.annotations['forward_primer']['homodimer_dg'], 
+                'homodimer_dh': part.annotations['forward_primer']['homodimer_dh'], 
+                'homodimer_ds': part.annotations['forward_primer']['homodimer_ds'],
+            },
+            {
+                'id': f'{part.name}-rvs',
+                'primer_type': 'rvs',
+                'sequence': part.reverse_primer.seq,
+                'footprint': part.reverse_primer.footprint,
+                'tail': part.reverse_primer.tail,
+                'tm_footprint': part.annotations['reverse_primer']['tm_footprint'], 
+                'tm_total': part.annotations['reverse_primer']['tm_total'], 
+                'gc': part.annotations['reverse_primer']['gc'], 
+                'hairpin': part.annotations['reverse_primer']['hairpin'], 
+                'hairpin_tm': part.annotations['reverse_primer']['hairpin_tm'], 
+                'hairpin_dg': part.annotations['reverse_primer']['hairpin_dg'], 
+                'hairpin_dh': part.annotations['reverse_primer']['hairpin_dh'], 
+                'hairpin_ds': part.annotations['reverse_primer']['hairpin_ds'],
+                'homodimer': part.annotations['reverse_primer']['homodimer'], 
+                'homodimer_tm': part.annotations['reverse_primer']['homodimer_tm'], 
+                'homodimer_dg': part.annotations['reverse_primer']['homodimer_dg'], 
+                'homodimer_dh': part.annotations['reverse_primer']['homodimer_dh'], 
+                'homodimer_ds': part.annotations['reverse_primer']['homodimer_ds'],
+            }])
+
+    with open(temp_file, 'w', newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fields, restval='NONE')
+        writer.writeheader()
+        writer.writerows(csv_list)
+
+    solution_model.primers_file.save(file_name, File(open(temp_file, newline='')))
+    solution_model.save()
+    os.remove(temp_file)
+    
 
 def write_uploaded_file(f, fname):
     with open(fname, 'wb+') as destination:
@@ -151,6 +278,7 @@ def part_map(part_model, part, left, right, name, space):
     ax.set_xticklabels([])
     ax.set_xticks([])
     ax.figure.savefig(temp_plot)
+    plt.clf()
 
     part_model.part_map.save(part_plot_name, File(open(temp_plot, 'rb')))
     part_model.save()
@@ -208,6 +336,7 @@ def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
     record = CircularGraphicRecord(sequence_length=total_len, features=features)
     ax, _ = record.plot(figure_width=10)
     ax.figure.savefig(temp_plot)
+    plt.clf()
 
     solution_model.plasmid_map.save(plot_name, File(open(temp_plot, 'rb')))
     solution_model.save()
@@ -432,7 +561,8 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     gibson_solution.save()
 
     plasmid_map(gibson_solution, assembly, obj.title, 0, total_len)
-
+    parts_csv(gibson_solution, assembly)
+    primers_csv(gibson_solution, assembly)
 
     for i, part in enumerate(assembly):
         gibson_part_entry = GibsonPart(
@@ -535,6 +665,8 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     goldengate_solution.save()
 
     plasmid_map(goldengate_solution, assembly, obj.title, space, total_len)
+    parts_csv(goldengate_solution, assembly)
+    primers_csv(goldengate_solution, assembly)
 
     for i, part in enumerate(assembly):
         goldengate_part_entry = GoldenGatePart(
@@ -636,7 +768,8 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
     biobricks_solution.save()
 
     plasmid_map(biobricks_solution, assembly, obj.title, 0, total_len)
-
+    parts_csv(biobricks_solution, assembly)
+    primers_csv(biobricks_solution, assembly)
 
     for i, part in enumerate(assembly):
         biobricks_part_entry = BioBricksPart(
@@ -737,7 +870,8 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     pcr_solution.save()
 
     plasmid_map(pcr_solution, assembly, obj.title, 0, total_len)
-
+    parts_csv(pcr_solution, assembly)
+    primers_csv(pcr_solution, assembly)
 
     for i, part in enumerate(assembly):
         pcr_part_entry = PCRPart(
@@ -837,7 +971,8 @@ def slic_solution_service(obj, assembler, assembly, fragments):
     slic_solution.save()
 
     plasmid_map(slic_solution, assembly, obj.title, 0, total_len)
-
+    parts_csv(slic_solution, assembly)
+    primers_csv(slic_solution, assembly)
 
     for i, part in enumerate(assembly):
         slic_part_entry = SLICPart(

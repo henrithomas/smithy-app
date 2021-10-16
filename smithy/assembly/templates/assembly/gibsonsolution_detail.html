@@ -10,6 +10,13 @@
             </ul>
         </div>
     </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <a href="{{ gibson_solution.parts_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Parts</a>
+            <a href="{{ gibson_solution.primers_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Primers</a> 
+        </div>
+    </div>
     
     <div class="row mb-4">
         <div class="col">
@@ -24,7 +31,7 @@
         <div class="col">
             <h2 class="mb-4">
                 Parts
-                <a href="#" class="btn btn-outline-primary float-end disabled">Download Parts</a> 
+                <a href="{{ gibson_solution.parts_file.url }}" class="btn btn-outline-primary float-end"><i class="bi bi-download"></i> Download Parts</a> 
             </h2>
             <p>
                 Below is a summary table of the DNA sequences that make up this assembly solution. Further details on each part can be 
@@ -90,7 +97,7 @@
         <div class="col">
             <h2 class="mb-4">
                 Primers
-                <a href="#" class="btn btn-outline-primary float-end disabled">Download Primers</a>
+                <a href="{{ gibson_solution.primers_file.url }}" class="btn btn-outline-primary float-end"><i class="bi bi-download"></i> Download Primers</a>
             </h2>
             <p>
                 Below is a summary table of the primers needed for each part of this assembly solution (shown above). Further details on each primer can be 

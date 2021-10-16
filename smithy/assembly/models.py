@@ -124,6 +124,8 @@ class AssemblySolution(models.Model):
     primers_count = models.PositiveIntegerField()
     match = models.FloatField()
     plasmid_map = models.ImageField(default='default-plasmid.png', upload_to='assembly-maps')
+    parts_file = models.FileField(default='default-parts.csv', upload_to='csv/parts/')
+    primers_file = models.FileField(default='default-primers.csv', upload_to='csv/primers/')
 
     class Meta:
         abstract = True
