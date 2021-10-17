@@ -8,7 +8,7 @@
     <div class="row mb-4">
         {% if gibson %}
             <div class="col-lg-2">
-                <h3>Gibson <a class="btn btn-link btn-lg shadow-none px-1" href="{% url 'gibson-detail' gibson.pk %}"><i class="bi bi-eye"></i></a></h3>
+                <h3>Gibson <br><a class="btn btn-outline-primary btn-sm" href="{% url 'gibson-detail' gibson.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
                 {% for gibson_solution in gibson_solutions %}
                     <div class="card">
@@ -36,7 +36,7 @@
 
         {% if goldengate %}
             <div class="col-lg-2">
-                <h3>Golden Gate <a class="btn btn-link btn-lg shadow-none px-1" href="{% url 'goldengate-detail' goldengate.pk %}"><i class="bi bi-eye"></i></a></h3>
+                <h3>Golden Gate <br><a class="btn btn-outline-primary btn-sm" href="{% url 'goldengate-detail' goldengate.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
                 {% for goldengate_solution in goldengate_solutions %}
                     <div class="card mb-2">
@@ -64,7 +64,7 @@
         
         {% if slic %}
             <div class="col-lg-2">
-                <h3>SLIC <a class="btn btn-link btn-lg shadow-none px-1" href="{% url 'slic-detail' slic.pk %}"><i class="bi bi-eye"></i></a></h3>
+                <h3>SLIC <br><a class="btn btn-outline-primary btn-sm" href="{% url 'slic-detail' slic.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
                 {% for slic_solution in slic_solutions %}
                     <div class="card">
@@ -92,7 +92,7 @@
 
         {% if pcr %}
             <div class="col-lg-2">
-                <h3>PCR <a class="btn btn-link btn-lg shadow-none px-1" href="{% url 'pcr-detail' pcr.pk %}"><i class="bi bi-eye"></i></a></h3>
+                <h3>PCR <br><a class="btn btn-outline-primary btn-sm" href="{% url 'pcr-detail' pcr.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
                 {% for pcr_solution in pcr_solutions %}
                     <div class="card">
@@ -120,7 +120,7 @@
         
         {% if biobrick %}
             <div class="col-lg-2">
-                <h3>BioBricks <a class="btn btn-link btn-lg shadow-none px-1" href="{% url 'biobricks-detail' biobrick.pk %}"><i class="bi bi-eye"></i></a></h3>
+                <h3>BioBricks <br><a class="btn btn-outline-primary btn-sm" href="{% url 'biobricks-detail' biobrick.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
             
 
                 {% for biobrick_solution in biobrick_solutions %}

@@ -63,7 +63,7 @@ def parts_csv(solution_model, parts):
     -------
     None
     """
-    file_name = f'solution-parts-{solution_model.pk}.csv'
+    file_name = f'{solution_model.name.replace(" ", "-")}-{solution_model.pk}-parts.csv'
     temp_file = f'/home/hthoma/projects/smithy-app/smithy/media/csv/{file_name}'
 
     fields = ['id', 'length', 'length_ext', 'seq', 'seq_ext', 'query_start', 'query_end', 'subject_start', 'subject_end']
@@ -109,7 +109,7 @@ def primers_csv(solution_model, parts):
     -------        
     None
     """
-    file_name = f'solution-primers-{solution_model.pk}.csv'
+    file_name = f'{solution_model.name.replace(" ", "-")}-{solution_model.pk}-primers.csv'
     temp_file = f'/home/hthoma/projects/smithy-app/smithy/media/csv/{file_name}'
 
     fields = ['id', 'primer_type', 'sequence', 'footprint', 'tail', 'tm_footprint', 'tm_total', 'gc', 
@@ -278,7 +278,7 @@ def part_map(part_model, part, left, right, name, space):
     ax.set_xticklabels([])
     ax.set_xticks([])
     ax.figure.savefig(temp_plot)
-    plt.clf()
+    plt.close(ax.get_figure())
 
     part_model.part_map.save(part_plot_name, File(open(temp_plot, 'rb')))
     part_model.save()
@@ -336,7 +336,7 @@ def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
     record = CircularGraphicRecord(sequence_length=total_len, features=features)
     ax, _ = record.plot(figure_width=10)
     ax.figure.savefig(temp_plot)
-    plt.clf()
+    plt.close(ax.get_figure())
 
     solution_model.plasmid_map.save(plot_name, File(open(temp_plot, 'rb')))
     solution_model.save()
@@ -549,7 +549,7 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     # TODO update to have a match % and BLAST solution sequence
     # TODO add a foreach solution in for the assembly
     gibson_solution = GibsonSolution(
-        name=f'Solution - {obj.title}',
+        name=f'{obj.title} Solution',
         backbone=assembler.backbone.seq,
         query=assembler.query_record.seq,
         solution='',
@@ -653,7 +653,7 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     # TODO update to have a match % and BLAST solution sequence
     # TODO add a foreach solution in for the assembly
     goldengate_solution = GoldenGateSolution(
-        name=f'Solution - {obj.title}',
+        name=f'{obj.title} Solution',
         backbone=assembler.backbone.seq,
         query=assembler.query_record.seq,
         solution='',
@@ -756,7 +756,7 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
 
     biobricks_solution = BioBricksSolution(
-        name=f'Solution - {obj.title}',
+        name=f'{obj.title} Solution',
         backbone=assembler.backbone.seq,
         query=assembler.query_record.seq,
         solution='',
@@ -858,7 +858,7 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
 
     pcr_solution = PCRSolution(
-        name=f'Solution - {obj.title}',
+        name=f'{obj.title} Solution',
         backbone=assembler.backbone.seq,
         query=assembler.query_record.seq,
         solution='',
@@ -959,7 +959,7 @@ def slic_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
 
     slic_solution = SLICSolution(
-        name=f'Solution - {obj.title}',
+        name=f'{obj.title} Solution',
         backbone=assembler.backbone.seq,
         query=assembler.query_record.seq,
         solution='',
