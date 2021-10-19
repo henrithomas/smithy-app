@@ -201,7 +201,8 @@ class FragmentTree:
                 start=0, 
                 end=0, 
                 score=0, 
-                i='ROOT'
+                node_id='ROOT',
+                synth=False
             )
         )
 
@@ -239,7 +240,7 @@ class FragmentTree:
                 start=start, 
                 end=end, 
                 score=0, 
-                i=f'Synthetic-{start}.{end}'
+                node_id=f'Synthetic-{start}.{end}'
             )
         )
 
@@ -266,8 +267,9 @@ class FragmentTree:
                     start=fragment.hsps[0].query_start,
                     end=fragment.hsps[0].query_end,
                     score=fragment.hsps[0].score,
-                    i=fragment.hit_id,
-                    db=fragment.hit_id.split('-')[1]
+                    node_id=fragment.hit_id,
+                    db=fragment.hit_id.split('-')[1],
+                    synth=False
                 )
             )
             self.node_ends.add(fragment.hsps[0].query_end)

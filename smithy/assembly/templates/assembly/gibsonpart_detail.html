@@ -37,24 +37,24 @@
         <div class="col">
             <p>
                 <div class="btn-group" role="group" aria-label="Basic example">
+                    <a class="btn btn-outline-dark btn-lg" data-bs-toggle="collapse" href="#extended-seq" role="button" aria-expanded="false" aria-controls="extended-seq">
+                        View Assembly Sequence
+                    </a>
                     <a class="btn btn-outline-dark btn-lg" data-bs-toggle="collapse" href="#seq" role="button" aria-expanded="false" aria-controls="seq">
                         View Sequence
                     </a>
-                    <a class="btn btn-outline-dark btn-lg" data-bs-toggle="collapse" href="#extended-seq" role="button" aria-expanded="false" aria-controls="extended-seq">
-                        View Extended Sequence
-                    </a>
                 </div>
             </p>
+            <div class="collapse" id="extended-seq">
+                <div class="card card-body">
+                    <h2>{{ gibson_part.name }} Assembly Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Watson</span></h2>
+                    <p>{{gibson_part.seq_extended}}</p>
+                </div>
+            </div>
             <div class="collapse mb-2" id="seq">
                 <div class="card card-body">
                     <h2>{{ gibson_part.name }} Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Watson</span></h2>
                     <p>{{gibson_part.seq}}</p>
-                </div>
-            </div>
-            <div class="collapse" id="extended-seq">
-                <div class="card card-body">
-                    <h2>{{ gibson_part.name }} Extended Sequence <span class="badge bg-light text-dark fs-6">5'-3'</span> <span class="badge bg-light text-dark fs-6">Watson</span></h2>
-                    <p>{{gibson_part.seq_extended}}</p>
                 </div>
             </div>
         </div>

@@ -76,7 +76,7 @@
                                 <strong>Database:</strong> {{part.database}}
                             </li>
                             <li class="list-inline-item">
-                                <strong>Sequence:</strong> {{ part.seq|slice:":50" }}...
+                                <strong>Sequence:</strong> {{ part.seq|slice:":25" }}<strong>...</strong>{{ part.seq|slice:"-25:" }}
                             </li>
                         </ul>
                         

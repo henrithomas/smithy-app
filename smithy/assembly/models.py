@@ -136,6 +136,8 @@ class AssemblySolution(models.Model):
     hours = models.FloatField(default=0.0)
     experiments = models.PositiveIntegerField(default=0)
     solution_length = models.PositiveIntegerField(default=0)
+    db_parts = models.PositiveIntegerField(default=0)
+    synth_parts = models.PositiveIntegerField(default=0)
 
     class Meta:
         abstract = True

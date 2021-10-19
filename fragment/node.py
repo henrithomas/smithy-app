@@ -47,7 +47,7 @@ class FragmentNode:
     def __add__(self, other):
         Allows two FragmentNodes to be added using the addition operator
     """ 
-    def __init__(self, data=None, start=0, end=0, score=0, i='NONE', db='NONE'):
+    def __init__(self, data=None, start=0, end=0, score=0, node_id='NONE', db='NONE', synth=True):
         """
         Constructs all necessary attributes for a FragmentNode
 
@@ -73,13 +73,14 @@ class FragmentNode:
             The name of the database for the FragmentNode
         """
         self.data = data
-        self.node_id = i
+        self.node_id = node_id
         self.db = db
         self.start = start
         self.end = end
         self.score = score
         self.level = 0
         self.cost = 0 
+        self.synth = synth
 
     @property
     def info(self):
