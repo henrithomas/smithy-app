@@ -126,6 +126,16 @@ class AssemblySolution(models.Model):
     plasmid_map = models.ImageField(default='default-plasmid.png', upload_to='assembly-maps')
     parts_file = models.FileField(default='default-parts.csv', upload_to='csv/parts/')
     primers_file = models.FileField(default='default-primers.csv', upload_to='csv/primers/')
+    synth_amount = models.FloatField(default=0.0)
+    re_enzymes = models.BooleanField(default=False)
+    part_length_average = models.PositiveIntegerField(default=0)
+    primer_length_average = models.PositiveIntegerField(default=0)
+    longest_part = models.PositiveIntegerField(default=0)
+    shortest_part = models.PositiveIntegerField(default=0)
+    tm_average = models.FloatField(default=0.0)
+    hours = models.FloatField(default=0.0)
+    experiments = models.PositiveIntegerField(default=0)
+    solution_length = models.PositiveIntegerField(default=0)
 
     class Meta:
         abstract = True

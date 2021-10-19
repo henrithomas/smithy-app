@@ -1,5 +1,4 @@
 from django.db.models.deletion import Collector
-
 from tests import cut_locations
 from .models import (
     AssemblyBundle,
@@ -43,6 +42,7 @@ import json
 from datetime import datetime
 import csv
 import matplotlib.pyplot as plt
+from statistics import mean
 
 
 def parts_csv(solution_model, parts):
@@ -168,7 +168,40 @@ def primers_csv(solution_model, parts):
     solution_model.primers_file.save(file_name, File(open(temp_file, newline='')))
     solution_model.save()
     os.remove(temp_file)
-    
+
+def solution_analysis(assembly, fragments, query_length):
+    primer_lengths = []
+    primer_tms = []
+    part_lengths = [
+        part.template.seq.length
+        for part in assembly[:-1]
+    ]
+    for part in assembly: 
+        primer_lengths.extend(
+            [
+                len(part.forward_primer.seq),
+                len(part.reverse_primer.seq)
+            ]
+        )
+        primer_tms.extend(
+            [
+                part.annotations['forward_primer']['tm_footprint'],
+                part.annotations['reverse_primer']['tm_footprint']
+            ]
+        )
+    score_sum = sum([fragment.score for fragment in fragments])
+    match_p = round(
+        score_sum / query_length,
+        2
+    ) * 100
+    synth_p = 100.00 - match_p
+    part_ave = int(mean(part_lengths))
+    primer_ave = int(mean(primer_lengths))
+    primer_tm_ave = round(mean(primer_tms), 2)
+    part_max = max(part_lengths)
+    part_min = min(part_lengths)
+    pass
+    return match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min    
 
 def write_uploaded_file(f, fname):
     with open(fname, 'wb+') as destination:
@@ -544,6 +577,36 @@ def slic_create_service(obj):
 
 def gibson_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
+    primer_lengths = []
+    primer_tms = []
+    part_lengths = [
+        part.template.seq.length
+        for part in assembly[:-1]
+    ]
+    for part in assembly: 
+        primer_lengths.extend(
+            [
+                len(part.forward_primer.seq),
+                len(part.reverse_primer.seq)
+            ]
+        )
+        primer_tms.extend(
+            [
+                part.annotations['forward_primer']['tm_footprint'],
+                part.annotations['reverse_primer']['tm_footprint']
+            ]
+        )
+    score_sum = sum([fragment.score for fragment in fragments])
+    match_percentage = round(
+        score_sum / assembler.query_record.seq.length,
+        2
+    ) * 100
+    synth_percentage = 100.00 - match_percentage
+    part_ave = int(mean(part_lengths))
+    primer_ave = int(mean(primer_lengths))
+    primer_tm_ave = round(mean(primer_tms), 2)
+    part_max = max(part_lengths)
+    part_min = min(part_lengths)
 
     # save assembly parts with meta/annotations and their primers here
     # TODO update to have a match % and BLAST solution sequence
@@ -555,7 +618,15 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
         solution='',
         parts_count=len(fragments),
         primers_count=len(fragments) * 2,
-        match=0.0,
+        match=match_percentage,
+        synth_amount=synth_percentage,
+        re_enzymes=False,
+        part_length_average=part_ave,
+        primer_length_average=primer_ave,
+        longest_part=part_max,
+        shortest_part=part_min,
+        tm_average=primer_tm_ave,
+        solution_length=assembler.query_record.seq.length,
         assembly=obj
     )
     gibson_solution.save()
@@ -647,8 +718,8 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
         reverse_primer.save()
 
 def goldengate_solution_service(obj, assembler, assembly, fragments):
-    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length + 4
     space = 0 if obj.scarless else 4
+    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length + space
 
     # TODO update to have a match % and BLAST solution sequence
     # TODO add a foreach solution in for the assembly
