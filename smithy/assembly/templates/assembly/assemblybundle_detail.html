@@ -1,13 +1,18 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
     <h1>{{ assembly_bundle.title }} <span class="badge rounded-pill bg-secondary">Bundle</span></h1>
+    <p>
+        <strong class="text-muted">
+            {{ assembly_bundle.date_created }}
+        </strong>
+    </p> 
     <p>{{ assembly_bundle.description}}</p>
-    <p>{{ assembly_bundle.date_created }}</p>   
+      
     <hr/>
 
     <div class="row mb-4">
         {% if gibson %}
-            <div class="col-lg-2">
+            <div class="col">
                 <h3>Gibson <br><a class="btn btn-outline-primary btn-sm" href="{% url 'gibson-detail' gibson.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
                 {% for gibson_solution in gibson_solutions %}
@@ -18,12 +23,40 @@
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <span class="badge bg-primary">{{ gibson_solution.parts_count }} Parts</span>
-                                <span class="badge bg-primary">{{ gibson_solution.primers_count }} Primers</span>
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ gibson_solution.parts_count }} Parts
+                                </span>
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ gibson_solution.primers_count }} Primers
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ gibson_solution.db_parts }} BLAST Parts
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ gibson_solution.synth_parts }} Synthetic Parts
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ gibson_solution.longest_part }}nt Longest Part
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ gibson_solution.shortest_part }}nt Shortest Part
+                                </span>
                             </li>
                             <li class="list-group-item">
-                                <span class="badge bg-days text-dark">X Days</span>
-                                <span class="badge bg-experiments text-dark">Y Experiments</span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ gibson_solution.tm_average }}C Average Primer Tm
+                                </span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ gibson_solution.primer_length_average }}nt Average Primer
+                                </span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ gibson_solution.match }}% BLAST nt
+                                </span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ gibson_solution.synth_amount }}% Synthetic nt
+                                </span>
                             </li>
                         </ul>
                         <div class="card-body">
@@ -35,7 +68,7 @@
         {% endif %}
 
         {% if goldengate %}
-            <div class="col-lg-2">
+            <div class="col">
                 <h3>Golden Gate <br><a class="btn btn-outline-primary btn-sm" href="{% url 'goldengate-detail' goldengate.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
                 {% for goldengate_solution in goldengate_solutions %}
@@ -46,12 +79,40 @@
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <span class="badge bg-primary">{{ goldengate_solution.parts_count }} Parts</span>
-                                <span class="badge bg-primary">{{ goldengate_solution.primers_count }} Primers</span>
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ goldengate_solution.parts_count }} Parts
+                                </span>
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ goldengate_solution.primers_count }} Primers
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ goldengate_solution.db_parts }} BLAST Parts
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ goldengate_solution.synth_parts }} Synthetic Parts
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ goldengate_solution.longest_part }}nt Longest Part
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ goldengate_solution.shortest_part }}nt Shortest Part
+                                </span>
                             </li>
                             <li class="list-group-item">
-                                <span class="badge bg-days text-dark">X Days</span>
-                                <span class="badge bg-experiments text-dark">Y Experiments</span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ goldengate_solution.tm_average }}C Average Primer Tm
+                                </span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ goldengate_solution.primer_length_average }}nt Average Primer
+                                </span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ goldengate_solution.match }}% BLAST nt
+                                </span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ goldengate_solution.synth_amount }}% Synthetic nt
+                                </span>
                             </li>
                         </ul>
                         <div class="card-body">
@@ -63,7 +124,7 @@
         {% endif %}
         
         {% if slic %}
-            <div class="col-lg-2">
+            <div class="col">
                 <h3>SLIC <br><a class="btn btn-outline-primary btn-sm" href="{% url 'slic-detail' slic.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
                 {% for slic_solution in slic_solutions %}
@@ -74,12 +135,40 @@
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <span class="badge bg-primary">{{ slic_solution.parts_count }} Parts</span>
-                                <span class="badge bg-primary">{{ slic_solution.primers_count }} Primers</span>
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ slic_solution.parts_count }} Parts
+                                </span>
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ slic_solution.primers_count }} Primers
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ slic_solution.db_parts }} BLAST Parts
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ slic_solution.synth_parts }} Synthetic Parts
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ slic_solution.longest_part }}nt Longest Part
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ slic_solution.shortest_part }}nt Shortest Part
+                                </span>
                             </li>
                             <li class="list-group-item">
-                                <span class="badge bg-days text-dark">X Days</span>
-                                <span class="badge bg-experiments text-dark">Y Experiments</span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ slic_solution.tm_average }}C Average Primer Tm
+                                </span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ slic_solution.primer_length_average }}nt Average Primer
+                                </span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ slic_solution.match }}% BLAST nt
+                                </span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ slic_solution.synth_amount }}% Synthetic nt
+                                </span>
                             </li>
                         </ul>
                         <div class="card-body">
@@ -91,7 +180,7 @@
         {% endif %}
 
         {% if pcr %}
-            <div class="col-lg-2">
+            <div class="col">
                 <h3>PCR <br><a class="btn btn-outline-primary btn-sm" href="{% url 'pcr-detail' pcr.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
                 {% for pcr_solution in pcr_solutions %}
@@ -102,12 +191,40 @@
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <span class="badge bg-primary">{{ pcr_solution.parts_count }} Parts</span>
-                                <span class="badge bg-primary">{{ pcr_solution.primers_count }} Primers</span>
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ pcr_solution.parts_count }} Parts
+                                </span>
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ pcr_solution.primers_count }} Primers
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ pcr_solution.db_parts }} BLAST Parts
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ pcr_solution.synth_parts }} Synthetic Parts
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ pcr_solution.longest_part }}nt Longest Part
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ pcr_solution.shortest_part }}nt Shortest Part
+                                </span>
                             </li>
                             <li class="list-group-item">
-                                <span class="badge bg-days text-dark">X Days</span>
-                                <span class="badge bg-experiments text-dark">Y Experiments</span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ pcr_solution.tm_average }}C Average Primer Tm
+                                </span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ pcr_solution.primer_length_average }}nt Average Primer
+                                </span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ pcr_solution.match }}% BLAST nt
+                                </span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ pcr_solution.synth_amount }}% Synthetic nt
+                                </span>
                             </li>
                         </ul>
                         <div class="card-body">
@@ -119,28 +236,56 @@
         {% endif %}
         
         {% if biobrick %}
-            <div class="col-lg-2">
+            <div class="col">
                 <h3>BioBricks <br><a class="btn btn-outline-primary btn-sm" href="{% url 'biobricks-detail' biobrick.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
             
 
-                {% for biobrick_solution in biobrick_solutions %}
+                {% for biobricks_solution in biobrick_solutions %}
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">{{ biobrick_solution.name }}</h5>
+                            <h5 class="card-title">{{ biobricks_solution.name }}</h5>
                             <h6 class="card-subtitle mb-2 text-muted">A BioBricks solution</h6>
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">
-                                <span class="badge bg-primary">{{ biobrick_solution.parts_count }} Parts</span>
-                                <span class="badge bg-primary">{{ biobrick_solution.primers_count }} Primers</span>
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ biobricks_solution.parts_count }} Parts
+                                </span>
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ biobricks_solution.primers_count }} Primers
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ biobricks_solution.db_parts }} BLAST Parts
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ biobricks_solution.synth_parts }} Synthetic Parts
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ biobricks_solution.longest_part }}nt Longest Part
+                                </span>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    {{ biobricks_solution.shortest_part }}nt Shortest Part
+                                </span>
                             </li>
                             <li class="list-group-item">
-                                <span class="badge bg-days text-dark">X Days</span>
-                                <span class="badge bg-experiments text-dark">Y Experiments</span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ biobricks_solution.tm_average }}C Average Primer Tm
+                                </span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ biobricks_solution.primer_length_average }}nt Average Primer
+                                </span>
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ biobricks_solution.match }}% BLAST nt
+                                </span>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ biobricks_solution.synth_amount }}% Synthetic nt
+                                </span>
                             </li>
                         </ul>
                         <div class="card-body">
-                            <a href="{% url 'biobricks-solution-detail' biobrick_solution.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i> View Solution</a>
+                            <a href="{% url 'biobricks-solution-detail' biobricks_solution.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i> View Solution</a>
                         </div>
                     </div>
                 {% endfor %}

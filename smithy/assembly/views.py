@@ -583,6 +583,7 @@ class AssemblyBundleListView(ListView):
             .only('title', 'date_created', 'description') \
             .order_by('-date_created')
     
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Assembly Bundles'
