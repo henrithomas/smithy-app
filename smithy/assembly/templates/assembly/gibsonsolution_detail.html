@@ -16,6 +16,18 @@
                     <span class="badge rounded-pill bg-primary">
                         {{ gibson_solution.primers_count }} Primers
                     </span>
+                    <span class="badge rounded-pill bg-info text-dark">
+                        {{ gibson_solution.db_parts }} BLAST Parts
+                    </span>
+                    <span class="badge rounded-pill bg-info text-dark">
+                        {{ gibson_solution.synth_parts }} Synthetic Parts
+                    </span>
+                    <span class="badge rounded-pill bg-info text-dark">
+                        {{ gibson_solution.longest_part }}nt Longest Part
+                    </span>
+                    <span class="badge rounded-pill bg-info text-dark">
+                        {{ gibson_solution.shortest_part }}nt Shortest Part
+                    </span>
                 </li>
                 <li class="list-group-item">
                     <span class="badge rounded-pill bg-secondary">
@@ -119,7 +131,6 @@
                             <span class="badge rounded-pill bg-secondary">
                                 {{ part.length }}nt Template
                             </span>
-                            
                         </p>
                         <ul class="list-group">
                             <li class="list-group-item">
@@ -190,6 +201,7 @@
 
     <div class="row mb-4">
         <div class="col">
+            <h2>Primers List</h2>
             {% for primers in primer_sets %}
                 {% for primer in primers %}
                     <div class="card mb-2">
@@ -204,7 +216,7 @@
                                 <span class="badge rounded-pill bg-secondary">
                                     {{ primer.primer_type }}
                                 </span>
-                                <span class="badge rounded-pill bg-secondary">
+                                <span class="badge rounded-pill bg-primary">
                                     {{ primer.tm_footprint|stringformat:".3f" }}&deg;C
                                 </span>
                                 {% if primer.hairpin %}
@@ -223,6 +235,13 @@
                     </div>
                 {% endfor %}
             {% endfor %}
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <a href="{{ gibson_solution.parts_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Parts</a>
+            <a href="{{ gibson_solution.primers_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Primers</a> 
         </div>
     </div>
 {% endblock content %}

@@ -1,21 +1,58 @@
 {% extends 'proj_site/base.html' %}
 {% block content %}
     <h1>{{ title }}</h1>
-    <p>{{ goldengate_solution.date_created }}</p>
-
+    <p>
+        <strong class="text-muted">
+            {{ goldengate_solution.date_created }}
+        </strong>
+    </p>
     <div class="row mb-4">
         <div class="col">
-            <a href="{{ goldengate_solution.parts_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Parts</a>
-            <a href="{{ goldengate_solution.primers_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Primers</a> 
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <span class="badge rounded-pill bg-primary">
+                        {{ goldengate_solution.parts_count }} Parts
+                    </span>
+                    <span class="badge rounded-pill bg-primary">
+                        {{ goldengate_solution.primers_count }} Primers
+                    </span>
+                    <span class="badge rounded-pill bg-info text-dark">
+                        {{ goldengate_solution.db_parts }} BLAST Parts
+                    </span>
+                    <span class="badge rounded-pill bg-info text-dark">
+                        {{ goldengate_solution.synth_parts }} Synthetic Parts
+                    </span>
+                    <span class="badge rounded-pill bg-info text-dark">
+                        {{ goldengate_solution.longest_part }}nt Longest Part
+                    </span>
+                    <span class="badge rounded-pill bg-info text-dark">
+                        {{ goldengate_solution.shortest_part }}nt Shortest Part
+                    </span>
+                </li>
+                <li class="list-group-item">
+                    <span class="badge rounded-pill bg-secondary">
+                        {{ goldengate_solution.tm_average }}C Average Primer Tm
+                    </span>
+                    <span class="badge rounded-pill bg-secondary">
+                        {{ goldengate_solution.primer_length_average }}nt Average Primer
+                    </span>
+                </li>
+                <li class="list-group-item">
+                    <span class="badge rounded-pill bg-secondary">
+                        {{ goldengate_solution.match }}% BLAST nt
+                    </span>
+                    <span class="badge rounded-pill bg-secondary">
+                        {{ goldengate_solution.synth_amount }}% Synthetic nt
+                    </span>
+                </li>
+            </ul>
         </div>
     </div>
 
     <div class="row mb-4">
         <div class="col">
-            <h2>Plasmid Map</h2>
-            <div class="text-center">
-                <img src="{{ goldengate_solution.plasmid_map.url }}" class="img-fluid">
-            </div>
+            <a href="{{ goldengate_solution.parts_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Parts</a>
+            <a href="{{ goldengate_solution.primers_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Primers</a> 
         </div>
     </div>
 
@@ -64,22 +101,48 @@
                     </tbody>
                 </table>
             </div>
+            
+            <h2>Plasmid Map</h2>
+            <div class="text-center">
+                <img src="{{ goldengate_solution.plasmid_map.url }}" class="img-fluid">
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Parts List</h2>
             {% for part in parts %}
                 <div class="card mb-2">
                     <div class="card-body">
                         <h4 class="card-title">
                             {{part.name}}
-                            <a href="{% url 'goldengate-part-detail' part.pk %}" class="btn btn-outline-primary float-end">View Part</a>
+                            {% if part.database != 'NONE' %}
+                                <span class="badge bg-info text-dark"">{{ part.database }}</span>
+                            {% endif %}
+                            <a href="{% url 'goldengate-part-detail' part.pk %}" class="btn btn-outline-primary float-end">
+                                <i class="bi bi-eye"></i> View Part
+                            </a>
                         </h4>
-                        <ul class="list-inline mb-0">
-                            <li class="list-inline-item">
-                                <strong>Database:</strong> {{part.database}}
+                        <p>
+                            <span class="badge rounded-pill bg-secondary">
+                                {{ part.length_extended }}nt Extended
+                            </span>
+                            <span class="badge rounded-pill bg-secondary">
+                                {{ part.length }}nt Template
+                            </span>
+                            {% if part.cuts >= 3 %}
+                                <span class="badge rounded-pill bg-warning text-dark">Internal Cutsite(s)</span>
+                            {% endif %}
+                        </p>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <strong>Assembly Sequence:</strong> {{ part.seq_extended|slice:":25" }}<strong>...</strong>{{ part.seq_extended|slice:"-25:" }}
                             </li>
-                            <li class="list-inline-item">
-                                <strong>Sequence:</strong> {{ part.seq|slice:":25" }}<strong>...</strong>{{ part.seq|slice:"-25:" }}
+                            <li class="list-group-item">
+                                <strong>Template Sequence:</strong> {{ part.seq|slice:":25" }}<strong>...</strong>{{ part.seq|slice:"-25:" }}
                             </li>
                         </ul>
-                        
                     </div>
                 </div>
             {% endfor %}
@@ -141,26 +204,47 @@
 
     <div class="row mb-4">
         <div class="col">
+            <h2>Primers List</h2>
             {% for primers in primer_sets %}
                 {% for primer in primers %}
                     <div class="card mb-2">
                         <div class="card-body">
                             <h4 class="card-title">
-                                {{primer.name}}
-                                <a href="{% url 'goldengate-primer-detail' primer.pk %}" class="btn btn-outline-primary float-end">View Primer</a> 
+                                {{ primer.name }}
+                                <a href="{% url 'goldengate-primer-detail' primer.pk %}" class="btn btn-outline-primary float-end">
+                                    <i class="bi bi-eye"></i> View Primer
+                                </a> 
                             </h4>
-                            <ul class="list-inline mb-0">
-                                <li class="list-inline-item">
+                            <p>
+                                <span class="badge rounded-pill bg-secondary">
+                                    {{ primer.primer_type }}
+                                </span>
+                                <span class="badge rounded-pill bg-primary">
+                                    {{ primer.tm_footprint|stringformat:".3f" }}&deg;C
+                                </span>
+                                {% if primer.hairpin %}
+                                    <span class="badge rounded-pill bg-warning text-dark">Hairpin</span>
+                                {% endif %}
+                                {% if primer.homodimer %}
+                                    <span class="badge rounded-pill bg-warning text-dark">Homodimer</span>
+                                {% endif %}
+                            </p>
+                            <ul class="list-group">
+                                <li class="list-group-item">
                                     <strong>Sequence:</strong> {{primer.sequence}}
-                                </li>
-                                <li class="list-inline-item">
-                                   <strong>Tm (C):</strong> {{primer.tm_footprint|stringformat:".3f"}}
                                 </li>
                             </ul>
                         </div>
                     </div>
                 {% endfor %}
             {% endfor %}
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <a href="{{ goldengate_solution.parts_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Parts</a>
+            <a href="{{ goldengate_solution.primers_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Primers</a> 
         </div>
     </div>
 {% endblock content %}
