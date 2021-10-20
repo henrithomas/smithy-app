@@ -52,10 +52,10 @@
                             </li>
                             <li class="list-group-item">
                                 <span class="badge rounded-pill bg-secondary">
-                                    {{ gibson_solution.match }}% BLAST nt
+                                    {{ gibson_solution.match|floatformat:2 }}% BLAST nt
                                 </span>
                                 <span class="badge rounded-pill bg-secondary">
-                                    {{ gibson_solution.synth_amount }}% Synthetic nt
+                                    {{ gibson_solution.synth_amount|floatformat:2 }}% Synthetic nt
                                 </span>
                             </li>
                         </ul>
@@ -105,13 +105,16 @@
                                 <span class="badge rounded-pill bg-secondary">
                                     {{ goldengate_solution.primer_length_average }}nt Average Primer
                                 </span>
+                                {% if goldengate_solution.re_enzymes %}
+                                    <span class="badge rounded-pill bg-warning text-dark">Restriction Enzymes</span>
+                                {% endif %}
                             </li>
                             <li class="list-group-item">
                                 <span class="badge rounded-pill bg-secondary">
-                                    {{ goldengate_solution.match }}% BLAST nt
+                                    {{ goldengate_solution.match|floatformat:2 }}% BLAST nt
                                 </span>
                                 <span class="badge rounded-pill bg-secondary">
-                                    {{ goldengate_solution.synth_amount }}% Synthetic nt
+                                    {{ goldengate_solution.synth_amount|floatformat:2 }}% Synthetic nt
                                 </span>
                             </li>
                         </ul>
@@ -164,10 +167,10 @@
                             </li>
                             <li class="list-group-item">
                                 <span class="badge rounded-pill bg-secondary">
-                                    {{ slic_solution.match }}% BLAST nt
+                                    {{ slic_solution.match|floatformat:2 }}% BLAST nt
                                 </span>
                                 <span class="badge rounded-pill bg-secondary">
-                                    {{ slic_solution.synth_amount }}% Synthetic nt
+                                    {{ slic_solution.synth_amount|floatformat:2 }}% Synthetic nt
                                 </span>
                             </li>
                         </ul>
@@ -220,10 +223,10 @@
                             </li>
                             <li class="list-group-item">
                                 <span class="badge rounded-pill bg-secondary">
-                                    {{ pcr_solution.match }}% BLAST nt
+                                    {{ pcr_solution.match|floatformat:2 }}% BLAST nt
                                 </span>
                                 <span class="badge rounded-pill bg-secondary">
-                                    {{ pcr_solution.synth_amount }}% Synthetic nt
+                                    {{ pcr_solution.synth_amount|floatformat:2 }}% Synthetic nt
                                 </span>
                             </li>
                         </ul>
@@ -274,13 +277,16 @@
                                 <span class="badge rounded-pill bg-secondary">
                                     {{ biobricks_solution.primer_length_average }}nt Average Primer
                                 </span>
+                                {% if biobricks_solution.re_enzymes %}
+                                    <span class="badge rounded-pill bg-warning text-dark">Restriction Enzymes</span>
+                                {% endif %}
                             </li>
                             <li class="list-group-item">
                                 <span class="badge rounded-pill bg-secondary">
-                                    {{ biobricks_solution.match }}% BLAST nt
+                                    {{ biobricks_solution.match|floatformat:2 }}% BLAST nt
                                 </span>
                                 <span class="badge rounded-pill bg-secondary">
-                                    {{ biobricks_solution.synth_amount }}% Synthetic nt
+                                    {{ biobricks_solution.synth_amount|floatformat:2 }}% Synthetic nt
                                 </span>
                             </li>
                         </ul>

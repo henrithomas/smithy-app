@@ -194,7 +194,7 @@ def solution_analysis(assembly, fragments, query_length):
         score_sum / query_length,
         2
     ) * 100
-    synth_p = 100.00 - match_p
+    synth_p = round(100.00 - match_p, 2)
     part_ave = int(mean(part_lengths))
     primer_ave = int(mean(primer_lengths))
     primer_tm_ave = round(mean(primer_tms), 2)
@@ -693,6 +693,8 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
 def goldengate_solution_service(obj, assembler, assembly, fragments):
     space = 0 if obj.scarless else 4
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length + space
+    # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
+    analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
 
     # TODO update to have a match % and BLAST solution sequence
     # TODO add a foreach solution in for the assembly
@@ -703,7 +705,17 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
         solution='',
         parts_count=len(fragments),
         primers_count=len(fragments) * 2,
-        match=0.0,
+        match=analysis[0],
+        synth_amount=analysis[1],
+        re_enzymes=True,
+        part_length_average=analysis[2],
+        primer_length_average=analysis[3],
+        tm_average=analysis[4],
+        longest_part=analysis[5],
+        shortest_part=analysis[6],
+        db_parts=analysis[7],
+        synth_parts=analysis[8],
+        solution_length=assembler.query_record.seq.length,
         assembly=obj
     )
     goldengate_solution.save()
@@ -798,6 +810,8 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
 
 def biobricks_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
+    # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
+    analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
 
     biobricks_solution = BioBricksSolution(
         name=f'{obj.title} Solution',
@@ -806,7 +820,17 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         solution='',
         parts_count=len(fragments),
         primers_count=len(fragments) * 2,
-        match=0.0,
+        match=analysis[0],
+        synth_amount=analysis[1],
+        re_enzymes=True,
+        part_length_average=analysis[2],
+        primer_length_average=analysis[3],
+        tm_average=analysis[4],
+        longest_part=analysis[5],
+        shortest_part=analysis[6],
+        db_parts=analysis[7],
+        synth_parts=analysis[8],
+        solution_length=assembler.query_record.seq.length,
         assembly=obj
     )
     biobricks_solution.save()
@@ -900,6 +924,8 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
 
 def pcr_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
+    # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
+    analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
 
     pcr_solution = PCRSolution(
         name=f'{obj.title} Solution',
@@ -908,7 +934,17 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
         solution='',
         parts_count=len(fragments),
         primers_count=len(fragments) * 2, 
-        match=0.0,
+        match=analysis[0],
+        synth_amount=analysis[1],
+        re_enzymes=False,
+        part_length_average=analysis[2],
+        primer_length_average=analysis[3],
+        tm_average=analysis[4],
+        longest_part=analysis[5],
+        shortest_part=analysis[6],
+        db_parts=analysis[7],
+        synth_parts=analysis[8],
+        solution_length=assembler.query_record.seq.length,
         assembly=obj
     )
     pcr_solution.save()
@@ -1001,6 +1037,8 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
 
 def slic_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
+    # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
+    analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
 
     slic_solution = SLICSolution(
         name=f'{obj.title} Solution',
@@ -1009,7 +1047,17 @@ def slic_solution_service(obj, assembler, assembly, fragments):
         solution='',
         parts_count=len(fragments),
         primers_count=len(fragments) * 2, 
-        match=0.0,
+        match=analysis[0],
+        synth_amount=analysis[1],
+        re_enzymes=False,
+        part_length_average=analysis[2],
+        primer_length_average=analysis[3],
+        tm_average=analysis[4],
+        longest_part=analysis[5],
+        shortest_part=analysis[6],
+        db_parts=analysis[7],
+        synth_parts=analysis[8],
+        solution_length=assembler.query_record.seq.length,
         assembly=obj
     )
     slic_solution.save()

@@ -39,10 +39,10 @@
                 </li>
                 <li class="list-group-item">
                     <span class="badge rounded-pill bg-secondary">
-                        {{ slic_solution.match }}% BLAST nt
+                        {{ slic_solution.match|floatformat:2 }}% BLAST nt
                     </span>
                     <span class="badge rounded-pill bg-secondary">
-                        {{ slic_solution.synth_amount }}% Synthetic nt
+                        {{ slic_solution.synth_amount|floatformat:2 }}% Synthetic nt
                     </span>
                 </li>
             </ul>

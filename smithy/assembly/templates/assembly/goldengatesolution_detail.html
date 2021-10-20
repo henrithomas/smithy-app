@@ -39,10 +39,10 @@
                 </li>
                 <li class="list-group-item">
                     <span class="badge rounded-pill bg-secondary">
-                        {{ goldengate_solution.match }}% BLAST nt
+                        {{ goldengate_solution.match|floatformat:2 }}% BLAST nt
                     </span>
                     <span class="badge rounded-pill bg-secondary">
-                        {{ goldengate_solution.synth_amount }}% Synthetic nt
+                        {{ goldengate_solution.synth_amount|floatformat:2 }}% Synthetic nt
                     </span>
                 </li>
             </ul>
