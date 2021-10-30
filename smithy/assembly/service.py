@@ -1191,6 +1191,7 @@ def bundle_create_service(bundle_data):
     bundle.save()
 
     if bundle_data['gibson']:
+        print('bundle - gibson')
         gibson_obj = GibsonAssembly(
             title=bundle_data['title'],
             multipart=bundle_data['multipart'],
@@ -1234,6 +1235,7 @@ def bundle_create_service(bundle_data):
         gibson_solution_service(gibson_obj, gibson_assembler, gibson_assembly, gibson_fragments)
         bundle.gibson.add(gibson_obj)
     if bundle_data['goldengate']:
+        print('bundle - goldengate')
         goldengate_obj = GoldenGateAssembly(
             title=bundle_data['title'],
             multipart=bundle_data['multipart'],
@@ -1279,6 +1281,7 @@ def bundle_create_service(bundle_data):
         goldengate_solution_service(goldengate_obj, goldengate_assembler, goldengate_assembly, goldengate_fragments)
         bundle.goldengate.add(goldengate_obj)
     if bundle_data['biobricks']:
+        print('bundle - biobricks')
         biobricks_obj = BioBricksAssembly(
             title=bundle_data['title'],
             multipart=bundle_data['multipart'],
@@ -1320,6 +1323,7 @@ def bundle_create_service(bundle_data):
         biobricks_solution_service(biobricks_obj, biobricks_assembler, biobricks_assembly, biobricks_fragments)
         bundle.biobricks.add(biobricks_obj)
     if bundle_data['pcr']:
+        print('bundle - pcr')
         pcr_obj = PCRAssembly(
             title=bundle_data['title'],
             multipart=bundle_data['multipart'],
@@ -1363,6 +1367,7 @@ def bundle_create_service(bundle_data):
         pcr_solution_service(pcr_obj, pcr_assembler, pcr_assembly, pcr_fragments)
         bundle.pcr.add(pcr_obj)
     if bundle_data['slic']:
+        print('bundle - slic')
         slic_obj = SLICAssembly(
             title=bundle_data['title'],
             multipart=bundle_data['multipart'],
@@ -1408,7 +1413,7 @@ def bundle_create_service(bundle_data):
 
     os.remove(backbone_file_path)
     os.remove(insert_file_path)
-
+    print('bundle - complete')
     return bundle.pk
 
 

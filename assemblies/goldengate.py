@@ -228,7 +228,15 @@ class GoldenGateAssembler(TraditionalREAssembler):
 
                 extensions[i][1] = self.re1.site + 'N' + fragments[i_next].seq.crick[-ovhng_end:]
                 extensions[i_next][0] = self.re1.site + 'N'
-            # set the overhang bounds if it is found in the current fragment (i)
+            # set the overhang bounds if it is found in the junction of i and i_next
+            elif j == interval - 1:
+                ovhng_start = -(interval - j)
+                ovhng_end = -(interval - (j + 4))
+
+                pcr_intervals[i_next][0] = ovhng_end
+
+                extensions[i][1] = self.re1.site + 'N' + fragments[i_next].seq.crick[-ovhng_end:]
+                extensions[i_next][0] = self.re1.site + 'N'
             else:
                 ovhng_start = -(interval - j)
                 ovhng_end = -(interval - (j + 4))
@@ -305,7 +313,7 @@ class GoldenGateAssembler(TraditionalREAssembler):
 
         if self.scarless:
             # create assembly primer complements for backbone and fragments
-            fragments_pcr, extensions = self.primer_complement_scarless(fragments, self.backbone, interval=20) 
+            fragments_pcr, extensions = self.primer_complement_scarless(fragments, self.backbone, interval=30) 
             # create primer extensions that facilitate scarless assembly
             assembly = self.primer_extension_scarless(fragments_pcr, extensions)
         else:
