@@ -592,7 +592,7 @@ class FragmentTree:
                         start=temp_align.hsps[0].query_start,
                         end=temp_align.hsps[0].query_end,
                         score=temp_align.hsps[0].score,
-                        i=temp_align.hit_id
+                        node_id=temp_align.hit_id
                     )
                 )
             else:
@@ -603,8 +603,9 @@ class FragmentTree:
                             start=fragment.hsps[0].query_start,
                             end=fragment.hsps[0].query_end,
                             score=fragment.hsps[0].score,
-                            i=fragment.hit_id,
-                            db=fragment.hit_id.split('-')[1]
+                            node_id=fragment.hit_id,
+                            db=fragment.hit_id.split('-')[1],
+                            synth=False
                         )
                     )
             self.multi_query_node_list.append(temp)
