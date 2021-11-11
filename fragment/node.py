@@ -18,7 +18,7 @@ class FragmentNode:
     score : optional, int 
         The BLAST alignment score for the alignment saved in data
 
-    i : optional, str
+    node_id : optional, str
         An identifying string for the FragmentNode        
 
     db : optional, str
@@ -66,7 +66,7 @@ class FragmentNode:
         score : optional, int 
             The BLAST alignment score for the alignment saved in data
 
-        i : optional, str
+        node_id : optional, str
             An identifying string for the FragmentNode        
 
         db : optional, str

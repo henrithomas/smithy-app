@@ -163,6 +163,7 @@ class FragmentTree:
             node_a_start, node_a_end = self.node_list[i].coordinates
             node_b_start, node_b_end = self.node_list[j].coordinates
 
+            # TODO should the first equal clause still exist??? 
             if (node_b_start == node_a_end) or (node_b_start == (node_a_end + 1)) and j not in self.adjacency_set[i]:
                 self.adjacency_set[i].add(j)
             if (node_a_start == node_b_end) or (node_a_start == (node_b_end + 1)) and i not in self.adjacency_set[j]:
