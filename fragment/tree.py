@@ -163,10 +163,9 @@ class FragmentTree:
             node_a_start, node_a_end = self.node_list[i].coordinates
             node_b_start, node_b_end = self.node_list[j].coordinates
 
-            # TODO should the first equal clause still exist??? 
-            if (node_b_start == node_a_end) or (node_b_start == (node_a_end + 1)) and j not in self.adjacency_set[i]:
+            if (node_b_start == (node_a_end + 1)) and j not in self.adjacency_set[i]:
                 self.adjacency_set[i].add(j)
-            if (node_a_start == node_b_end) or (node_a_start == (node_b_end + 1)) and i not in self.adjacency_set[j]:
+            if (node_a_start == (node_b_end + 1)) and i not in self.adjacency_set[j]:
                 self.adjacency_set[j].add(i)
 
     def root_node(self):
@@ -498,7 +497,7 @@ class FragmentTree:
             test = self.node_list[last].end
             remainder = self.query_len - test
             if remainder <= self.max_synth and remainder >= self.min_synth:
-                self.filler_node(test, self.query_len)
+                self.filler_node(test + 1, self.query_len)
                 self.adjacency_set[last].add(len(self.node_list) - 1)
                 solution.append(len(self.node_list) - 1)
             else: 

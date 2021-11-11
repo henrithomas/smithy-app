@@ -580,7 +580,7 @@ class Assembler:
             node.data.hsps[0].sbjct_start,
             node.data.hsps[0].sbjct_end
         ] for node in nodes]
-        data.append([self.backbone.name, 'NONE', backbone_start, backbone_end, 0, 0])
+        data.append([self.backbone.name, 'NONE', backbone_start + 1, backbone_end, 0, 0])
 
         for i, amplicon in enumerate(new_assembly):
             amplicon.name = data[i][0]
