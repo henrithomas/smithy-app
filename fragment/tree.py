@@ -145,6 +145,7 @@ class FragmentTree:
         None
         """
         for i, j in combinations(range(len(self.node_list)), 2):
+            
             node_a_start, node_a_end = self.node_list[i].coordinates
             node_b_start, node_b_end = self.node_list[j].coordinates
             

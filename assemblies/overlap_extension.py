@@ -166,7 +166,6 @@ class OverlapExtensionAssembler(Assembler):
         
         return assembly
         
-
     def design(self, solution=0):
         """
         Runs a full design procedure on the selected solution. Fetches the solution from the solution_tree, adds primer 
