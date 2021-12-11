@@ -11,6 +11,44 @@
     <hr/>
 
     <div class="row mb-4">
+        <div class="col">
+            <div style="position: relative; height:30vh;">
+                <canvas id="myChart"></canvas>    
+            </div>
+            <div class="row">
+                <canvas id="myRadar"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="myBar"></canvas>
+            </div>
+        </div>
+        <div class="col">
+            <div style="position: relative; height:30vh;">
+                <canvas id="myChart2"></canvas>    
+            </div>
+        </div>
+        <div class="col">
+            <div style="position: relative; height:30vh;">
+                <canvas id="myChart3"></canvas>    
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="row mb-4">
+        <div class="bar-container"></div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <div class="ct-chart ct-perfect-fourth" id="barChart"></div>
+            <div class="ct-chart ct-perfect-fourth" id="chart1"></div>s
+        </div>
+        <div class="col">
+            <div class="ct-chart ct-perfect-fourth" id="chart2"></div>
+        </div>
+    </div> -->
+
+    <div class="row mb-4">
         {% if gibson %}
             <div class="col">
                 <h3>Gibson <br><a class="btn btn-outline-primary btn-sm" href="{% url 'gibson-detail' gibson.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
@@ -298,5 +336,4 @@
             </div>
         {% endif %}
     </div>
-    
 {% endblock content %}

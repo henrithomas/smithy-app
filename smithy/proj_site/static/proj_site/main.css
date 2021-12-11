@@ -61,3 +61,10 @@ body {
 .bg-days {
     background-color: #f6da7fea!important;
 }
+
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 20vh;
+    /* width: 20vw; */
+  }
