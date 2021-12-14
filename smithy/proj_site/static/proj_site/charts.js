@@ -1,77 +1,205 @@
-// // Chartist...
-// var data = {
-//     labels: ['Bananas - 42%', 'Apples - 25%', 'Grapes - 33%'],
-//     series: [5, 3, 4]
-// };
-// var sum = function(a, b) { return a + b };
+// Chart.js defaults
+Chart.defaults.font.size = 15
+Chart.defaults.plugins.title.font.size = 20
+Chart.defaults.plugins.legend.position = 'bottom'
 
-// new Chartist.Pie('#barChart', data, {
-//     labelInterpolationFnc: function(value) {
-//         return value;
-//     }
-// });
+// counter plugin 
+const counter = { 
+    id: 'counter',
+    beforeDraw(chart, args, options) {
+        const { ctx, chartArea: { top, right, bottom, left, width, height } } = chart;
+        ctx.save();
+        
+        ctx.font = options.font_size  + 'px ' + options.font_family;
+        ctx.textAlign = 'center';
+        ctx.fillStyle = options.fontColor;
+        ctx.fillText('$' + options.cost_sum, width / 2, top + (height / 2));
+    }
+} 
 
-// // Initialize a Line chart in the container with the ID chart1
-// new Chartist.Line('#chart1', {
-//     labels: [1, 2, 3, 4],
-//     series: [[100, 120, 180, 200]]
-// });
+// SETUP
+// data
+const gibson_times = [27, 15, 12];
+const goldengate_times = [30, 42, 9];
+const pcr_times = [30, 15, 26];
 
-// // Initialize a Line chart in the container with the ID chart2
-// new Chartist.Bar('#chart2', {
-//     labels: [1, 2, 3, 4],
-//     series: [[5, 2, 8, 3]]
-// });
+const gibson_costs = [65, 59, 90, 81, 56, 55];
+const goldengate_costs = [65, 59, 90, 81, 161];
+const data2 = [65, 59, 90, 81, 56, 55];
+const gibson_risks = [-.9, .8, 0.1, 0.5];
 
+let gibson_cost_sum = 0;
+for (let i = 0; i < gibson_costs.length; i++) {
+    gibson_cost_sum += gibson_costs[i];
+}
 
-// // Britecharts
-// // Instantiate bar chart and container
-// const barChart = britecharts.bar();
-// const container = d3.select('.bar-container');
+let goldengate_cost_sum = 0;
+for (let i = 0; i < goldengate_costs.length; i++) {
+    goldengate_cost_sum += goldengate_costs[i];
+}
 
-// // Create Dataset with proper shape
-// const barData = [
-//     { name: 'Luminous', value: 2 },
-//     { name: 'Glittering', value: 5 },
-//     { name: 'Intense', value: 4 },
-//     { name: 'Radiant', value: 3 }
-// ];
+// labels
+const labels1 = ['test 1'];
+const labels2 = ['test 2'];
+const labels3 = ['test 3'];
+const gibson_cost_labels = ['primers', 'parts', 'genes', 'blocks', 'polymerase'];
+const goldengate_cost_labels = ['primers', 'parts', 'genes', 'ligase', 'type2s re'];
+const risk_labels = ['thing1', 'thing2', 'thing3', 'thing4'];
 
-// // Configure chart
-// barChart
-//     .margin({left: 100})
-//     .isHorizontal(true)
-//     .height(400)
-//     .width(600);
+// colors 
+const time_colors = ['#69130F', '#B72D26', '#FF2A1F'];
+const cost_colors = ['#49EC7A', '#3ACB66', '#2EAA53', '#238A42', '#195C2D', 'transparent'];
+// '#0F341A'
+const risk_colors = [
+    'rgba(92, 230, 230, 0.5)',
+    'rgba(74, 185, 185, 0.5)',
+    'rgba(59, 146, 146, 0.5)',
+    'rgba(51, 125, 125, 0.5)',
+    'rgba(14, 41, 41, 0.5)',
+    'rgba(29, 73, 73, 0.5)',
+    'rgba(19, 49, 49, 0.5)',
+    ];
+const risk_border_colors = [
+    'rgb(92, 230, 230)',
+    'rgb(74, 185, 185)',
+    'rgb(59, 146, 146)',
+    'rgb(51, 125, 125)',
+    'rgb(14, 41, 41)',
+    'rgb(29, 73, 73)',
+    'rgb(19, 49, 49)',
+    ]
 
-// container.datum(barData).call(barChart); 
+const time_sum_colors = [];
+const cost_sum_colors = [];
+const risk_sum_colors = [];
 
+//defaults
+Chart.defaults.font.size = 15;
+Chart.defaults.plugins.title.font.size = 24;
+Chart.defaults.plugins.legend.position = 'bottom';
+Chart.defaults.scales.linear.max = 81;
 
-let myChart1 = document.getElementById("myChart").getContext("2d");
-let labels1 = ['test 1'];
-// let data1 = [60, 30, 10];
-let colors1 = ['#69130F', '#B72D26', '#FF2A1F'];
+// gibson setup
+// const <data_setup> = {
+//     labels: <labels>,
+//     datasets: [
+//         <data>
+//     ]
+// }
 
-let chart1 = new Chart(myChart1, {
-    type: 'bar',
-    data: {
-        labels: labels1,
-        datasets: [{
-            label: 'pcr',
-            data: [30], 
-            backgroundColor: '#69130F'
-        },
-        {
-            label: 'digestion',
-            data: [15], 
-            backgroundColor: '#B72D26'
-        },
-        {
-            label: 'ligation',
-            data: [10], 
-            backgroundColor: '#FF2A1F'
-        }]
+const gibson_time = {
+    labels: labels1,
+    datasets: [{
+        label: 'pcr',
+        data: [gibson_times[0]], 
+        backgroundColor: time_colors[0]
     },
+    {
+        label: 'digestion',
+        data: [gibson_times[1]], 
+        backgroundColor: time_colors[1]
+    },
+    {
+        label: 'ligation',
+        data: [gibson_times[2]], 
+        backgroundColor: time_colors[2]
+    }]
+};
+
+const gibson_cost = {
+    labels: gibson_cost_labels,
+    datasets: [{
+        label: 'My First Dataset',
+        data: gibson_costs,
+        backgroundColor: cost_colors,
+        hoverOffset: 4,
+        borderRadius: 6
+    }]
+}
+
+const gibson_risk = {
+    labels: risk_labels,
+    datasets: [{
+        label: 'dataset test',
+        data: gibson_risks,
+        backgroundColor: risk_colors,
+        borderColor: risk_border_colors,
+        borderWidth: 2
+        // borderWidth: {
+        //     top: 4,
+        //     bottom: 4
+        // }
+    }]
+}
+
+// goldengate
+const goldengate_time = {
+    labels: labels2,
+    datasets: [{
+        label: 'pcr',
+        data: [goldengate_times[0]], 
+        backgroundColor: time_colors[0]
+    },
+    {
+        label: 'digestion',
+        data: [goldengate_times[1]], 
+        backgroundColor: time_colors[1]
+    },
+    {
+        label: 'ligation',
+        data: [goldengate_times[2]], 
+        backgroundColor: time_colors[2]
+    }]
+};
+
+const goldengate_cost = {
+    labels: goldengate_cost_labels,
+    datasets: [{
+        label: 'My First Dataset',
+        data: goldengate_costs,
+        backgroundColor: cost_colors,
+        hoverOffset: 4,
+        borderRadius: 6
+    }]
+}
+
+// pcr-soe
+const pcr_time = {
+    labels: labels3,
+    datasets: [{
+        label: 'pcr',
+        data: [pcr_times[0]], 
+        backgroundColor: '#69130F'
+    },
+    {
+        label: 'digestion',
+        data: [pcr_times[1]], 
+        backgroundColor: '#B72D26'
+    },
+    {
+        label: 'ligation',
+        data: [pcr_times[2]], 
+        backgroundColor: '#FF2A1F'
+    }]
+}
+
+// slic
+
+// biobricks
+
+
+
+// CONFIG
+// const config = {
+//     type: 'line',
+//     data: data,
+//     options: {}
+//   };
+
+// gibson
+const gibson_time_config = {
+    type: 'bar',
+    data: gibson_time,
     options: {
         maintainAspectRatio: false,
         plugins: {
@@ -82,163 +210,45 @@ let chart1 = new Chart(myChart1, {
         },
         scales: {
             x: {
-                stacked: true
+                stacked: true,
+                // grid: {
+                //     display: false
+                // }
             },
             y: {
                 stacked: true,
-                max: 100
+                // grid: {
+                //     display: false,    
+                // }
             }
         }
     }
-});
+};
 
-let myChart2 = document.getElementById("myChart2").getContext("2d");
-let labels2 = ['test 2'];
-// let colors1 = ['#69130F', '#B72D26', '#FF2A1F'];
-
-let chart2 = new Chart(myChart2, {
-    type: 'bar',
-    data: {
-        labels: labels2,
-        datasets: [{
-            label: 'pcr',
-            data: [30], 
-            backgroundColor: '#69130F'
-        },
-        {
-            label: 'digestion',
-            data: [40], 
-            backgroundColor: '#B72D26'
-        },
-        {
-            label: 'ligation',
-            data: [10], 
-            backgroundColor: '#FF2A1F'
-        }]
-    },
-    options: {
-        maintainAspectRatio: false,
-        plugins: {
-            title: {
-                display: true,
-                text: 'Time'
-            }
-        },
-        scales: {
-            x: {
-                stacked: true
-            },
-            y: {
-                stacked: true,
-                max: 100
-            }
-        }
-    }
-});
-
-let myChart3 = document.getElementById("myChart3").getContext("2d");
-let labels3 = ['test 3'];
-// let colors1 = ['#69130F', '#B72D26', '#FF2A1F'];
-
-let chart3 = new Chart(myChart3, {
-    type: 'bar',
-    data: {
-        labels: labels3,
-        datasets: [{
-            label: 'pcr',
-            data: [30], 
-            backgroundColor: '#69130F'
-        },
-        {
-            label: 'digestion',
-            data: [15], 
-            backgroundColor: '#B72D26'
-        },
-        {
-            label: 'ligation',
-            data: [26], 
-            backgroundColor: '#FF2A1F'
-        }]
-    },
-    options: {
-        maintainAspectRatio: false,
-        plugins: {
-            title: {
-                display: true,
-                text: 'Time'
-            }
-        },
-        scales: {
-            x: {
-                stacked: true
-            },
-            y: {
-                stacked: true,
-                max: 100
-            }
-        }
-    }
-});
-
-let myRadar = document.getElementById("myRadar").getContext("2d");
-let data2 = [65, 59, 90, 81, 56, 55];
-let radLabels = ['primers', 'parts', 'genes', 'blocks', 'type2s re', 'ligase'];
-
-new Chart(myRadar, {
+const gibson_cost_config = {
     type: 'doughnut',
-    data: {
-        labels: radLabels,
-        datasets: [{
-            label: 'My First Dataset',
-            data: [65, 59, 90, 81, 56, 55],
-            backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
-            ],
-            hoverOffset: 4
-        }]
-    },
+    data: gibson_cost,
     options: {
+        cutout: '65%',
         plugins: {
             title: {
                 display: true,
                 text: 'Cost'
+            },
+            counter: {
+                fontColor: '#092210',
+                font_size: 35,
+                font_family: 'sans-serif',
+                cost_sum: gibson_cost_sum
             }
         },
-    }
-});
+    },
+    plugins: [counter]
+};
 
-let myBar = document.getElementById("myBar").getContext("2d");
-let data3 = [-.9, .8, 0.1, 0.5, -0.5, .8];
-let barLabels = ['primers', 'parts', 'genes', 'blocks', 'type2s re', 'ligase'];
-
-new Chart(myBar, {
+const gibson_risk_config = {
     type: 'bar',
-    data: {
-        labels: barLabels,
-        datasets: [{
-            label: 'dataset test',
-            data: data3,
-            backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-            'rgba(255, 205, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            ],
-            borderColor: [
-            'rgb(255, 99, 132)',
-            'rgb(255, 159, 64)',
-            'rgb(255, 205, 86)',
-            'rgb(75, 192, 192)',
-            'rgb(54, 162, 235)',
-            'rgb(153, 102, 255)',
-            ],
-            borderWidth: 1
-        }]
-      },
+    data: gibson_risk,
     options: {
         maintainAspectRatio: false,
         scales: {
@@ -253,6 +263,125 @@ new Chart(myBar, {
                 display: true,
                 text: 'Risk'
             },
+            legend: {
+                display: false
+            },
+            tooltip: {
+                // mode: 'point'
+                enabled: true
+            }
         },
     }
-});
+}
+
+// goldengate
+const goldengate_time_config = {
+    type: 'bar',
+    data: goldengate_time,
+    options: {
+        maintainAspectRatio: false,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Time'
+            }
+        },
+        scales: {
+            x: {
+                stacked: true
+            },
+            y: {
+                stacked: true,
+            }
+        }
+    }
+};
+
+const goldengate_cost_config = {
+    type: 'doughnut',
+    data: goldengate_cost,
+    options: {
+        cutout: '65%',
+        plugins: {
+            title: {
+                display: true,
+                text: 'Cost'
+            },
+            counter: {
+                fontColor: '#092210',
+                font_size: 35,
+                font_family: 'sans-serif',
+                cost_sum: goldengate_cost_sum
+            }
+        },
+    },
+    plugins: [counter]
+};
+
+// pcr-soe
+const pcr_time_config = {
+    type: 'bar',
+    data: pcr_time,
+    options: {
+        maintainAspectRatio: false,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Time'
+            }
+        },
+        scales: {
+            x: {
+                stacked: true
+            },
+            y: {
+                stacked: true
+            }
+        }
+    }
+};
+
+// slic
+
+// biobricks
+
+
+
+// RENDER
+
+// gibson
+const gibson_time_bar = new Chart(
+    document.getElementById("gibson-time"),
+    gibson_time_config
+);
+
+const gibson_cost_doughnut = new Chart(
+    document.getElementById("gibson-cost"),
+    gibson_cost_config
+)
+
+const gibson_risk_bar = new Chart(
+    document.getElementById("myBar"),
+    gibson_risk_config
+)
+
+// goldengate
+const golengate_time_bar = new Chart(
+    document.getElementById("goldengate-time"), 
+    goldengate_time_config
+);
+
+const goldengate_cost_doughnut = new Chart(
+    document.getElementById("goldengate-cost"),
+    goldengate_cost_config
+);
+
+// pcr-soe
+const pcr_time_bar = new Chart(
+    document.getElementById("pcr-time"),
+    pcr_time_config
+)
+
+// slic
+
+// biobricks

@@ -13,10 +13,13 @@
     <div class="row mb-4">
         <div class="col">
             <div style="position: relative; height:30vh;">
-                <canvas id="myChart"></canvas>    
+                <canvas id="gibson-time"></canvas>    
             </div>
-            <div class="row">
-                <canvas id="myRadar"></canvas>
+            <div class="text-center" style="font-size: 35px; font-family: sans-serif;">
+                55hr
+            </div>
+            <div class="row mb-4">
+                <canvas id="gibson-cost"></canvas>
             </div>
             <div class="chart-container">
                 <canvas id="myBar"></canvas>
@@ -24,29 +27,26 @@
         </div>
         <div class="col">
             <div style="position: relative; height:30vh;">
-                <canvas id="myChart2"></canvas>    
+                <canvas id="goldengate-time"></canvas>    
+            </div>
+            <div class="text-center" style="font-size: 35px; font-family: sans-serif;">
+                81hr
+            </div>
+            <div class="row mb-4">
+                <canvas id="goldengate-cost"></canvas>
             </div>
         </div>
         <div class="col">
             <div style="position: relative; height:30vh;">
-                <canvas id="myChart3"></canvas>    
+                <canvas id="pcr-time"></canvas>    
+            </div>
+            <div class="text-center" style="font-size: 35px; font-family: sans-serif;">
+                71hr
             </div>
         </div>
     </div>
 
-    <!-- <div class="row mb-4">
-        <div class="bar-container"></div>
-    </div>
 
-    <div class="row mb-4">
-        <div class="col">
-            <div class="ct-chart ct-perfect-fourth" id="barChart"></div>
-            <div class="ct-chart ct-perfect-fourth" id="chart1"></div>s
-        </div>
-        <div class="col">
-            <div class="ct-chart ct-perfect-fourth" id="chart2"></div>
-        </div>
-    </div> -->
 
     <div class="row mb-4">
         {% if gibson %}
