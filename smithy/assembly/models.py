@@ -17,6 +17,12 @@ ovhngs = (
     (3, '30 overhangs - 91.7% fidelity'),
 )
 
+enzyme_options = (
+    (0.0, 'None'),
+    (100.0, 'Small'),
+    (500.0, 'Large')
+)
+
 def fasta_validation(fa_file):
     if fa_file.file.content_type != 'application/octet-stream':
         raise ValidationError(_('Please choose a valid .fasta file.'), code='invalid')
@@ -166,9 +172,9 @@ class GoldenGateAssembly(Assembly):
 
 class GibsonAssembly(Assembly):
     overlap = models.PositiveIntegerField()
-    exonuclease_cost = models.FloatField(verbose_name='exonuclease cost ($)', default=0.0)
-    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
-    polymerase_cost = models.FloatField(verbose_name='polymerase cost ($)', default=0.0)
+    exonuclease_cost = models.FloatField(verbose_name='exonuclease cost ($)', default=0.0, choices=enzyme_options)
+    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0, choices=enzyme_options)
+    polymerase_cost = models.FloatField(verbose_name='polymerase cost ($)', default=0.0, choices=enzyme_options)
 
     def get_absolute_url(self):
         return reverse('gibson-detail', kwargs={'pk': self.pk})   

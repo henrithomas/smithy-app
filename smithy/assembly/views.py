@@ -85,7 +85,14 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
         'dna_conc', 
         'tm',
         'overlap',
-        'multi_query'
+        'multi_query',
+        'primer_cost',
+        'part_cost',
+        'gene_cost',
+        'plasmid_cost',
+        'exonuclease_cost',
+        'ligase_cost',
+        'polymerase_cost'
     ]
 
     def form_valid(self, form):

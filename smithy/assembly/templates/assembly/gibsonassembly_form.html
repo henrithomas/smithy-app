@@ -317,15 +317,16 @@
         </div>
         
         <div class="row mb-5">
-            <h2></h2>
-            
-            <p></p>
-
+            <h2>Cost</h2>
+            <p>
+                Enter values for costs of aspects of your assembly experiment.
+            </p>
             <div class="col">
                 <div class="row mb-2">
-                    <div class="col-md-6">
-                        <!-- {{ form.primer_cost.label_tag }} -->
-                        <label for="{{ form.primer_cost.id_for_label }}">Primer cost ($):</label>
+                    <h4>Nucleotides</h4>
+
+                    <div class="col-md-3">
+                        {{ form.primer_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.primer_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.primer_cost.id_for_label }}">$</span>
                             <input type="number" name="{{ form.primer_cost.html_name }}" class="form-control" placeholder="0.01" 
@@ -339,7 +340,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         {{ form.part_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.part_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.part_cost.id_for_label }}">$</span>
@@ -354,10 +355,89 @@
                         </ul>
                         {% endif %}
                     </div>
+                    <div class="col-md-3">
+                        {{ form.gene_cost.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.gene_cost.id_for_label }}">
+                            <span class="input-group-text" id="{{ form.gene_cost.id_for_label }}">$</span>
+                            <input type="number" name="{{ form.gene_cost.html_name }}" class="form-control" placeholder="0.01" 
+                            id="{{ form.gene_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.gene_cost.value }}" {% endif %}>
+                        </div>
+                        {% if form.gene_cost.errors %}
+                        <ul class="errorList">
+                            {% for error in form.gene_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.plasmid_cost.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.plasmid_cost.id_for_label }}">
+                            <span class="input-group-text" id="{{ form.plasmid_cost.id_for_label }}">$</span>
+                            <input type="number" name="{{ form.plasmid_cost.html_name }}" class="form-control" placeholder="0.01" 
+                            id="{{ form.plasmid_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.plasmid_cost.value }}" {% endif %}>
+                        </div>
+                        {% if form.plasmid_cost.errors %}
+                        <ul class="errorList">
+                            {% for error in form.plasmid_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <h4>Enzymes</h4>
+
+                    <div class="col-md-4">
+                        {{ form.exonuclease_cost.label_tag }}
+                        <div class="input-group">
+                            <span class="input-group-text" id="exonuc_cost_display">$0.0</span>
+                            <select class="form-select" name="{{ form.exonuclease_cost.html_name }}" id="{{ form.exonuclease_cost.id_for_label }}">
+                                {% for value, text in form.fields.exonuclease_cost.choices %}
+                                    <option value="{{ value }}">{{ text }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.ligase_cost.label_tag }}
+                        <div class="input-group">
+                            <span class="input-group-text" id="ligase_cost_display">$0.0</span>
+                            <select class="form-select" name="{{ form.ligase_cost.html_name }}" id="{{ form.ligase_cost.id_for_label }}">
+                                {% for value, text in form.fields.ligase_cost.choices %}
+                                    <option value="{{ value }}">{{ text }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.polymerase_cost.label_tag }}
+                        <div class="input-group">
+                            <span class="input-group-text" id="poly_cost_display">$0.0</span>
+                            <select class="form-select" name="{{ form.polymerase_cost.html_name }}" id="{{ form.polymerase_cost.id_for_label }}">
+                                {% for value, text in form.fields.polymerase_cost.choices %}
+                                    <option value="{{ value }}">{{ text }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assemblyModal">Assemble</button>
     </form>
+
+    <script>
+        document.getElementById('id_exonuclease_cost').addEventListener('change', function() {
+            document.getElementById("exonuc_cost_display").innerHTML = "$" + this.value;
+        });
+        document.getElementById('id_ligase_cost').addEventListener('change', function() {
+            document.getElementById("ligase_cost_display").innerHTML = "$" + this.value;
+        });
+        document.getElementById('id_polymerase_cost').addEventListener('change', function() {
+            document.getElementById("poly_cost_display").innerHTML = "$" + this.value;
+        });
+    </script>
 {% endblock content %}
