@@ -11,47 +11,28 @@
     <hr/>
 
     <div class="row mb-4">
-        <div class="col">
-            <div style="position: relative; height:30vh;">
-                <canvas id="gibson-time"></canvas>    
-            </div>
-            <div class="text-center" style="font-size: 35px; font-family: sans-serif;">
-                55hr
-            </div>
-            <div class="row mb-4">
-                <canvas id="gibson-cost"></canvas>
-            </div>
-            <div class="chart-container">
-                <canvas id="myBar"></canvas>
-            </div>
-        </div>
-        <div class="col">
-            <div style="position: relative; height:30vh;">
-                <canvas id="goldengate-time"></canvas>    
-            </div>
-            <div class="text-center" style="font-size: 35px; font-family: sans-serif;">
-                81hr
-            </div>
-            <div class="row mb-4">
-                <canvas id="goldengate-cost"></canvas>
-            </div>
-        </div>
-        <div class="col">
-            <div style="position: relative; height:30vh;">
-                <canvas id="pcr-time"></canvas>    
-            </div>
-            <div class="text-center" style="font-size: 35px; font-family: sans-serif;">
-                71hr
-            </div>
-        </div>
-    </div>
-
-
-
-    <div class="row mb-4">
         {% if gibson %}
             <div class="col">
                 <h3>Gibson <br><a class="btn btn-outline-primary btn-sm" href="{% url 'gibson-detail' gibson.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
+
+                <div class="row mb-4">
+                    <div class="chart-container">
+                        <canvas id="gibson-time"></canvas>    
+                    </div>
+                    <div class="time-sum text-center" id="gibson-time-sum"></div>
+                </div>
+                
+                <div class="row mb-4">
+                    <canvas id="gibson-cost"></canvas>
+                </div>
+    
+                <div class="row mb-4">
+                    <div class="chart-container">
+                        <canvas id="gibson-risk"></canvas>
+                    </div>
+                </div>
+                
+                <hr/>
 
                 {% for gibson_solution in gibson_solutions %}
                     <div class="card">
@@ -108,6 +89,19 @@
         {% if goldengate %}
             <div class="col">
                 <h3>Golden Gate <br><a class="btn btn-outline-primary btn-sm" href="{% url 'goldengate-detail' goldengate.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
+
+                <div class="row mb-4">
+                    <div class="chart-container">
+                        <canvas id="goldengate-time"></canvas>    
+                    </div>
+                    <div class="time-sum text-center" id="goldengate-time-sum"></div>
+                </div>
+                
+                <div class="row mb-4">
+                    <canvas id="goldengate-cost"></canvas>
+                </div>
+                
+                <hr/>
 
                 {% for goldengate_solution in goldengate_solutions %}
                     <div class="card mb-2">
@@ -168,6 +162,7 @@
             <div class="col">
                 <h3>SLIC <br><a class="btn btn-outline-primary btn-sm" href="{% url 'slic-detail' slic.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
+
                 {% for slic_solution in slic_solutions %}
                     <div class="card">
                         <div class="card-body">
@@ -223,6 +218,15 @@
         {% if pcr %}
             <div class="col">
                 <h3>PCR <br><a class="btn btn-outline-primary btn-sm" href="{% url 'pcr-detail' pcr.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
+
+                <div class="row mb-4">
+                    <div class="chart-container">
+                        <canvas id="pcr-time"></canvas>    
+                    </div>
+                    <div class="time-sum text-center" id="pcr-time-sum"></div>
+                </div>
+
+                <hr/>
 
                 {% for pcr_solution in pcr_solutions %}
                     <div class="card">

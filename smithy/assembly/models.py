@@ -56,7 +56,11 @@ class Assembly(models.Model):
                         ],
                         blank=False)
     multi_query = models.BooleanField(default=False)
-    
+    primer_cost = models.FloatField(verbose_name='primer cost ($)', default=0.0)
+    part_cost = models.FloatField(verbose_name='part cost ($)', default=0.0)
+    gene_cost = models.FloatField(verbose_name='gene cost ($)', default=0.0)
+    plasmid_cost = models.FloatField(verbose_name='plasmid cost ($)', default=0.0)
+
     class Meta:
         abstract = True
 
@@ -138,6 +142,9 @@ class AssemblySolution(models.Model):
     solution_length = models.PositiveIntegerField(default=0)
     db_parts = models.PositiveIntegerField(default=0)
     synth_parts = models.PositiveIntegerField(default=0)
+    cost_summary = models.CharField(max_length=10000, default='{}')
+    time_summary = models.CharField(max_length=10000, default='{}')
+    risk_summary = models.CharField(max_length=10000, default='{}')
 
     class Meta:
         abstract = True
@@ -150,19 +157,28 @@ class AssemblySolution(models.Model):
 class GoldenGateAssembly(Assembly):
     overhangs = models.IntegerField(verbose_name='overhang count', choices=ovhngs)
     scarless = models.BooleanField(default=False)
-   
+    re_cost = models.FloatField(verbose_name='Type2s RE cost ($)', default=0.0)
+    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
+
     def get_absolute_url(self):
         return reverse('goldengate-detail', kwargs={'pk': self.pk})
 
 
 class GibsonAssembly(Assembly):
     overlap = models.PositiveIntegerField()
+    exonuclease_cost = models.FloatField(verbose_name='exonuclease cost ($)', default=0.0)
+    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
+    polymerase_cost = models.FloatField(verbose_name='polymerase cost ($)', default=0.0)
 
     def get_absolute_url(self):
         return reverse('gibson-detail', kwargs={'pk': self.pk})   
 
 
 class BioBricksAssembly(Assembly):
+    EcoRI_cost = models.FloatField(verbose_name='EcoRI cost ($)', default=0.0)
+    XbaI_cost = models.FloatField(verbose_name='XbaI cost ($)', default=0.0)
+    SpeI_cost = models.FloatField(verbose_name='SpeI cost ($)', default=0.0)
+    PstI_cost = models.FloatField(verbose_name='PstI cost ($)', default=0.0)
 
     def get_absolute_url(self):
         return reverse('biobricks-detail', kwargs={'pk': self.pk})
@@ -170,6 +186,7 @@ class BioBricksAssembly(Assembly):
 
 class PCRAssembly(Assembly):
     overlap = models.PositiveIntegerField()
+    polymerase_cost = models.FloatField(verbose_name='polymerase cost ($)', default=0.0)
 
     def get_absolute_url(self):
         return reverse('pcr-detail', kwargs={'pk': self.pk})
@@ -177,16 +194,11 @@ class PCRAssembly(Assembly):
 
 class SLICAssembly(Assembly):
     overlap = models.PositiveIntegerField()
+    exonuclease_cost = models.FloatField(verbose_name='exonuclease cost ($)', default=0.0)
+    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
 
     def get_absolute_url(self):
         return reverse('slic-detail', kwargs={'pk': self.pk})
-
-
-# class YeastAssembly(Assembly):
-#     overlap = models.PositiveIntegerField()
-
-#     def get_absolute_url(self):
-#         return reverse('yeast-detail', kwargs={'pk': self.pk}) 
 
 
 class AssemblyBundle(models.Model):

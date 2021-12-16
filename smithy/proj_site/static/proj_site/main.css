@@ -67,4 +67,9 @@ body {
     margin: auto;
     height: 30vh;
     /* width: 20vw; */
-  }
+}
+
+.time-sum { 
+    font-size: 2rem;
+    font-family: sans-serif;
+}

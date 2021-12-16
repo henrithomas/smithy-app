@@ -1,7 +1,15 @@
 // Chart.js defaults
-Chart.defaults.font.size = 15
-Chart.defaults.plugins.title.font.size = 20
-Chart.defaults.plugins.legend.position = 'bottom'
+// Chart.defaults.font.size = 15
+// Chart.defaults.plugins.title.font.size = 20
+// Chart.defaults.plugins.legend.position = 'bottom'
+
+// checker = !!document.getElementById("gibson-time");
+// test_html = document.getElementById("testtext");
+// test_html.innerHTML = "TEST";
+
+let gibson_time_div = document.getElementById("gibson-time-sum");
+let goldengate_time_div = document.getElementById("goldengate-time-sum");
+let pcr_time_div = document.getElementById("pcr-time-sum");
 
 // counter plugin 
 const counter = { 
@@ -17,6 +25,18 @@ const counter = {
     }
 } 
 
+function arr_sum(arr) {
+    let sum = 0;
+    for (let i = 0; i < arr.length; i++) {
+        sum += arr[i];
+    }
+    return sum;
+}
+
+function array_max(arr) {
+    return Math.max.apply(null, arr);
+}
+
 // SETUP
 // data
 const gibson_times = [27, 15, 12];
@@ -26,28 +46,33 @@ const pcr_times = [30, 15, 26];
 const gibson_costs = [65, 59, 90, 81, 56, 55];
 const goldengate_costs = [65, 59, 90, 81, 161];
 const data2 = [65, 59, 90, 81, 56, 55];
+let cost_compare = [];
+
 const gibson_risks = [-.9, .8, 0.1, 0.5];
 
-let gibson_cost_sum = 0;
-for (let i = 0; i < gibson_costs.length; i++) {
-    gibson_cost_sum += gibson_costs[i];
-}
+let gibson_time_sum = arr_sum(gibson_times);
+let goldengate_time_sum = arr_sum(goldengate_times);
+let pcr_time_sum = arr_sum(pcr_times);
 
-let goldengate_cost_sum = 0;
-for (let i = 0; i < goldengate_costs.length; i++) {
-    goldengate_cost_sum += goldengate_costs[i];
-}
+let gibson_cost_sum = arr_sum(gibson_costs);
+let goldengate_cost_sum = arr_sum(goldengate_costs);
+
+cost_compare.push(gibson_cost_sum);
+cost_compare.push(goldengate_cost_sum);
+let cost_max = array_max(cost_compare);
+
 
 // labels
-const labels1 = ['test 1'];
-const labels2 = ['test 2'];
-const labels3 = ['test 3'];
+const labels1 = ['Assembly Times'];
+const labels2 = ['Assembly Times'];
+const labels3 = ['Assembly Times'];
 const gibson_cost_labels = ['primers', 'parts', 'genes', 'blocks', 'polymerase'];
 const goldengate_cost_labels = ['primers', 'parts', 'genes', 'ligase', 'type2s re'];
 const risk_labels = ['thing1', 'thing2', 'thing3', 'thing4'];
 
 // colors 
 const time_colors = ['#69130F', '#B72D26', '#FF2A1F'];
+// TODO: remove transparent so that it can be appended after the cost differences are calculated
 const cost_colors = ['#49EC7A', '#3ACB66', '#2EAA53', '#238A42', '#195C2D', 'transparent'];
 // '#0F341A'
 const risk_colors = [
@@ -75,9 +100,10 @@ const risk_sum_colors = [];
 
 //defaults
 Chart.defaults.font.size = 15;
-Chart.defaults.plugins.title.font.size = 24;
+Chart.defaults.plugins.title.font.size = 22;
 Chart.defaults.plugins.legend.position = 'bottom';
 Chart.defaults.scales.linear.max = 81;
+Chart.defaults.plugins.title.align = 'start';
 
 // gibson setup
 // const <data_setup> = {
@@ -354,6 +380,7 @@ const gibson_time_bar = new Chart(
     document.getElementById("gibson-time"),
     gibson_time_config
 );
+gibson_time_div.innerHTML = gibson_time_sum + "hr";
 
 const gibson_cost_doughnut = new Chart(
     document.getElementById("gibson-cost"),
@@ -361,7 +388,7 @@ const gibson_cost_doughnut = new Chart(
 )
 
 const gibson_risk_bar = new Chart(
-    document.getElementById("myBar"),
+    document.getElementById("gibson-risk"),
     gibson_risk_config
 )
 
@@ -370,6 +397,7 @@ const golengate_time_bar = new Chart(
     document.getElementById("goldengate-time"), 
     goldengate_time_config
 );
+goldengate_time_div.innerHTML = goldengate_time_sum + "hr";
 
 const goldengate_cost_doughnut = new Chart(
     document.getElementById("goldengate-cost"),
@@ -380,7 +408,8 @@ const goldengate_cost_doughnut = new Chart(
 const pcr_time_bar = new Chart(
     document.getElementById("pcr-time"),
     pcr_time_config
-)
+);
+pcr_time_div.innerHTML = pcr_time_sum + "hr";
 
 // slic
 
