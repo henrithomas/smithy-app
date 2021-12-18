@@ -1,5 +1,6 @@
 {% extends 'proj_site/base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block content %}
     <h1>{{ title }}</h1>
     <p class="lead">Generate a Golden Gate assembly design by providing the information below...</p>
@@ -328,6 +329,123 @@
                 </div>
             </div>
         </div>
+
+        <div class="row mb-5">
+            <h2>Cost</h2>
+            <p>
+                Enter values for costs of aspects of your assembly experiment.
+            </p>
+            <div class="col">
+                <div class="row mb-2">
+                    <h4>Nucleotides</h4>
+
+                    <div class="col-md-3">
+                        {{ form.primer_cost.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.primer_cost.id_for_label }}">
+                            <span class="input-group-text" id="{{ form.primer_cost.id_for_label }}">$</span>
+                            <input type="number" name="{{ form.primer_cost.html_name }}" class="form-control" placeholder="0.01" 
+                            id="{{ form.primer_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.primer_cost.value }}" {% endif %}>
+                        </div>
+                        {% if form.primer_cost.errors %}
+                        <ul class="errorList">
+                            {% for error in form.primer_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.part_cost.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.part_cost.id_for_label }}">
+                            <span class="input-group-text" id="{{ form.part_cost.id_for_label }}">$</span>
+                            <input type="number" name="{{ form.part_cost.html_name }}" class="form-control" placeholder="0.01" 
+                            id="{{ form.part_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.part_cost.value }}" {% endif %}>
+                        </div>
+                        {% if form.part_cost.errors %}
+                        <ul class="errorList">
+                            {% for error in form.part_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.gene_cost.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.gene_cost.id_for_label }}">
+                            <span class="input-group-text" id="{{ form.gene_cost.id_for_label }}">$</span>
+                            <input type="number" name="{{ form.gene_cost.html_name }}" class="form-control" placeholder="0.01" 
+                            id="{{ form.gene_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.gene_cost.value }}" {% endif %}>
+                        </div>
+                        {% if form.gene_cost.errors %}
+                        <ul class="errorList">
+                            {% for error in form.gene_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form.plasmid_cost.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.plasmid_cost.id_for_label }}">
+                            <span class="input-group-text" id="{{ form.plasmid_cost.id_for_label }}">$</span>
+                            <input type="number" name="{{ form.plasmid_cost.html_name }}" class="form-control" placeholder="0.01" 
+                            id="{{ form.plasmid_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.plasmid_cost.value }}" {% endif %}>
+                        </div>
+                        {% if form.plasmid_cost.errors %}
+                        <ul class="errorList">
+                            {% for error in form.plasmid_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <h4>Enzymes</h4>
+
+                    <div class="col-md-6">
+                        {{ form.re_cost.label_tag }}
+                        <div class="input-group">
+                            <span class="input-group-text" id="re_cost_display">$0.0</span>
+                            <select class="form-select" name="{{ form.re_cost.html_name }}" id="{{ form.re_cost.id_for_label }}">
+                                {% for value, text in form.fields.re_cost.choices %}
+                                    <option value="{{ value }}">{{ text }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% if form.re_cost.errors %}
+                        <ul class="errorList">
+                            {% for error in form.re_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.ligase_cost.label_tag }}
+                        <div class="input-group">
+                            <span class="input-group-text" id="ligase_cost_display">$0.0</span>
+                            <select class="form-select" name="{{ form.ligase_cost.html_name }}" id="{{ form.ligase_cost.id_for_label }}">
+                                {% for value, text in form.fields.ligase_cost.choices %}
+                                    <option value="{{ value }}">{{ text }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% if form.ligase_cost.errors %}
+                        <ul class="errorList">
+                            {% for error in form.ligase_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <button type="submit" id="formButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assemblyModal">Assemble</button>
     </form>
+
+    <script src="{% static 'proj_site/goldengate_form.js' %}"></script>
+
 {% endblock content %}

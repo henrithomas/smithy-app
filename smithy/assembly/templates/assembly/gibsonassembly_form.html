@@ -1,5 +1,6 @@
 {% extends 'proj_site/base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 {% block content %}
     <h1>{{ title }}</h1>
     <p class="lead">Generate a Gibson assembly design by providing the information below...</p>
@@ -399,6 +400,13 @@
                                 {% endfor %}
                             </select>
                         </div>
+                        {% if form.exonuclease_cost.errors %}
+                        <ul class="errorList">
+                            {% for error in form.exonuclease_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </div>
                     <div class="col-md-4">
                         {{ form.ligase_cost.label_tag }}
@@ -410,6 +418,13 @@
                                 {% endfor %}
                             </select>
                         </div>
+                        {% if form.ligase_cost.errors %}
+                        <ul class="errorList">
+                            {% for error in form.ligase_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </div>
                     <div class="col-md-4">
                         {{ form.polymerase_cost.label_tag }}
@@ -421,6 +436,13 @@
                                 {% endfor %}
                             </select>
                         </div>
+                        {% if form.polymerase_cost.errors %}
+                        <ul class="errorList">
+                            {% for error in form.polymerase_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -429,15 +451,6 @@
         <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assemblyModal">Assemble</button>
     </form>
 
-    <script>
-        document.getElementById('id_exonuclease_cost').addEventListener('change', function() {
-            document.getElementById("exonuc_cost_display").innerHTML = "$" + this.value;
-        });
-        document.getElementById('id_ligase_cost').addEventListener('change', function() {
-            document.getElementById("ligase_cost_display").innerHTML = "$" + this.value;
-        });
-        document.getElementById('id_polymerase_cost').addEventListener('change', function() {
-            document.getElementById("poly_cost_display").innerHTML = "$" + this.value;
-        });
-    </script>
+    <script src="{% static 'proj_site/gibson_form.js' %}"></script>
+
 {% endblock content %}

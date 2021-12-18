@@ -188,7 +188,13 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
         'tm',
         'overhangs',
         'multi_query',
-        'scarless'
+        'scarless',
+        'primer_cost',
+        'part_cost',
+        'gene_cost',
+        'plasmid_cost',
+        're_cost',
+        'ligase_cost'
     ]
 
     def form_valid(self, form):
@@ -282,7 +288,15 @@ class BioBricksCreateView(SuccessMessageMixin, CreateView):
         'dntp_conc',
         'dna_conc', 
         'tm',
-        'multi_query'
+        'multi_query',
+        'primer_cost',
+        'part_cost',
+        'gene_cost',
+        'plasmid_cost',
+        'EcoRI_cost',
+        'XbaI_cost',
+        'SpeI_cost',
+        'PstI_cost'
     ]
 
     def form_valid(self, form):
@@ -377,7 +391,12 @@ class PCRCreateView(SuccessMessageMixin, CreateView):
         'dna_conc', 
         'tm',
         'overlap',
-        'multi_query'
+        'multi_query',
+        'primer_cost',
+        'part_cost',
+        'gene_cost',
+        'plasmid_cost',
+        'polymerase_cost'
     ]
 
     def form_valid(self, form):
@@ -472,7 +491,13 @@ class SLICCreateView(SuccessMessageMixin, CreateView):
         'dna_conc', 
         'tm',
         'overlap',
-        'multi_query'
+        'multi_query',
+        'primer_cost',
+        'part_cost',
+        'gene_cost',
+        'plasmid_cost',
+        'exonuclease_cost',
+        'ligase_cost'
     ]
 
     def form_valid(self, form):
