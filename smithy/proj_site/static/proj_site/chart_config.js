@@ -29,6 +29,89 @@ function array_max(arr) {
     return Math.max.apply(null, arr);
 }
 
+function time_config(dataset_obj) {
+    return {
+        type: 'bar',
+        data: dataset_obj,
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Time'
+                }
+            },
+            scales: {
+                x: {
+                    stacked: true,
+                    // grid: {
+                    //     display: false
+                    // }
+                },
+                y: {
+                    stacked: true,
+                    // grid: {
+                    //     display: false,    
+                    // }
+                }
+            }
+        }
+    };
+}
+
+function cost_config(dataset_obj, cost_sum) {
+    return {
+        type: 'doughnut',
+        data: dataset_obj,
+        options: {
+            cutout: '65%',
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Cost'
+                },
+                counter: {
+                    fontColor: '#092210',
+                    font_size: 35,
+                    font_family: 'sans-serif',
+                    cost_sum: cost_sum
+                }
+            },
+        },
+        plugins: [counter]
+    };
+}
+
+function risk_config(dataset_obj) {
+    return {
+        type: 'bar',
+        data: dataset_obj,
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 1,
+                    min: -1
+                },
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Risk'
+                },
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    // mode: 'point'
+                    enabled: true
+                }
+            },
+        }
+    };
+}
+
 // labels
 const labels1 = ['Assembly Times'];
 const labels2 = ['Assembly Times'];
@@ -47,7 +130,7 @@ const risk_labels = ['thing1', 'thing2', 'thing3', 'thing4'];
 // colors 
 const time_colors = ['#69130F', '#B72D26', '#FF2A1F'];
 // TODO: remove transparent so that it can be appended after the cost differences are calculated
-const cost_colors = ['#49EC7A', '#3ACB66', '#2EAA53', '#238A42', '#195C2D', 'transparent'];
+const cost_colors = ['#49EC7A', '#3ACB66', '#2EAA53', '#238A42', '#195C2D'];
 // '#0F341A'
 const risk_colors = [
     'rgba(92, 230, 230, 0.5)',

@@ -39,11 +39,14 @@ from dna_features_viewer import (
 from django.core.files import File
 import os
 import json
-from datetime import datetime
+from datetime import datetime, time
 import csv
 import matplotlib.pyplot as plt
 from statistics import mean
 
+gibson_times_json = {
+    'times': [34, 20, 6]
+}
 
 def parts_csv(solution_model, parts):
     """
@@ -168,6 +171,139 @@ def primers_csv(solution_model, parts):
     solution_model.primers_file.save(file_name, File(open(temp_file, newline='')))
     solution_model.save()
     os.remove(temp_file)
+
+def costs(nt_costs, nt_lengths, enz_costs, enz_types):
+    # nt_costs = [0.01, 0.02, 0.05. 0.1]
+    # Primers, subgenes/parts, genes, plasmids: 100, 1000, 3000, inf.
+
+    # {
+    #     'types': ['primers', 'parts', 'genes', 'plasmids'...]
+    #     'costs': [10, 20, 30, 40...]
+    #     'total': xyz
+    # }
+    # primers = 0
+    # parts = 0
+    # genes = 0
+    # blocks = 0
+    nt_types = ['primers', 'parts', 'genes', 'plasmids']
+    nt_totals = [0.0, 0.0, 0.0, 0.0]
+    costs = {}
+    total_cost = 0
+
+    for length in nt_lengths: 
+        if length <= 100:
+            # cost of primer
+            nt_totals[0] += length * nt_costs[0]
+        elif length > 100 and length <= 1000:
+            # cost of part
+            nt_totals[1] += length * nt_costs[1]
+        elif length > 1000 and length <= 3000:
+            # cost of gene
+            nt_totals[2] += length * nt_costs[2]
+        elif length > 3000:
+            # cost of plasmid
+            nt_totals[3] += length * nt_costs[3]
+    
+    total_cost = sum(nt_totals) + sum(enz_costs)
+
+    cost_types = nt_types + enz_types
+    cost_indv = nt_totals + enz_costs
+
+    costs.update({'total': total_cost})
+    costs.update({'types': cost_types})
+    costs.update({'costs': cost_indv})
+
+    return costs
+
+def pcr_time(nt_lengths):
+    pcr_time = 0.0
+
+    for length in nt_lengths:
+        step = 0.5 if length < 1000 else 0.5 * int(length / 1000)
+        denature = step + 0.3
+        anneal = step + 0.3
+        polymerization = step + 0.3
+        time = 1.0 + 30 * (denature + anneal + polymerization) + 10.0
+        pcr_time += time
+
+    return round(pcr_time / 60, 2)
+
+def goldengate_times(pcr, insert_count):
+    # NEB protocol
+    times = {}
+    time_types = ['pcr', 'digestion-ligation']
+    time_vals = [pcr]
+
+    if insert_count == 1:
+        time_vals.append(5)
+    elif insert_count >= 2 and insert_count < 5:
+        time_vals.append(65)
+    elif insert_count >= 5 and insert_count < 11:
+        time_vals.append(65)
+    elif insert_count >= 11:
+        time_vals.append(305)
+
+    times.update({'total': sum(time_vals)})
+    times.update({'types': time_types})
+    times.update({'times': time_vals})
+
+    return times
+
+def gibson_times(pcr):
+    # NEB protocol
+    times = {}
+    times_types = ['pcr', 'chewback, ligation, repair']
+    time_vals = [pcr, 1.0]
+
+    times.update({'total': round(sum(time_vals), 2)})
+    times.update({'types': times_types})
+    times.update({'times': time_vals})
+
+    return times
+
+def slic_times(pcr, overlap):
+    # slic methods article
+    times = {}
+    times_types = ['pcr', 'chewback', 'ligation']
+    chewback = 0
+    cooling = 5
+    ligation = 30 + cooling
+
+    if overlap < 40: 
+        chewback = 50
+    else:
+        chewback = 80
+
+    time_vals = [pcr, chewback, ligation]
+
+    times.update({'total': sum(time_vals)})
+    times.update({'types': times_types})
+    times.update({'times': time_vals})
+
+    return times
+
+def biobricks_times(pcr, insert_count):
+    # iGEM and Ginko Bioworks protocol
+    times = {}
+    times_types = ['pcr', 'digestion', 'ligation']
+    time_vals = [pcr, 30, 30]
+    
+    times.update({'total': sum(time_vals)})
+    times.update({'types': times_types})
+    times.update({'times': time_vals})
+
+    return times
+
+def pcr_soe_times(nt_lengths):
+    times = {}
+    time_types = ['pcr']
+    time_vals = [pcr_time(nt_lengths)]
+
+    times.update({'total': sum(time_vals)})
+    times.update({'types': time_types})
+    times.update({'times': time_vals})
+
+    return times
 
 def solution_analysis(assembly, fragments, query_length):
     primer_lengths = []
@@ -580,6 +716,47 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
+    primer_lengths = []
+
+    for part in assembly:
+        primer_lengths.extend(
+            [
+                len(part.forward_primer.seq),
+                len(part.reverse_primer.seq)
+            ]
+        )
+
+    part_lengths = [
+        part.template.seq.length
+        for part in assembly[:-1]
+    ]
+
+    pcr = pcr_time(part_lengths + primer_lengths)
+    gibson_time = gibson_times(pcr)
+    gibson_cost = costs(
+        [
+            obj.primer_cost, 
+            obj.part_cost,
+            obj.gene_cost, 
+            obj.plasmid_cost
+        ],
+        part_lengths + primer_lengths,
+        [
+            obj.exonuclease_cost,
+            obj.ligase_cost,
+            obj.polymerase_cost
+        ],
+        [
+            'exonuclease',
+            'ligase',
+            'polymerase'
+        ]
+    )
+    gibson_risk = {
+        'total': 0.35,
+        'types': ['pcr', 'chewback, ligation, repair'],
+        'risks': [0.6, -0.5]
+    }
 
     # TODO add a foreach solution in for the assembly
     gibson_solution = GibsonSolution(
@@ -600,7 +777,10 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
         db_parts=analysis[7],
         synth_parts=analysis[8],
         solution_length=assembler.query_record.seq.length,
-        assembly=obj
+        assembly=obj,
+        time_summary=json.dumps(gibson_time),
+        cost_summary=json.dumps(gibson_cost),
+        risk_summary=json.dumps(gibson_risk)
     )
     gibson_solution.save()
 
@@ -696,6 +876,46 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
 
+    primer_lengths = []
+
+    for part in assembly:
+        primer_lengths.extend(
+            [
+                len(part.forward_primer.seq),
+                len(part.reverse_primer.seq)
+            ]
+        )
+
+    part_lengths = [
+        part.template.seq.length
+        for part in assembly[:-1]
+    ]
+
+    pcr = pcr_time(part_lengths + primer_lengths)
+    goldengate_time = goldengate_times(pcr, len(fragments))
+    goldengate_cost = costs(
+        [
+            obj.primer_cost, 
+            obj.part_cost,
+            obj.gene_cost, 
+            obj.plasmid_cost
+        ],
+        part_lengths + primer_lengths,
+        [
+            obj.re_cost,
+            obj.ligase_cost,
+        ],
+        [
+            'type2s RE',
+            'ligase',
+        ]
+    )
+    goldengate_risk = {
+        'total': 0.35,
+        'types': ['pcr', 'chewback, ligation, repair'],
+        'risks': [0.6, -0.5]
+    }
+
     # TODO update to have a match % and BLAST solution sequence
     # TODO add a foreach solution in for the assembly
     goldengate_solution = GoldenGateSolution(
@@ -716,7 +936,10 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
         db_parts=analysis[7],
         synth_parts=analysis[8],
         solution_length=assembler.query_record.seq.length,
-        assembly=obj
+        assembly=obj,
+        time_summary=json.dumps(goldengate_time),
+        cost_summary=json.dumps(goldengate_cost),
+        risk_summary=json.dumps(goldengate_risk)
     )
     goldengate_solution.save()
 
@@ -813,6 +1036,50 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
 
+    primer_lengths = []
+
+    for part in assembly:
+        primer_lengths.extend(
+            [
+                len(part.forward_primer.seq),
+                len(part.reverse_primer.seq)
+            ]
+        )
+
+    part_lengths = [
+        part.template.seq.length
+        for part in assembly[:-1]
+    ]
+
+    pcr = pcr_time(part_lengths + primer_lengths)
+    biobricks_time = biobricks_times(pcr, len(fragments))
+    biobricks_cost = costs(
+        [
+            obj.primer_cost, 
+            obj.part_cost,
+            obj.gene_cost, 
+            obj.plasmid_cost
+        ],
+        part_lengths + primer_lengths,
+        [
+            obj.EcoRI_cost,
+            obj.XbaI_cost,
+            obj.SpeI_cost,
+            obj.PstI_cost
+        ],
+        [
+            'EcoRI',
+            'XbaI',
+            'SpeI',
+            'PstI'
+        ]
+    )
+    biobricks_risk = {
+        'total': 0.35,
+        'types': ['pcr', 'chewback, ligation, repair'],
+        'risks': [0.6, -0.5]
+    }
+
     biobricks_solution = BioBricksSolution(
         name=f'{obj.title} Solution',
         backbone=assembler.backbone.seq,
@@ -831,7 +1098,10 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         db_parts=analysis[7],
         synth_parts=analysis[8],
         solution_length=assembler.query_record.seq.length,
-        assembly=obj
+        assembly=obj,
+        time_summary=json.dumps(biobricks_time),
+        cost_summary=json.dumps(biobricks_cost),
+        risk_summary=json.dumps(biobricks_risk)
     )
     biobricks_solution.save()
 
@@ -927,6 +1197,44 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
 
+    primer_lengths = []
+
+    for part in assembly:
+        primer_lengths.extend(
+            [
+                len(part.forward_primer.seq),
+                len(part.reverse_primer.seq)
+            ]
+        )
+
+    part_lengths = [
+        part.template.seq.length
+        for part in assembly[:-1]
+    ]
+
+    pcr = pcr_time(part_lengths + primer_lengths)
+    pcr_soe_time = pcr_soe_times(part_lengths + primer_lengths)
+    pcr_cost = costs(
+        [
+            obj.primer_cost, 
+            obj.part_cost,
+            obj.gene_cost, 
+            obj.plasmid_cost
+        ],
+        part_lengths + primer_lengths,
+        [
+            obj.polymerase_cost
+        ],
+        [
+            'polymerase'
+        ]
+    )
+    pcr_risk = {
+        'total': 0.35,
+        'types': ['pcr', 'chewback, ligation, repair'],
+        'risks': [0.6, -0.5]
+    }
+
     pcr_solution = PCRSolution(
         name=f'{obj.title} Solution',
         backbone=assembler.backbone.seq,
@@ -945,7 +1253,10 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
         db_parts=analysis[7],
         synth_parts=analysis[8],
         solution_length=assembler.query_record.seq.length,
-        assembly=obj
+        assembly=obj,
+        time_summary=json.dumps(pcr_soe_time),
+        cost_summary=json.dumps(pcr_cost),
+        risk_summary=json.dumps(pcr_risk)
     )
     pcr_solution.save()
 
@@ -1040,6 +1351,46 @@ def slic_solution_service(obj, assembler, assembly, fragments):
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
 
+    primer_lengths = []
+
+    for part in assembly:
+        primer_lengths.extend(
+            [
+                len(part.forward_primer.seq),
+                len(part.reverse_primer.seq)
+            ]
+        )
+
+    part_lengths = [
+        part.template.seq.length
+        for part in assembly[:-1]
+    ]
+
+    pcr = pcr_time(part_lengths + primer_lengths)
+    slic_time = slic_times(pcr, obj.overlap)
+    slic_cost = costs(
+        [
+            obj.primer_cost, 
+            obj.part_cost,
+            obj.gene_cost, 
+            obj.plasmid_cost
+        ],
+        part_lengths + primer_lengths,
+        [
+            obj.exonuclease_cost,
+            obj.ligase_cost
+        ],
+        [
+            'exonuclease',
+            'ligase'
+        ]
+    )
+    slic_risk = {
+        'total': 0.35,
+        'types': ['pcr', 'chewback, ligation, repair'],
+        'risks': [0.6, -0.5]
+    }
+
     slic_solution = SLICSolution(
         name=f'{obj.title} Solution',
         backbone=assembler.backbone.seq,
@@ -1058,7 +1409,10 @@ def slic_solution_service(obj, assembler, assembly, fragments):
         db_parts=analysis[7],
         synth_parts=analysis[8],
         solution_length=assembler.query_record.seq.length,
-        assembly=obj
+        assembly=obj,
+        time_summary=json.dumps(slic_time),
+        cost_summary=json.dumps(slic_cost),
+        risk_summary=json.dumps(slic_risk)
     )
     slic_solution.save()
 

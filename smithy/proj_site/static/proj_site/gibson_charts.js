@@ -1,4 +1,4 @@
-function gibson_time_chart(data, chart_elem, sum_elem) {
+function gibson_time_chart(data, labels, sum, chart_elem, sum_elem) {
     let gibson_time_div = document.getElementById(sum_elem);
     let time_dataset = [];
     let gibson_time_sum = arr_sum(data);
@@ -7,7 +7,7 @@ function gibson_time_chart(data, chart_elem, sum_elem) {
         time_dataset.push(
             {
                 //label: gibson_time_labels[i]
-                label: 'pcr',
+                label: labels[i],
                 data: [data[i]], 
                 backgroundColor: time_colors[i]
             }
@@ -19,33 +19,7 @@ function gibson_time_chart(data, chart_elem, sum_elem) {
         datasets: time_dataset
     };
 
-    const gibson_time_config = {
-        type: 'bar',
-        data: gibson_time,
-        options: {
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Time'
-                }
-            },
-            scales: {
-                x: {
-                    stacked: true,
-                    // grid: {
-                    //     display: false
-                    // }
-                },
-                y: {
-                    stacked: true,
-                    // grid: {
-                    //     display: false,    
-                    // }
-                }
-            }
-        }
-    };
+    const gibson_time_config = time_config(gibson_time);
 
     const gibson_time_bar = new Chart(
         document.getElementById(chart_elem),
@@ -55,11 +29,11 @@ function gibson_time_chart(data, chart_elem, sum_elem) {
     gibson_time_div.innerHTML = gibson_time_sum + "hr";
 }
 
-function gibson_cost_chart(data, chart_elem) {
+function gibson_cost_chart(data, labels, sum, chart_elem) {
     let gibson_cost_sum = arr_sum(data);
 
     const gibson_cost = {
-        labels: gibson_cost_labels,
+        labels: labels,
         datasets: [{
             label: 'My First Dataset',
             data: data,
@@ -69,26 +43,7 @@ function gibson_cost_chart(data, chart_elem) {
         }]
     };
 
-    const gibson_cost_config = {
-        type: 'doughnut',
-        data: gibson_cost,
-        options: {
-            cutout: '65%',
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Cost'
-                },
-                counter: {
-                    fontColor: '#092210',
-                    font_size: 35,
-                    font_family: 'sans-serif',
-                    cost_sum: gibson_cost_sum
-                }
-            },
-        },
-        plugins: [counter]
-    };
+    const gibson_cost_config = cost_config(gibson_cost, sum);
 
     const gibson_cost_doughnut = new Chart(
         document.getElementById(chart_elem),
@@ -96,11 +51,11 @@ function gibson_cost_chart(data, chart_elem) {
     );
 }
 
-function gibson_risk_chart(data, chart_elem) {
+function gibson_risk_chart(data, labels, chart_elem) {
     const gibson_risk = {
-        labels: risk_labels,
+        labels: labels,
         datasets: [{
-            label: 'dataset test',
+            label: 'risk',
             data: data,
             backgroundColor: risk_colors,
             borderColor: risk_border_colors,
@@ -112,33 +67,7 @@ function gibson_risk_chart(data, chart_elem) {
         }]
     };
 
-    const gibson_risk_config = {
-        type: 'bar',
-        data: gibson_risk,
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 1,
-                    min: -1
-                },
-            },
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Risk'
-                },
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    // mode: 'point'
-                    enabled: true
-                }
-            },
-        }
-    };
+    const gibson_risk_config = risk_config(gibson_risk);
 
     const gibson_risk_bar = new Chart(
         document.getElementById(chart_elem),

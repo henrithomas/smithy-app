@@ -22,114 +22,130 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-7">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>General Info</h2>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Restriction Enzyme:</strong> BsaI</li>
+                <li class="list-group-item"><strong>Ligase:</strong> T4-DNA</li>
+                <li class="list-group-item">
+                    <strong>Overhangs:</strong> 
+                    {% if goldengate.overhangs == 0 %}
+                        15 overhangs - 98.5% fidelity
+                    {% elif goldengate.overhangs == 1 %}
+                        20 overhangs - 98.1% fidelity
+                    {% elif goldengate.overhangs == 2 %}
+                        25 overhangs - 95.8% fidelity
+                    {% elif goldengate.overhangs == 3 %}
+                        30 overhangs - 91.7% fidelity
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+        <div class="col">
+            <h2>BLAST Query</h2>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>
+                    {% if goldengate.addgene %}
+                        <span class="badge bg-info text-dark">AddGene</span>
+                    {% endif %}
+                    {% if goldengate.igem %}
+                        <span class="badge bg-info text-dark">iGEM</span>
+                    {% endif %}
+                    {% if goldengate.dnasu %}
+                        <span class="badge bg-info text-dark">DNASU</span>
+                    {% endif %}
+                </li>
+                <li class="list-group-item"><strong>Min BLAST seq size:</strong> {{ goldengate.min_blast }}nt</li>
+                <li class="list-group-item"><strong>Max BLAST seq size:</strong> {{ goldengate.max_blast }}nt</li>
+                <li class="list-group-item"><strong>Min synthetic seq size:</strong> {{ goldengate.min_synth }}nt</li>
+                <li class="list-group-item"><strong>Max synthetic seq size:</strong> {{ goldengate.max_synth }}nt</li>
+            </ul>  
+        </div>
+        <div class="col">
+            <h2>Experiment</h2>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Monovalent ion concentration:</strong> {{ goldengate.mv_conc }}mM</li>
+                <li class="list-group-item"><strong>Divalent ion concentration:</strong> {{ goldengate.dv_conc }}mM</li>
+                <li class="list-group-item"><strong>dNTP concentration:</strong> {{ goldengate.dntp_conc }}mM</li>
+                <li class="list-group-item"><strong>DNA concentration:</strong> {{ goldengate.dna_conc }}nM</li>
+                <li class="list-group-item"><strong>Melting temperature:</strong> {{ goldengate.tm }}C</li>
+            </ul>
+        </div>
+    </div>
 
-            <div class="row mb-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>
+                Solutions
+            </h2>
+            <div class="row">
                 <div class="col">
-                    <h2>
-                        Solutions
-                    </h2>
-                    {% for solution in solutions %}
-                        <div class="card mb-2">
-                            <div class="card-body">
-                                <h4 class="card-title">
-                                    {{solution.name}}
-                                    <a href="{% url 'goldengate-solution-detail' solution.pk %}" class="btn btn-outline-primary float-end">
-                                        <i class="bi bi-eye"></i> View Solution
-                                    </a>
-                                </h4>
-                                <h6 class="card-subtitle mb-2 text-muted">{{ solution.date_created }}</h6>
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item">
-                                        <span class="badge rounded-pill bg-primary">
-                                            {{ solution.parts_count }} Parts
-                                        </span>
-                                        <span class="badge rounded-pill bg-primary">
-                                            {{ solution.primers_count }} Primers
-                                        </span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <span class="badge rounded-pill bg-secondary">
-                                            {{ solution.tm_average }}C Average Primer Tm
-                                        </span>
-                                        <span class="badge rounded-pill bg-secondary">
-                                            {{ solution.primer_length_average }}nt Average Primer
-                                        </span>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <span class="badge rounded-pill bg-secondary">
-                                            {{ solution.match|floatformat:2 }}% BLAST nt
-                                        </span>
-                                        <span class="badge rounded-pill bg-secondary">
-                                            {{ solution.synth_amount|floatformat:2 }}% Synthetic nt
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    {% endfor %}
+                    <div class="chart-container">
+                        <canvas id="goldengate-time"></canvas>    
+                    </div>
+                    <div class="time-sum text-center" id="gibson-time-sum"></div>
+                </div>
+                <div class="col">
+                    <canvas id="goldengate-cost"></canvas>
+                </div>
+                <div class="col">
+                    <div class="chart-container">
+                        <canvas id="goldengate-risk"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-5">
-            <div class="row mb-4">
-                <h2>General Info</h2>
-                <div class="col">
-                    <ul class="list-group">
-                        <li class="list-group-item"><strong>Restriction Enzyme:</strong> BsaI</li>
-                        <li class="list-group-item"><strong>Ligase:</strong> T4-DNA</li>
-                        <li class="list-group-item">
-                            <strong>Overhangs:</strong> 
-                            {% if goldengate.overhangs == 0 %}
-                                15 overhangs - 98.5% fidelity
-                            {% elif goldengate.overhangs == 1 %}
-                                20 overhangs - 98.1% fidelity
-                            {% elif goldengate.overhangs == 2 %}
-                                25 overhangs - 95.8% fidelity
-                            {% elif goldengate.overhangs == 3 %}
-                                30 overhangs - 91.7% fidelity
-                            {% endif %}
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        
-            <div class="row mb-4">
-                <div class="col">
-                    <h2>BLAST Query</h2>
-                    <ul class="list-group">
-                        <li class="list-group-item"><strong>
-                            {% if goldengate.addgene %}
-                                <span class="badge bg-info text-dark">AddGene</span>
-                            {% endif %}
-                            {% if goldengate.igem %}
-                                <span class="badge bg-info text-dark">iGEM</span>
-                            {% endif %}
-                            {% if goldengate.dnasu %}
-                                <span class="badge bg-info text-dark">DNASU</span>
-                            {% endif %}
-                        </li>
-                        <li class="list-group-item"><strong>Min BLAST seq size:</strong> {{ goldengate.min_blast }}nt</li>
-                        <li class="list-group-item"><strong>Max BLAST seq size:</strong> {{ goldengate.max_blast }}nt</li>
-                        <li class="list-group-item"><strong>Min synthetic seq size:</strong> {{ goldengate.min_synth }}nt</li>
-                        <li class="list-group-item"><strong>Max synthetic seq size:</strong> {{ goldengate.max_synth }}nt</li>
-                    </ul>    
-                </div>
-            </div>
-            
-            <div class="row mb-4">
-                <div class="col">
-                    <h2>Experiment</h2>
-                    <ul class="list-group">
-                        <li class="list-group-item"><strong>Monovalent ion concentration:</strong> {{ goldengate.mv_conc }}mM</li>
-                        <li class="list-group-item"><strong>Divalent ion concentration:</strong> {{ goldengate.dv_conc }}mM</li>
-                        <li class="list-group-item"><strong>dNTP concentration:</strong> {{ goldengate.dntp_conc }}mM</li>
-                        <li class="list-group-item"><strong>DNA concentration:</strong> {{ goldengate.dna_conc }}nM</li>
-                        <li class="list-group-item"><strong>Melting temperature:</strong> {{ goldengate.tm }}C</li>
-                    </ul>
-                </div>
+        <div class="row">
+            <div class="col">
+                {% for solution in solutions %}
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                {{solution.name}}
+                                <a href="{% url 'goldengate-solution-detail' solution.pk %}" class="btn btn-outline-primary float-end">
+                                    <i class="bi bi-eye"></i> View Solution
+                                </a>
+                            </h4>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ solution.date_created }}</h6>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <span class="badge rounded-pill bg-primary">
+                                        {{ solution.parts_count }} Parts
+                                    </span>
+                                    <span class="badge rounded-pill bg-primary">
+                                        {{ solution.primers_count }} Primers
+                                    </span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="badge rounded-pill bg-secondary">
+                                        {{ solution.tm_average }}C Average Primer Tm
+                                    </span>
+                                    <span class="badge rounded-pill bg-secondary">
+                                        {{ solution.primer_length_average }}nt Average Primer
+                                    </span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="badge rounded-pill bg-secondary">
+                                        {{ solution.match|floatformat:2 }}% BLAST nt
+                                    </span>
+                                    <span class="badge rounded-pill bg-secondary">
+                                        {{ solution.synth_amount|floatformat:2 }}% Synthetic nt
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    {{ solution.time_summary|json_script:"times" }}
+                    {{ solution.cost_summary|json_script:"costs" }}
+                    {{ solution.risk_summary|json_script:"risks" }}
+                {% endfor %}
             </div>
         </div>
     </div>
+
+    <script src="{% static 'proj_site/chart_config.js' %}"></script>
+    <script src="{% static 'proj_site/goldengate_charts.js' %}"></script>
+    <script src="{% static 'proj_site/goldengate_detail.js' %}"></script>
+
 {% endblock content %}

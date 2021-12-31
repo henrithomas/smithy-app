@@ -19,27 +19,7 @@ function goldengate_time_chart(data, chart_elem, sum_elem) {
         datasets: time_dataset
     }
 
-    const goldengate_time_config = {
-        type: 'bar',
-        data: goldengate_time,
-        options: {
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Time'
-                }
-            },
-            scales: {
-                x: {
-                    stacked: true
-                },
-                y: {
-                    stacked: true,
-                }
-            }
-        }
-    };
+    const goldengate_time_config = time_config(goldengate_time);
 
     const golengate_time_bar = new Chart(
         document.getElementById(chart_elem), 
@@ -63,26 +43,7 @@ function goldengate_cost_chart(data, chart_elem) {
         }]
     };
 
-    const goldengate_cost_config = {
-        type: 'doughnut',
-        data: goldengate_cost,
-        options: {
-            cutout: '65%',
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Cost'
-                },
-                counter: {
-                    fontColor: '#092210',
-                    font_size: 35,
-                    font_family: 'sans-serif',
-                    cost_sum: goldengate_cost_sum
-                }
-            },
-        },
-        plugins: [counter]
-    };
+    const goldengate_cost_config = cost_config(goldengate_cost, goldengate_cost_sum);
 
     const goldengate_cost_doughnut = new Chart(
         document.getElementById(chart_elem),
@@ -106,33 +67,7 @@ function goldengate_risk_chart(data, chart_elem) {
         }]
     };
 
-    const goldengate_risk_config = {
-        type: 'bar',
-        data: goldengate_risk,
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 1,
-                    min: -1
-                },
-            },
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Risk'
-                },
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    // mode: 'point'
-                    enabled: true
-                }
-            },
-        }
-    };
+    const goldengate_risk_config = risk_config(goldengate_risk);
 
     const goldengate_risk_bar = new Chart(
         document.getElementById(chart_elem),

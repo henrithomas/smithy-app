@@ -22,13 +22,70 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-7">
-            <div class="row mb-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>General Info</h2>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Exonuclease:</strong> T4-DNA</li>
+                <li class="list-group-item"><strong>Recombination Enzyme:</strong> RecA</li>
+                <li class="list-group-item"><strong>Polymerase:</strong> T4-DNA</li>
+            </ul>
+        </div>
+        <div class="col">
+            <h2>BLAST Query</h2>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    {% if slic.addgene %}
+                        <span class="badge bg-info text-dark">AddGene</span>
+                    {% endif %}
+                    {% if slic.igem %}
+                        <span class="badge bg-info text-dark">iGEM</span>
+                    {% endif %}
+                    {% if slic.dnasu %}
+                        <span class="badge bg-info text-dark">DNASU</span>
+                    {% endif %}                    
+                </li>
+                <li class="list-group-item"><strong>Min BLAST seq size:</strong> {{ slic.min_blast }}nt</li>
+                <li class="list-group-item"><strong>Max BLAST seq size:</strong> {{ slic.max_blast }}nt</li>
+                <li class="list-group-item"><strong>Min synthetic seq size:</strong> {{ slic.min_synth }}nt</li>
+                <li class="list-group-item"><strong>Max synthetic seq size:</strong> {{ slic.max_synth }}nt</li>
+            </ul> 
+        </div>
+        <div class="col">
+            <h2>Experiment</h2>
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Monovalent ion concentration:</strong> {{ slic.mv_conc }}mM</li>
+                <li class="list-group-item"><strong>Divalent ion concentration:</strong> {{ slic.dv_conc }}mM</li>
+                <li class="list-group-item"><strong>dNTP concentration:</strong> {{ slic.dntp_conc }}mM</li>
+                <li class="list-group-item"><strong>DNA concentration:</strong> {{ slic.dna_conc }}nM</li>
+                <li class="list-group-item"><strong>Melting temperature:</strong> {{ slic.tm }}C</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <h2>
+                Solution(s)
+            </h2>
+            <div class="row">
                 <div class="col">
-                    <h2>
-                        Solutions
-                    </h2>
+                    <div class="chart-container">
+                        <canvas id="slic-time"></canvas>    
+                    </div>
+                    <div class="time-sum text-center" id="gibson-time-sum"></div>
+                </div>
+                <div class="col">
+                    <canvas id="slic-cost"></canvas>
+                </div>
+                <div class="col">
+                    <div class="chart-container">
+                        <canvas id="slic-risk"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
                     {% for solution in solutions %}
                         <div class="card mb-2">
                             <div class="card-body">
@@ -67,57 +124,17 @@
                                 </ul>
                             </div>
                         </div>
+                        {{ solution.time_summary|json_script:"times" }}
+                        {{ solution.cost_summary|json_script:"costs" }}
+                        {{ solution.risk_summary|json_script:"risks" }}
                     {% endfor %}
                 </div>
             </div>
         </div>
-        <div class="col-lg-5">
-            <div class="row mb-4">
-                <div class="col">
-                    <h2>General Info</h2>
-                    <ul class="list-group">
-                        <li class="list-group-item"><strong>Exonuclease:</strong> T4-DNA</li>
-                        <li class="list-group-item"><strong>Recombination Enzyme:</strong> RecA</li>
-                        <li class="list-group-item"><strong>Polymerase:</strong> T4-DNA</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="row mb-4">
-                <div class="col">
-                    <h2>BLAST Query</h2>
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            {% if slic.addgene %}
-                                <span class="badge bg-info text-dark">AddGene</span>
-                            {% endif %}
-                            {% if slic.igem %}
-                                <span class="badge bg-info text-dark">iGEM</span>
-                            {% endif %}
-                            {% if slic.dnasu %}
-                                <span class="badge bg-info text-dark">DNASU</span>
-                            {% endif %}                    
-                        </li>
-                        <li class="list-group-item"><strong>Min BLAST seq size:</strong> {{ slic.min_blast }}nt</li>
-                        <li class="list-group-item"><strong>Max BLAST seq size:</strong> {{ slic.max_blast }}nt</li>
-                        <li class="list-group-item"><strong>Min synthetic seq size:</strong> {{ slic.min_synth }}nt</li>
-                        <li class="list-group-item"><strong>Max synthetic seq size:</strong> {{ slic.max_synth }}nt</li>
-                    </ul>    
-                </div>
-            </div>
-
-            <div class="row mb-4">
-                <div class="col">
-                    <h2>Experiment</h2>
-                    <ul class="list-group">
-                        <li class="list-group-item"><strong>Monovalent ion concentration:</strong> {{ slic.mv_conc }}mM</li>
-                        <li class="list-group-item"><strong>Divalent ion concentration:</strong> {{ slic.dv_conc }}mM</li>
-                        <li class="list-group-item"><strong>dNTP concentration:</strong> {{ slic.dntp_conc }}mM</li>
-                        <li class="list-group-item"><strong>DNA concentration:</strong> {{ slic.dna_conc }}nM</li>
-                        <li class="list-group-item"><strong>Melting temperature:</strong> {{ slic.tm }}C</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
     </div>
+
+    <script src="{% static 'proj_site/chart_config.js' %}"></script>
+    <script src="{% static 'proj_site/slic_charts.js' %}"></script>
+    <script src="{% static 'proj_site/slic_detail.js' %}"></script>
+
 {% endblock content %}
