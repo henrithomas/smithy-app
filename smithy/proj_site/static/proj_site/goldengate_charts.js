@@ -1,13 +1,11 @@
-function goldengate_time_chart(data, chart_elem, sum_elem) {
+function goldengate_time_chart(data, labels, sum, chart_elem, sum_elem) {
     let goldengate_time_div = document.getElementById(sum_elem);
     let time_dataset = [];
-    let goldengate_time_sum = arr_sum(data);
 
     for (let i = 0; i < data.length; i++) {
         time_dataset.push(
             {
-                //label: goldengate_time_labels[i]
-                label: 'pcr',
+                label: labels[i],
                 data: [data[i]], 
                 backgroundColor: time_colors[i]
             }
@@ -26,14 +24,13 @@ function goldengate_time_chart(data, chart_elem, sum_elem) {
         goldengate_time_config
     );
 
-    goldengate_time_div.innerHTML = goldengate_time_sum + "hr";
+    goldengate_time_div.innerHTML = sum + "hr";
 }
 
-function goldengate_cost_chart(data, chart_elem) {
-    let goldengate_cost_sum = arr_sum(data);
+function goldengate_cost_chart(data, labels, sum, chart_elem) {
 
     const goldengate_cost = {
-        labels: goldengate_cost_labels,
+        labels: labels,
         datasets: [{
             label: 'My First Dataset',
             data: data,
@@ -43,7 +40,7 @@ function goldengate_cost_chart(data, chart_elem) {
         }]
     };
 
-    const goldengate_cost_config = cost_config(goldengate_cost, goldengate_cost_sum);
+    const goldengate_cost_config = cost_config(goldengate_cost, sum);
 
     const goldengate_cost_doughnut = new Chart(
         document.getElementById(chart_elem),
@@ -51,9 +48,9 @@ function goldengate_cost_chart(data, chart_elem) {
     );
 }
 
-function goldengate_risk_chart(data, chart_elem) {
+function goldengate_risk_chart(data, labels, chart_elem) {
     const goldengate_risk = {
-        labels: risk_labels,
+        labels: labels,
         datasets: [{
             label: 'dataset test',
             data: data,

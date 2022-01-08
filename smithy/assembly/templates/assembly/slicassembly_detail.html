@@ -1,4 +1,5 @@
 {% extends 'proj_site/base.html' %}
+{% load static %}
 {% block content %}
     <h1>{{ title }} <span class="badge rounded-pill bg-secondary">SLIC</span></h1>
     <p>
@@ -73,7 +74,7 @@
                     <div class="chart-container">
                         <canvas id="slic-time"></canvas>    
                     </div>
-                    <div class="time-sum text-center" id="gibson-time-sum"></div>
+                    <div class="time-sum text-center" id="slic-time-sum"></div>
                 </div>
                 <div class="col">
                     <canvas id="slic-cost"></canvas>

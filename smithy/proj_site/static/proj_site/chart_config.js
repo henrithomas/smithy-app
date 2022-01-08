@@ -38,7 +38,7 @@ function time_config(dataset_obj) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Time'
+                    text: 'Time (min)'
                 }
             },
             scales: {
@@ -68,7 +68,7 @@ function cost_config(dataset_obj, cost_sum) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Cost'
+                    text: 'Cost ($)'
                 },
                 counter: {
                     fontColor: '#092210',

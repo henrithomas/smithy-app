@@ -209,7 +209,7 @@ def costs(nt_costs, nt_lengths, enz_costs, enz_types):
     cost_types = nt_types + enz_types
     cost_indv = nt_totals + enz_costs
 
-    costs.update({'total': total_cost})
+    costs.update({'total': round(total_cost, 2)})
     costs.update({'types': cost_types})
     costs.update({'costs': cost_indv})
 
@@ -243,7 +243,7 @@ def goldengate_times(pcr, insert_count):
     elif insert_count >= 11:
         time_vals.append(305)
 
-    times.update({'total': sum(time_vals)})
+    times.update({'total': round(sum(time_vals), 2)})
     times.update({'types': time_types})
     times.update({'times': time_vals})
 
@@ -276,7 +276,7 @@ def slic_times(pcr, overlap):
 
     time_vals = [pcr, chewback, ligation]
 
-    times.update({'total': sum(time_vals)})
+    times.update({'total': round(sum(time_vals), 2)})
     times.update({'types': times_types})
     times.update({'times': time_vals})
 
@@ -288,7 +288,7 @@ def biobricks_times(pcr, insert_count):
     times_types = ['pcr', 'digestion', 'ligation']
     time_vals = [pcr, 30, 30]
     
-    times.update({'total': sum(time_vals)})
+    times.update({'total': round(sum(time_vals), 2)})
     times.update({'types': times_types})
     times.update({'times': time_vals})
 
@@ -299,11 +299,26 @@ def pcr_soe_times(nt_lengths):
     time_types = ['pcr']
     time_vals = [pcr_time(nt_lengths)]
 
-    times.update({'total': sum(time_vals)})
+    times.update({'total': round(sum(time_vals), 2)})
     times.update({'types': time_types})
     times.update({'times': time_vals})
 
     return times
+
+def goldengate_risk():
+    pass
+
+def gibson_risk():
+    pass
+
+def slic_risk():
+    pass
+
+def biobricks_risk():
+    pass
+
+def pcr_risk():
+    pass
 
 def solution_analysis(assembly, fragments, query_length):
     primer_lengths = []

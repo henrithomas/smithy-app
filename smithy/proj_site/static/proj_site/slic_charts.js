@@ -1,13 +1,11 @@
-function slic_time_chart(data, chart_elem, sum_elem) {
+function slic_time_chart(data, labels, sum, chart_elem, sum_elem) {
     let slic_time_div = document.getElementById(sum_elem);
     let time_dataset = [];
-    let slic_time_sum = arr_sum(data);
 
     for (let i = 0; i < data.length; i++) {
         time_dataset.push(
             {
-                //label: slic_time_labels[i]
-                label: 'pcr',
+                label: labels[i],
                 data: [data[i]], 
                 backgroundColor: time_colors[i]
             }
@@ -26,14 +24,13 @@ function slic_time_chart(data, chart_elem, sum_elem) {
         slic_time_config
     );
 
-    slic_time_div.innerHTML = slic_time_sum + "hr";
+    slic_time_div.innerHTML = sum + "hr";
 }
 
-function slic_cost_chart(data, chart_elem) {
-    let slic_cost_sum = arr_sum(data);
+function slic_cost_chart(data, labels, sum, chart_elem) {
 
     const slic_cost = {
-        labels: slic_cost_labels,
+        labels: labels,
         datasets: [{
             label: 'My First Dataset',
             data: data,
@@ -43,7 +40,7 @@ function slic_cost_chart(data, chart_elem) {
         }]
     };
 
-    const slic_cost_config = cost_config(slic_cost, slic_cost_sum);
+    const slic_cost_config = cost_config(slic_cost, sum);
 
     const slic_cost_doughnut = new Chart(
         document.getElementById(chart_elem),
@@ -51,9 +48,9 @@ function slic_cost_chart(data, chart_elem) {
     );
 }
 
-function slic_risk_chart(data, chart_elem) {
+function slic_risk_chart(data, labels, chart_elem) {
     const slic_risk = {
-        labels: risk_labels,
+        labels: labels,
         datasets: [{
             label: 'dataset test',
             data: data,

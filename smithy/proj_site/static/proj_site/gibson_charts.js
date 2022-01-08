@@ -26,11 +26,10 @@ function gibson_time_chart(data, labels, sum, chart_elem, sum_elem) {
         gibson_time_config
     );
 
-    gibson_time_div.innerHTML = gibson_time_sum + "hr";
+    gibson_time_div.innerHTML = sum + "hr";
 }
 
 function gibson_cost_chart(data, labels, sum, chart_elem) {
-    let gibson_cost_sum = arr_sum(data);
 
     const gibson_cost = {
         labels: labels,

@@ -1,13 +1,11 @@
-function pcr_time_chart(data, chart_elem, sum_elem) {
+function pcr_time_chart(data, labels, sum, chart_elem, sum_elem) {
     let pcr_time_div = document.getElementById(sum_elem);
     let time_dataset = [];
-    let pcr_time_sum = arr_sum(data);
 
     for (let i = 0; i < data.length; i++) {
         time_dataset.push(
             {
-                //label: gibson_time_labels[i]
-                label: 'pcr',
+                label: labels[i],
                 data: [data[i]], 
                 backgroundColor: time_colors[i]
             }
@@ -26,14 +24,13 @@ function pcr_time_chart(data, chart_elem, sum_elem) {
         pcr_time_config
     );
 
-    pcr_time_div.innerHTML = pcr_time_sum + "hr";
+    pcr_time_div.innerHTML = sum + "hr";
 }
 
-function pcr_cost_chart(data, chart_elem) {
-    let pcr_cost_sum = arr_sum(data);
+function pcr_cost_chart(data, labels, sum, chart_elem) {
 
     const pcr_cost = {
-        labels: pcr_cost_labels,
+        labels: labels,
         datasets: [{
             label: 'My First Dataset',
             data: data,
@@ -43,7 +40,7 @@ function pcr_cost_chart(data, chart_elem) {
         }]
     };
 
-    const pcr_cost_config = cost_config(pcr_cost, pcr_cost_sum);
+    const pcr_cost_config = cost_config(pcr_cost, sum);
 
     const pcr_cost_doughnut = new Chart(
         document.getElementById(chart_elem),
@@ -51,9 +48,9 @@ function pcr_cost_chart(data, chart_elem) {
     );
 }
 
-function pcr_risk_chart(data, chart_elem) {
+function pcr_risk_chart(data, labels, chart_elem) {
     const pcr_risk = {
-        labels: risk_labels,
+        labels: labels,
         datasets: [{
             label: 'dataset test',
             data: data,

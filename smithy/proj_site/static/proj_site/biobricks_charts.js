@@ -1,13 +1,11 @@
-function biobricks_time_chart(data, chart_elem, sum_elem) {
+function biobricks_time_chart(data, labels, sum, chart_elem, sum_elem) {
     let biobricks_time_div = document.getElementById(sum_elem);
     let time_dataset = [];
-    let biobricks_time_sum = arr_sum(data);
 
     for (let i = 0; i < data.length; i++) {
         time_dataset.push(
             {
-                //label: biobricks_time_labels[i]
-                label: 'pcr',
+                label: labels[i],
                 data: [data[i]], 
                 backgroundColor: time_colors[i]
             }
@@ -26,14 +24,13 @@ function biobricks_time_chart(data, chart_elem, sum_elem) {
         biobricks_time_config
     );
 
-    biobricks_time_div.innerHTML = biobricks_time_sum + "hr";
+    biobricks_time_div.innerHTML = sum + "hr";
 }
 
-function biobricks_cost_chart(data, chart_elem) {
-    let biobricks_cost_sum = arr_sum(data);
+function biobricks_cost_chart(data, labels, sum, chart_elem) {
 
     const biobricks_cost = {
-        labels: biobricks_cost_labels,
+        labels: labels,
         datasets: [{
             label: 'My First Dataset',
             data: data,
@@ -43,7 +40,7 @@ function biobricks_cost_chart(data, chart_elem) {
         }]
     };
 
-    const biobricks_cost_config = cost_config(biobricks_cost, biobricks_cost_sum);
+    const biobricks_cost_config = cost_config(biobricks_cost, sum);
 
     const biobricks_cost_doughnut = new Chart(
         document.getElementById(chart_elem),
@@ -51,9 +48,9 @@ function biobricks_cost_chart(data, chart_elem) {
     );
 }
 
-function biobricks_risk_chart(data, chart_elem) {
+function biobricks_risk_chart(data, labels, chart_elem) {
     const biobricks_risk = {
-        labels: risk_labels,
+        labels: labels,
         datasets: [{
             label: 'dataset test',
             data: data,
