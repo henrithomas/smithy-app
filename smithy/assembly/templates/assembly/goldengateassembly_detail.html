@@ -41,6 +41,8 @@
                         30 overhangs - 91.7% fidelity
                     {% endif %}
                 </li>
+                <li class="list-group-item"><strong>RE cost:</strong> ${{ goldengate.re_cost }}</li>
+                <li class="list-group-item"><strong>Ligase cost:</strong> ${{ goldengate.ligase_cost }}</li>
             </ul>
         </div>
         <div class="col">
@@ -116,6 +118,12 @@
                                     </span>
                                     <span class="badge rounded-pill bg-primary">
                                         {{ solution.primers_count }} Primers
+                                    </span>
+                                    <span class="badge rounded-pill bg-primary">
+                                        RE - ${{ goldengate.re_cost }}
+                                    </span>
+                                    <span class="badge rounded-pill bg-primary">
+                                        Ligase - ${{ goldengate.ligase_cost }}
                                     </span>
                                 </li>
                                 <li class="list-group-item">

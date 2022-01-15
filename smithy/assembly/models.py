@@ -163,8 +163,8 @@ class AssemblySolution(models.Model):
 class GoldenGateAssembly(Assembly):
     overhangs = models.IntegerField(verbose_name='overhang count', choices=ovhngs)
     scarless = models.BooleanField(default=False)
-    re_cost = models.FloatField(verbose_name='Type2s RE cost ($)', default=0.0, choices=enzyme_options)
-    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0, choices=enzyme_options)
+    re_cost = models.FloatField(verbose_name='Type2s RE cost ($)', default=0.0)
+    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
 
     def get_absolute_url(self):
         return reverse('goldengate-detail', kwargs={'pk': self.pk})
@@ -172,9 +172,9 @@ class GoldenGateAssembly(Assembly):
 
 class GibsonAssembly(Assembly):
     overlap = models.PositiveIntegerField()
-    exonuclease_cost = models.FloatField(verbose_name='exonuclease cost ($)', default=0.0, choices=enzyme_options)
-    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0, choices=enzyme_options)
-    polymerase_cost = models.FloatField(verbose_name='polymerase cost ($)', default=0.0, choices=enzyme_options)
+    exonuclease_cost = models.FloatField(verbose_name='exonuclease cost ($)', default=0.0)
+    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
+    polymerase_cost = models.FloatField(verbose_name='polymerase cost ($)', default=0.0)
 
     def get_absolute_url(self):
         return reverse('gibson-detail', kwargs={'pk': self.pk})   

@@ -32,6 +32,9 @@
                 <li class="list-group-item"><strong>Ligase:</strong> Taq</li>
                 <li class="list-group-item"><strong>Polymerase:</strong> Phusion</li>
                 <li class="list-group-item"><strong>Overlap:</strong> {{ gibson.overlap }}nt</li>
+                <li class="list-group-item"><strong>Exonuclease cost:</strong> ${{ gibson.exonuclease_cost }}</li>
+                <li class="list-group-item"><strong>Ligase cost:</strong> ${{ gibson.ligase_cost }}</li>
+                <li class="list-group-item"><strong>Polymerase cost:</strong> ${{ gibson.polymerase_cost }}</li>
             </ul>
         </div>
         <div class="col">
@@ -106,6 +109,15 @@
                                         </span>
                                         <span class="badge rounded-pill bg-primary">
                                             {{ solution.primers_count }} Primers
+                                        </span>
+                                        <span class="badge rounded-pill bg-primary">
+                                            Exonuclease - ${{ gibson.exonuclease_cost }}
+                                        </span>
+                                        <span class="badge rounded-pill bg-primary">
+                                            Ligase - ${{ gibson.ligase_cost }}
+                                        </span>
+                                        <span class="badge rounded-pill bg-primary">
+                                            Polymerase - ${{ gibson.polymerase_cost }}
                                         </span>
                                     </li>
                                     <li class="list-group-item">

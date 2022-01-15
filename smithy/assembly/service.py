@@ -48,6 +48,32 @@ gibson_times_json = {
     'times': [34, 20, 6]
 }
 
+def lengths_and_plasmids(assembly):
+    primer_lengths = []
+    part_lengths = []
+    plasmid_count = 0
+
+    for part in assembly[:-1]:
+        primer_lengths.extend(
+            [
+                len(part.forward_primer.seq),
+                len(part.reverse_primer.seq)
+            ]
+        )
+
+        if part.annotations['db'] == 'NONE':
+            part_lengths.append(part.template.seq.length)
+        else:
+            plasmid_count += 1
+
+    primer_lengths.extend(
+        [
+            len(assembly[-1].forward_primer.seq),
+            len(assembly[-1].reverse_primer.seq)
+        ]
+    )
+    return primer_lengths, part_lengths, plasmid_count
+
 def parts_csv(solution_model, parts):
     """
     Exports the assembly parts data to the chosen file in csv format.
@@ -172,24 +198,14 @@ def primers_csv(solution_model, parts):
     solution_model.save()
     os.remove(temp_file)
 
-def costs(nt_costs, nt_lengths, enz_costs, enz_types):
-    # nt_costs = [0.01, 0.02, 0.05. 0.1]
-    # Primers, subgenes/parts, genes, plasmids: 100, 1000, 3000, inf.
-
-    # {
-    #     'types': ['primers', 'parts', 'genes', 'plasmids'...]
-    #     'costs': [10, 20, 30, 40...]
-    #     'total': xyz
-    # }
-    # primers = 0
-    # parts = 0
-    # genes = 0
-    # blocks = 0
-    nt_types = ['primers', 'parts', 'genes', 'plasmids']
+def costs(nt_costs, nt_lengths, plasmid_count, enz_costs, enz_types):
+    nt_types = ['oligos', 'blocks', 'genes', 'plasmids']
     nt_totals = [0.0, 0.0, 0.0, 0.0]
     costs = {}
     total_cost = 0
 
+    # TODO: change categories to : oligo, block, gene only for non-db parts
+    # TODO: add plasmid flat costs for db parts
     for length in nt_lengths: 
         if length <= 100:
             # cost of primer
@@ -197,12 +213,12 @@ def costs(nt_costs, nt_lengths, enz_costs, enz_types):
         elif length > 100 and length <= 1000:
             # cost of part
             nt_totals[1] += length * nt_costs[1]
-        elif length > 1000 and length <= 3000:
+        elif length > 1000:
             # cost of gene
             nt_totals[2] += length * nt_costs[2]
-        elif length > 3000:
-            # cost of plasmid
-            nt_totals[3] += length * nt_costs[3]
+        
+    # cost of plasmid
+    nt_totals[3] = plasmid_count * 75.0
     
     total_cost = sum(nt_totals) + sum(enz_costs)
 
@@ -283,10 +299,10 @@ def slic_times(pcr, overlap):
     return times
 
 def biobricks_times(pcr, insert_count):
-    # iGEM and Ginko Bioworks protocol
+    # iGEM and Ginko Bioworks protocol 
     times = {}
     times_types = ['pcr', 'digestion', 'ligation']
-    time_vals = [pcr, 30, 30]
+    time_vals = [pcr, 50, 30]
     
     times.update({'total': round(sum(time_vals), 2)})
     times.update({'types': times_types})
@@ -295,6 +311,7 @@ def biobricks_times(pcr, insert_count):
     return times
 
 def pcr_soe_times(nt_lengths):
+    # TODO: needs more detail 
     times = {}
     time_types = ['pcr']
     time_vals = [pcr_time(nt_lengths)]
@@ -305,19 +322,25 @@ def pcr_soe_times(nt_lengths):
 
     return times
 
-def goldengate_risk():
+def goldengate_risk(insert_count):
+    pcr_pots = insert_count
+    assembly_pots = 1
     pass
 
 def gibson_risk():
+    pots = 1
     pass
 
-def slic_risk():
+def slic_risk(insert_count):
+    pots = insert_count + 1
     pass
 
-def biobricks_risk():
+def biobricks_risk(insert_count):
+    pots = (insert_count - 1) * 4
     pass
 
-def pcr_risk():
+def pcr_risk(insert_count):
+    pots = insert_count
     pass
 
 def solution_analysis(assembly, fragments, query_length):
@@ -731,42 +754,19 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-    primer_lengths = []
-
-    for part in assembly:
-        primer_lengths.extend(
-            [
-                len(part.forward_primer.seq),
-                len(part.reverse_primer.seq)
-            ]
-        )
-
-    part_lengths = [
-        part.template.seq.length
-        for part in assembly[:-1]
-    ]
+    primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
 
     pcr = pcr_time(part_lengths + primer_lengths)
     gibson_time = gibson_times(pcr)
+
     gibson_cost = costs(
-        [
-            obj.primer_cost, 
-            obj.part_cost,
-            obj.gene_cost, 
-            obj.plasmid_cost
-        ],
+        [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
-        [
-            obj.exonuclease_cost,
-            obj.ligase_cost,
-            obj.polymerase_cost
-        ],
-        [
-            'exonuclease',
-            'ligase',
-            'polymerase'
-        ]
+        plasmid_count,
+        [obj.exonuclease_cost, obj.ligase_cost, obj.polymerase_cost],
+        ['exonuclease', 'ligase', 'polymerase']
     )
+
     gibson_risk = {
         'total': 0.35,
         'types': ['pcr', 'chewback, ligation, repair'],
@@ -890,41 +890,19 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length + space
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-
-    primer_lengths = []
-
-    for part in assembly:
-        primer_lengths.extend(
-            [
-                len(part.forward_primer.seq),
-                len(part.reverse_primer.seq)
-            ]
-        )
-
-    part_lengths = [
-        part.template.seq.length
-        for part in assembly[:-1]
-    ]
+    primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
 
     pcr = pcr_time(part_lengths + primer_lengths)
     goldengate_time = goldengate_times(pcr, len(fragments))
+
     goldengate_cost = costs(
-        [
-            obj.primer_cost, 
-            obj.part_cost,
-            obj.gene_cost, 
-            obj.plasmid_cost
-        ],
+        [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
-        [
-            obj.re_cost,
-            obj.ligase_cost,
-        ],
-        [
-            'type2s RE',
-            'ligase',
-        ]
+        plasmid_count,
+        [obj.re_cost, obj.ligase_cost],
+        ['type2s RE', 'ligase']
     )
+
     goldengate_risk = {
         'total': 0.35,
         'types': ['pcr', 'chewback, ligation, repair'],
@@ -1050,45 +1028,19 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-
-    primer_lengths = []
-
-    for part in assembly:
-        primer_lengths.extend(
-            [
-                len(part.forward_primer.seq),
-                len(part.reverse_primer.seq)
-            ]
-        )
-
-    part_lengths = [
-        part.template.seq.length
-        for part in assembly[:-1]
-    ]
-
+    primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
+    
     pcr = pcr_time(part_lengths + primer_lengths)
     biobricks_time = biobricks_times(pcr, len(fragments))
+
     biobricks_cost = costs(
-        [
-            obj.primer_cost, 
-            obj.part_cost,
-            obj.gene_cost, 
-            obj.plasmid_cost
-        ],
+        [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
-        [
-            obj.EcoRI_cost,
-            obj.XbaI_cost,
-            obj.SpeI_cost,
-            obj.PstI_cost
-        ],
-        [
-            'EcoRI',
-            'XbaI',
-            'SpeI',
-            'PstI'
-        ]
+        plasmid_count
+        [obj.EcoRI_cost, obj.XbaI_cost, obj.SpeI_cost, obj.PstI_cost],
+        ['EcoRI', 'XbaI', 'SpeI', 'PstI']
     )
+
     biobricks_risk = {
         'total': 0.35,
         'types': ['pcr', 'chewback, ligation, repair'],
@@ -1211,39 +1163,19 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-
-    primer_lengths = []
-
-    for part in assembly:
-        primer_lengths.extend(
-            [
-                len(part.forward_primer.seq),
-                len(part.reverse_primer.seq)
-            ]
-        )
-
-    part_lengths = [
-        part.template.seq.length
-        for part in assembly[:-1]
-    ]
+    primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
 
     pcr = pcr_time(part_lengths + primer_lengths)
     pcr_soe_time = pcr_soe_times(part_lengths + primer_lengths)
+
     pcr_cost = costs(
-        [
-            obj.primer_cost, 
-            obj.part_cost,
-            obj.gene_cost, 
-            obj.plasmid_cost
-        ],
+        [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
-        [
-            obj.polymerase_cost
-        ],
-        [
-            'polymerase'
-        ]
+        plasmid_count,
+        [obj.polymerase_cost],
+        ['polymerase']
     )
+
     pcr_risk = {
         'total': 0.35,
         'types': ['pcr', 'chewback, ligation, repair'],
@@ -1365,40 +1297,16 @@ def slic_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-
-    primer_lengths = []
-
-    for part in assembly:
-        primer_lengths.extend(
-            [
-                len(part.forward_primer.seq),
-                len(part.reverse_primer.seq)
-            ]
-        )
-
-    part_lengths = [
-        part.template.seq.length
-        for part in assembly[:-1]
-    ]
-
+    primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
+    
     pcr = pcr_time(part_lengths + primer_lengths)
     slic_time = slic_times(pcr, obj.overlap)
     slic_cost = costs(
-        [
-            obj.primer_cost, 
-            obj.part_cost,
-            obj.gene_cost, 
-            obj.plasmid_cost
-        ],
+        [obj.primer_cost, obj.part_cost, obj.gene_cost, obj.plasmid_cost],
         part_lengths + primer_lengths,
-        [
-            obj.exonuclease_cost,
-            obj.ligase_cost
-        ],
-        [
-            'exonuclease',
-            'ligase'
-        ]
+        plasmid_count,
+        [obj.exonuclease_cost, obj.ligase_cost],
+        ['exonuclease', 'ligase']
     )
     slic_risk = {
         'total': 0.35,

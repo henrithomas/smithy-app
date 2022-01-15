@@ -89,7 +89,6 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
         'primer_cost',
         'part_cost',
         'gene_cost',
-        'plasmid_cost',
         'exonuclease_cost',
         'ligase_cost',
         'polymerase_cost'
@@ -113,6 +112,9 @@ class GibsonSolutionDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
+        context['exonuclease_cost'] = self.object.assembly.exonuclease_cost
+        context['ligase_cost'] = self.object.assembly.ligase_cost
+        context['polymerase_cost'] = self.object.assembly.polymerase_cost
         context['parts'] = self.object.gibsonpart_set.all()
         context['primer_sets'] =  [part.gibsonprimer_set.all() for part in context['parts']]
         return context
@@ -192,7 +194,6 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
         'primer_cost',
         'part_cost',
         'gene_cost',
-        'plasmid_cost',
         're_cost',
         'ligase_cost'
     ]
@@ -215,6 +216,8 @@ class GoldenGateSolutionDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
+        context['re_cost'] = self.object.assembly.re_cost
+        context['ligase_cost'] = self.object.assembly.ligase_cost
         context['parts'] = self.object.goldengatepart_set.all()
         context['primer_sets'] =  [part.goldengateprimer_set.all() for part in context['parts']]
         return context   
@@ -292,7 +295,6 @@ class BioBricksCreateView(SuccessMessageMixin, CreateView):
         'primer_cost',
         'part_cost',
         'gene_cost',
-        'plasmid_cost',
         'EcoRI_cost',
         'XbaI_cost',
         'SpeI_cost',
@@ -317,6 +319,10 @@ class BioBricksSolutionDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
+        context['EcoRI_cost'] = self.object.assembly.EcoRI_cost
+        context['XbaI_cost'] = self.object.assembly.XbaI_cost
+        context['SpeI_cost'] = self.object.assembly.SpeI_cost
+        context['PstI_cost'] = self.object.assembly.PstI_cost
         context['parts'] = self.object.biobrickspart_set.all()
         context['primer_sets'] =  [part.biobricksprimer_set.all() for part in context['parts']]
         return context
@@ -395,7 +401,6 @@ class PCRCreateView(SuccessMessageMixin, CreateView):
         'primer_cost',
         'part_cost',
         'gene_cost',
-        'plasmid_cost',
         'polymerase_cost'
     ]
 
@@ -417,6 +422,7 @@ class PCRSolutionDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
+        context['polymerase_cost'] = self.object.assembly.polymerase_cost
         context['parts'] = self.object.pcrpart_set.all()
         context['primer_sets'] =  [part.pcrprimer_set.all() for part in context['parts']]
         return context
@@ -495,7 +501,6 @@ class SLICCreateView(SuccessMessageMixin, CreateView):
         'primer_cost',
         'part_cost',
         'gene_cost',
-        'plasmid_cost',
         'exonuclease_cost',
         'ligase_cost'
     ]
@@ -518,6 +523,8 @@ class SLICSolutionDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = self.object.name
+        context['exonuclease_cost'] = self.object.assembly.exonuclease_cost
+        context['ligase_cost'] = self.object.assembly.ligase_cost
         context['parts'] = self.object.slicpart_set.all()
         context['primer_sets'] =  [part.slicprimer_set.all() for part in context['parts']]
         return context

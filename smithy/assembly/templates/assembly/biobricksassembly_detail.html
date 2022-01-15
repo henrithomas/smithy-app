@@ -33,6 +33,10 @@
                 <li class="list-group-item"><strong>Prefix Sequence:</strong> gaattcgcggccgcttctagag</li>
                 <li class="list-group-item"><strong>CDS Prefix Sequence:</strong> gaattcgcggccgcttctag</li>
                 <li class="list-group-item"><strong>Suffix Sequence:</strong> tactagtagcggccgctgcag</li>
+                <li class="list-group-item"><strong>EcoRI cost:</strong> ${{ biobrick.EcoRI_cost }}</li>
+                <li class="list-group-item"><strong>XbaI cost:</strong> ${{ biobrick.XbaI_cost }}</li>
+                <li class="list-group-item"><strong>SpeI cost:</strong> ${{ biobrick.SpeI_cost }}</li>
+                <li class="list-group-item"><strong>PstI cost:</strong> ${{ biobrick.PstI_cost }}</li>
             </ul>
         </div>
         <div class="col">
@@ -107,6 +111,18 @@
                                         </span>
                                         <span class="badge rounded-pill bg-primary">
                                             {{ solution.primers_count }} Primers
+                                        </span>
+                                        <span class="badge rounded-pill bg-primary">
+                                            EcoRI - ${{ biobrick.EcoRI_cost }}
+                                        </span>
+                                        <span class="badge rounded-pill bg-primary">
+                                            XbaI - ${{ biobrick.XbaI_cost }}
+                                        </span>
+                                        <span class="badge rounded-pill bg-primary">
+                                            SpeI - ${{ biobrick.SpeI_cost }}
+                                        </span>
+                                        <span class="badge rounded-pill bg-primary">
+                                            PstI - ${{ biobrick.PstI_cost }}
                                         </span>
                                     </li>
                                     <li class="list-group-item">

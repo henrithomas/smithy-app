@@ -1,11 +1,26 @@
-document.getElementById('id_exonuclease_cost').addEventListener('change', function() {
-    document.getElementById("exonuc_cost_display").innerHTML = "$" + this.value;
+document.getElementById('exo_check').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('id_exonuclease_cost').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('id_exonuclease_cost').setAttribute('hidden', true);
+    }
 });
 
-document.getElementById('id_ligase_cost').addEventListener('change', function() {
-    document.getElementById("ligase_cost_display").innerHTML = "$" + this.value;
+document.getElementById('ligase_check').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('id_ligase_cost').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('id_ligase_cost').setAttribute('hidden', true);
+    }
 });
 
-document.getElementById('id_polymerase_cost').addEventListener('change', function() {
-    document.getElementById("poly_cost_display").innerHTML = "$" + this.value;
+document.getElementById('poly_check').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('id_polymerase_cost').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('id_polymerase_cost').setAttribute('hidden', true);
+    }
 });

@@ -339,7 +339,7 @@
                 <div class="row mb-2">
                     <h4>Nucleotides</h4>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         {{ form.primer_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.primer_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.primer_cost.id_for_label }}">$</span>
@@ -354,7 +354,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         {{ form.part_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.part_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.part_cost.id_for_label }}">$</span>
@@ -369,7 +369,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         {{ form.gene_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.gene_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.gene_cost.id_for_label }}">$</span>
@@ -384,34 +384,19 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
-                        {{ form.plasmid_cost.label_tag }}
-                        <div class="input-group mt-2" id="{{ form.plasmid_cost.id_for_label }}">
-                            <span class="input-group-text" id="{{ form.plasmid_cost.id_for_label }}">$</span>
-                            <input type="number" name="{{ form.plasmid_cost.html_name }}" class="form-control" placeholder="0.01" 
-                            id="{{ form.plasmid_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.plasmid_cost.value }}" {% endif %}>
-                        </div>
-                        {% if form.plasmid_cost.errors %}
-                        <ul class="errorList">
-                            {% for error in form.plasmid_cost.errors %}
-                                <li class="text-danger">{{ error|escape }}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-                    </div>
                 </div>
                 <div class="row mb-2">
                     <h4>Enzymes</h4>
-
+                    <p>Which enzymes do you need to purchase?</p>
                     <div class="col-md-6">
-                        {{ form.re_cost.label_tag }}
-                        <div class="input-group">
-                            <span class="input-group-text" id="re_cost_display">$0.0</span>
-                            <select class="form-select" name="{{ form.re_cost.html_name }}" id="{{ form.re_cost.id_for_label }}">
-                                {% for value, text in form.fields.re_cost.choices %}
-                                    <option value="{{ value }}">{{ text }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="re_check">
+                            <label class="form-check-label" for="re_check">BsaI</label>
+                        </div>
+                        <div class="input-group mt-2" id="{{ form.re_cost.id_for_label }}" hidden>
+                            <span class="input-group-text" id="re_enz">$</span>
+                            <input type="number" name="{{ form.re_cost.html_name }}" class="form-control" placeholder="100.00" 
+                            id="{{ form..re_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.re_cost.value }}" {% endif %}>
                         </div>
                         {% if form.re_cost.errors %}
                         <ul class="errorList">
@@ -422,14 +407,14 @@
                         {% endif %}
                     </div>
                     <div class="col-md-6">
-                        {{ form.ligase_cost.label_tag }}
-                        <div class="input-group">
-                            <span class="input-group-text" id="ligase_cost_display">$0.0</span>
-                            <select class="form-select" name="{{ form.ligase_cost.html_name }}" id="{{ form.ligase_cost.id_for_label }}">
-                                {% for value, text in form.fields.ligase_cost.choices %}
-                                    <option value="{{ value }}">{{ text }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="ligase_check">
+                            <label class="form-check-label" for="ligase_check">Ligase</label>
+                        </div>
+                        <div class="input-group mt-2" id="{{ form.ligase_cost.id_for_label }}" hidden>
+                            <span class="input-group-text" id="ligase_enz">$</span>
+                            <input type="number" name="{{ form.ligase_cost.html_name }}" class="form-control" placeholder="100.00" 
+                            id="{{ form.ligase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.ligase_cost.value }}" {% endif %}>
                         </div>
                         {% if form.ligase_cost.errors %}
                         <ul class="errorList">

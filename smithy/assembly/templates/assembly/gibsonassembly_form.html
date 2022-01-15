@@ -230,7 +230,7 @@
             <h2>Experiment</h2>
             <p>
                 Enter experimental parameters you will be using for your assembly experiment in the lab.
-                These values are important for primer desing and thermodynamic analysis.
+                These values are important for primer design and thermodynamic analysis.
             </p>
             <div class="col">
                 <div class="row mb-2">
@@ -326,7 +326,7 @@
                 <div class="row mb-2">
                     <h4>Nucleotides</h4>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         {{ form.primer_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.primer_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.primer_cost.id_for_label }}">$</span>
@@ -341,7 +341,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         {{ form.part_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.part_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.part_cost.id_for_label }}">$</span>
@@ -356,7 +356,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         {{ form.gene_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.gene_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.gene_cost.id_for_label }}">$</span>
@@ -371,52 +371,37 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
-                        {{ form.plasmid_cost.label_tag }}
-                        <div class="input-group mt-2" id="{{ form.plasmid_cost.id_for_label }}">
-                            <span class="input-group-text" id="{{ form.plasmid_cost.id_for_label }}">$</span>
-                            <input type="number" name="{{ form.plasmid_cost.html_name }}" class="form-control" placeholder="0.01" 
-                            id="{{ form.plasmid_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.plasmid_cost.value }}" {% endif %}>
-                        </div>
-                        {% if form.plasmid_cost.errors %}
-                        <ul class="errorList">
-                            {% for error in form.plasmid_cost.errors %}
-                                <li class="text-danger">{{ error|escape }}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-                    </div>
                 </div>
                 <div class="row mb-2">
                     <h4>Enzymes</h4>
-
-                    <div class="col-md-4">
-                        {{ form.exonuclease_cost.label_tag }}
-                        <div class="input-group">
-                            <span class="input-group-text" id="exonuc_cost_display">$0.0</span>
-                            <select class="form-select" name="{{ form.exonuclease_cost.html_name }}" id="{{ form.exonuclease_cost.id_for_label }}">
-                                {% for value, text in form.fields.exonuclease_cost.choices %}
-                                    <option value="{{ value }}">{{ text }}</option>
-                                {% endfor %}
-                            </select>
+                    <p>Which enzymes do you need to purchase?</p>
+                    <div class="col">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="exo_check">
+                            <label class="form-check-label" for="exo_check">Exonuclease</label>
+                        </div>
+                        <div class="input-group mt-2" id="{{ form.exonuclease_cost.id_for_label }}" hidden>
+                            <span class="input-group-text" id="exo_enz">$</span>
+                            <input type="number" name="{{ form.exonuclease_cost.html_name }}" class="form-control" placeholder="100.00" 
+                            id="{{ form..exonuclease_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.exonuclease_cost.value }}" {% endif %}>
                         </div>
                         {% if form.exonuclease_cost.errors %}
-                        <ul class="errorList">
-                            {% for error in form.exonuclease_cost.errors %}
-                                <li class="text-danger">{{ error|escape }}</li>
-                            {% endfor %}
-                        </ul>
+                            <ul class="errorList">
+                                {% for error in form.exonuclease_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
                         {% endif %}
                     </div>
                     <div class="col-md-4">
-                        {{ form.ligase_cost.label_tag }}
-                        <div class="input-group">
-                            <span class="input-group-text" id="ligase_cost_display">$0.0</span>
-                            <select class="form-select" name="{{ form.ligase_cost.html_name }}" id="{{ form.ligase_cost.id_for_label }}">
-                                {% for value, text in form.fields.ligase_cost.choices %}
-                                    <option value="{{ value }}">{{ text }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="ligase_check">
+                            <label class="form-check-label" for="ligase_check">Ligase</label>
+                        </div>
+                        <div class="input-group mt-2" id="{{ form.ligase_cost.id_for_label }}" hidden>
+                            <span class="input-group-text" id="ligase_enz">$</span>
+                            <input type="number" name="{{ form.ligase_cost.html_name }}" class="form-control" placeholder="100.00" 
+                            id="{{ form..ligase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.ligase_cost.value }}" {% endif %}>
                         </div>
                         {% if form.ligase_cost.errors %}
                         <ul class="errorList">
@@ -427,14 +412,14 @@
                         {% endif %}
                     </div>
                     <div class="col-md-4">
-                        {{ form.polymerase_cost.label_tag }}
-                        <div class="input-group">
-                            <span class="input-group-text" id="poly_cost_display">$0.0</span>
-                            <select class="form-select" name="{{ form.polymerase_cost.html_name }}" id="{{ form.polymerase_cost.id_for_label }}">
-                                {% for value, text in form.fields.polymerase_cost.choices %}
-                                    <option value="{{ value }}">{{ text }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="poly_check">
+                            <label class="form-check-label" for="poly_check">Polymerase</label>
+                        </div>
+                        <div class="input-group mt-2" id="{{ form.polymerase_cost.id_for_label }}" hidden>
+                            <span class="input-group-text" id="poly_enz">$</span>
+                            <input type="number" name="{{ form.polymerase_cost.html_name }}" class="form-control" placeholder="100.00" 
+                            id="{{ form..polymerase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.polymerase_cost.value }}" {% endif %}>
                         </div>
                         {% if form.polymerase_cost.errors %}
                         <ul class="errorList">

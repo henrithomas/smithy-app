@@ -1,4 +1,5 @@
 {% extends 'proj_site/base.html' %}
+{% load static %}
 {% block content %}
     <h1>{{ title }}</h1>
     <p>
@@ -16,17 +17,8 @@
                     <span class="badge rounded-pill bg-primary">
                         {{ pcr_solution.primers_count }} Primers
                     </span>
-                    <span class="badge rounded-pill bg-info text-dark">
-                        {{ pcr_solution.db_parts }} BLAST Parts
-                    </span>
-                    <span class="badge rounded-pill bg-info text-dark">
-                        {{ pcr_solution.synth_parts }} Synthetic Parts
-                    </span>
-                    <span class="badge rounded-pill bg-info text-dark">
-                        {{ pcr_solution.longest_part }}nt Longest Part
-                    </span>
-                    <span class="badge rounded-pill bg-info text-dark">
-                        {{ pcr_solution.shortest_part }}nt Shortest Part
+                    <span class="badge rounded-pill bg-primary">
+                        Polymerase - ${{ polymerase_cost }}
                     </span>
                 </li>
                 <li class="list-group-item">
@@ -35,6 +27,18 @@
                     </span>
                     <span class="badge rounded-pill bg-secondary">
                         {{ pcr_solution.primer_length_average }}nt Average Primer
+                    </span>
+                    <span class="badge rounded-pill bg-secondary">
+                        {{ pcr_solution.db_parts }} BLAST Parts
+                    </span>
+                    <span class="badge rounded-pill bg-secondary">
+                        {{ pcr_solution.synth_parts }} Synthetic Parts
+                    </span>
+                    <span class="badge rounded-pill bg-secondary">
+                        {{ pcr_solution.longest_part }}nt Longest Part
+                    </span>
+                    <span class="badge rounded-pill bg-secondary">
+                        {{ pcr_solution.shortest_part }}nt Shortest Part
                     </span>
                 </li>
                 <li class="list-group-item">
@@ -54,6 +58,23 @@
             <a href="{{ pcr_solution.parts_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Parts</a>
             <a href="{{ pcr_solution.primers_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Primers</a> 
         </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col">
+            <div class="chart-container">
+                <canvas id="pcr-time"></canvas>    
+            </div>
+            <div class="time-sum text-center" id="pcr-time-sum"></div>
+        </div>
+        <div class="col">
+            <canvas id="pcr-cost"></canvas>
+        </div>
+        <div class="col">
+            <div class="chart-container">
+                <canvas id="pcr-risk"></canvas>
+            </div>
+        </div>   
     </div>
 
     <div class="row mb-4">
@@ -245,4 +266,12 @@
             <a href="{{ pcr_solution.primers_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Primers</a> 
         </div>
     </div>
+
+    {{ pcr_solution.time_summary|json_script:"times" }}
+    {{ pcr_solution.cost_summary|json_script:"costs" }}
+    {{ pcr_solution.risk_summary|json_script:"risks" }}
+
+    <script src="{% static 'proj_site/chart_config.js' %}"></script>
+    <script src="{% static 'proj_site/pcr_charts.js' %}"></script>
+    <script src="{% static 'proj_site/pcr_detail.js' %}"></script>
 {% endblock content %}

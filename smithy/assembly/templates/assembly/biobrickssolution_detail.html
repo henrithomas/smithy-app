@@ -1,4 +1,5 @@
 {% extends 'proj_site/base.html' %}
+{% load static %}
 {% block content %}
     <h1>{{ title }}</h1>
     <p>
@@ -16,17 +17,17 @@
                     <span class="badge rounded-pill bg-primary">
                         {{ biobricks_solution.primers_count }} Primers
                     </span>
-                    <span class="badge rounded-pill bg-info text-dark">
-                        {{ biobricks_solution.db_parts }} BLAST Parts
+                    <span class="badge rounded-pill bg-primary">
+                        EcoRI - ${{ EcoRI_cost }} 
                     </span>
-                    <span class="badge rounded-pill bg-info text-dark">
-                        {{ biobricks_solution.synth_parts }} Synthetic Parts
+                    <span class="badge rounded-pill bg-primary">
+                        XbaI - ${{ XbaI_cost }} - 
                     </span>
-                    <span class="badge rounded-pill bg-info text-dark">
-                        {{ biobricks_solution.longest_part }}nt Longest Part
+                    <span class="badge rounded-pill bg-primary">
+                        SpeI - ${{ SpeI_cost }}
                     </span>
-                    <span class="badge rounded-pill bg-info text-dark">
-                        {{ biobricks_solution.shortest_part }}nt Shortest Part
+                    <span class="badge rounded-pill bg-primary">
+                        PstI - ${{ PstI_cost }}
                     </span>
                 </li>
                 <li class="list-group-item">
@@ -35,6 +36,18 @@
                     </span>
                     <span class="badge rounded-pill bg-secondary">
                         {{ biobricks_solution.primer_length_average }}nt Average Primer
+                    </span>
+                    <span class="badge rounded-pill bg-secondary">
+                        {{ biobricks_solution.db_parts }} BLAST Parts
+                    </span>
+                    <span class="badge rounded-pill bg-secondary">
+                        {{ biobricks_solution.synth_parts }} Synthetic Parts
+                    </span>
+                    <span class="badge rounded-pill bg-secondary">
+                        {{ biobricks_solution.longest_part }}nt Longest Part
+                    </span>
+                    <span class="badge rounded-pill bg-secondary">
+                        {{ biobricks_solution.shortest_part }}nt Shortest Part
                     </span>
                 </li>
                 <li class="list-group-item">
@@ -58,7 +71,18 @@
 
     <div class="row mb-4">
         <div class="col">
-
+            <div class="chart-container">
+                <canvas id="biobricks-time"></canvas>    
+            </div>
+            <div class="time-sum text-center" id="biobricks-time-sum"></div>
+        </div>
+        <div class="col">
+            <canvas id="biobricks-cost"></canvas>
+        </div>
+        <div class="col">
+            <div class="chart-container">
+                <canvas id="biobricks-risk"></canvas>
+            </div>
         </div>
     </div>
 
@@ -251,4 +275,12 @@
             <a href="{{ biobricks_solution.primers_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Primers</a> 
         </div>
     </div>
+
+    {{ biobricks_solution.time_summary|json_script:"times" }}
+    {{ biobricks_solution.cost_summary|json_script:"costs" }}
+    {{ biobricks_solution.risk_summary|json_script:"risks" }}
+
+    <script src="{% static 'proj_site/chart_config.js' %}"></script>
+    <script src="{% static 'proj_site/biobricks_charts.js' %}"></script>
+    <script src="{% static 'proj_site/biobricks_detail.js' %}"></script>
 {% endblock content %}

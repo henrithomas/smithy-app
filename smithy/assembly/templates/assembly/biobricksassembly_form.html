@@ -306,7 +306,7 @@
                 <div class="row mb-2">
                     <h4>Nucleotides</h4>
 
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         {{ form.primer_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.primer_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.primer_cost.id_for_label }}">$</span>
@@ -321,7 +321,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         {{ form.part_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.part_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.part_cost.id_for_label }}">$</span>
@@ -336,7 +336,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         {{ form.gene_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.gene_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.gene_cost.id_for_label }}">$</span>
@@ -351,34 +351,19 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3">
-                        {{ form.plasmid_cost.label_tag }}
-                        <div class="input-group mt-2" id="{{ form.plasmid_cost.id_for_label }}">
-                            <span class="input-group-text" id="{{ form.plasmid_cost.id_for_label }}">$</span>
-                            <input type="number" name="{{ form.plasmid_cost.html_name }}" class="form-control" placeholder="0.01" 
-                            id="{{ form.plasmid_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.plasmid_cost.value }}" {% endif %}>
-                        </div>
-                        {% if form.plasmid_cost.errors %}
-                        <ul class="errorList">
-                            {% for error in form.plasmid_cost.errors %}
-                                <li class="text-danger">{{ error|escape }}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-                    </div>
                 </div>
                 <div class="row mb-2">
                     <h4>Enzymes</h4>
-
+                    <p>Which enzymes do you need to purchase?</p>
                     <div class="col-md-3">
-                        {{ form.EcoRI_cost.label_tag }}
-                        <div class="input-group">
-                            <span class="input-group-text" id="EcoRI_cost_display">$0.0</span>
-                            <select class="form-select" name="{{ form.EcoRI_cost.html_name }}" id="{{ form.EcoRI_cost.id_for_label }}">
-                                {% for value, text in form.fields.EcoRI_cost.choices %}
-                                    <option value="{{ value }}">{{ text }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="ecori_check">
+                            <label class="form-check-label" for="ecori_check">EcoRI</label>
+                        </div>
+                        <div class="input-group mt-2" id="{{ form.EcoRI_cost.id_for_label }}" hidden>
+                            <span class="input-group-text" id="ecori_enz">$</span>
+                            <input type="number" name="{{ form.EcoRI_cost.html_name }}" class="form-control" placeholder="100.00" 
+                            id="{{ form.EcoRI_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.EcoRI_cost.value }}" {% endif %}>
                         </div>
                         {% if form.EcoRI_cost.errors %}
                         <ul class="errorList">
@@ -389,14 +374,14 @@
                         {% endif %}
                     </div>
                     <div class="col-md-3">
-                        {{ form.XbaI_cost.label_tag }}
-                        <div class="input-group">
-                            <span class="input-group-text" id="XbaI_cost_display">$0.0</span>
-                            <select class="form-select" name="{{ form.XbaI_cost.html_name }}" id="{{ form.XbaI_cost.id_for_label }}">
-                                {% for value, text in form.fields.XbaI_cost.choices %}
-                                    <option value="{{ value }}">{{ text }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="xbai_check">
+                            <label class="form-check-label" for="xbai_check">XbaI</label>
+                        </div>
+                        <div class="input-group mt-2" id="{{ form.XbaI_cost.id_for_label }}" hidden>
+                            <span class="input-group-text" id="xbai_enz">$</span>
+                            <input type="number" name="{{ form.XbaI_cost.html_name }}" class="form-control" placeholder="100.00" 
+                            id="{{ form.XbaI_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.XbaI_cost.value }}" {% endif %}>
                         </div>
                         {% if form.XbaI_cost.errors %}
                         <ul class="errorList">
@@ -407,14 +392,14 @@
                         {% endif %}
                     </div>
                     <div class="col-md-3">
-                        {{ form.SpeI_cost.label_tag }}
-                        <div class="input-group">
-                            <span class="input-group-text" id="SpeI_cost_display">$0.0</span>
-                            <select class="form-select" name="{{ form.SpeI_cost.html_name }}" id="{{ form.SpeI_cost.id_for_label }}">
-                                {% for value, text in form.fields.SpeI_cost.choices %}
-                                    <option value="{{ value }}">{{ text }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="spei_check">
+                            <label class="form-check-label" for="spei_check">SpeI</label>
+                        </div>
+                        <div class="input-group mt-2" id="{{ form.SpeI_cost.id_for_label }}" hidden>
+                            <span class="input-group-text" id="spei_enz">$</span>
+                            <input type="number" name="{{ form.SpeI_cost.html_name }}" class="form-control" placeholder="100.00" 
+                            id="{{ form.SpeI_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.SpeI_cost.value }}" {% endif %}>
                         </div>
                         {% if form.SpeI_cost.errors %}
                         <ul class="errorList">
@@ -425,14 +410,14 @@
                         {% endif %}
                     </div>
                     <div class="col-md-3">
-                        {{ form.PstI_cost.label_tag }}
-                        <div class="input-group">
-                            <span class="input-group-text" id="PstI_cost_display">$0.0</span>
-                            <select class="form-select" name="{{ form.PstI_cost.html_name }}" id="{{ form.PstI_cost.id_for_label }}">
-                                {% for value, text in form.fields.PstI_cost.choices %}
-                                    <option value="{{ value }}">{{ text }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="psti_check">
+                            <label class="form-check-label" for="psti_check">PstI</label>
+                        </div>
+                        <div class="input-group mt-2" id="{{ form.PstI_cost.id_for_label }}" hidden>
+                            <span class="input-group-text" id="psti_enz">$</span>
+                            <input type="number" name="{{ form.PstI_cost.html_name }}" class="form-control" placeholder="100.00" 
+                            id="{{ form.PstI_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.PstI_cost.value }}" {% endif %}>
                         </div>
                         {% if form.PstI_cost.errors %}
                         <ul class="errorList">

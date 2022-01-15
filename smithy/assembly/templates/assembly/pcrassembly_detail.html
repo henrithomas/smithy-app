@@ -28,6 +28,7 @@
             <h2>General Info</h2>
             <ul class="list-group">
                 <li class="list-group-item"><strong>Polymerase:</strong> Taq</li>
+                <li class="list-group-item"><strong>Polymerase cost:</strong> ${{ pcr.polymerase_cost }}</li>
             </ul>
         </div>
         <div class="col">
@@ -102,6 +103,9 @@
                                         </span>
                                         <span class="badge rounded-pill bg-primary">
                                             {{ solution.primers_count }} Primers
+                                        </span>
+                                        <span class="badge rounded-pill bg-primary">
+                                            Polymerase - ${{ pcr.polymerase_cost }}
                                         </span>
                                     </li>
                                     <li class="list-group-item">
