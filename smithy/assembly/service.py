@@ -198,6 +198,57 @@ def primers_csv(solution_model, parts):
     solution_model.save()
     os.remove(temp_file)
 
+def order_csv(solution_model, parts, enzymes):
+    file_name = f'{solution_model.name.replace(" ", "-")}-{solution_model.pk}-order.csv'
+    temp_file = f'/home/hthoma/projects/smithy-app/smithy/media/csv/{file_name}'
+
+    fields = ['id', 'type', 'sequence']
+
+    part_list = []
+    primer_list = []
+    enzyme_list = []
+
+    for part in parts: 
+        part_list.append(
+            {
+                'id': part.name,
+                'type': 'part',
+                'sequence': part.template.seq.watson
+            }
+        )
+        primer_list.extend([
+            {
+                'id': f'{part.name}-fwd',
+                'type': 'primer',
+                'sequence': part.forward_primer.seq
+            },
+            {
+                'id': f'{part.name}-rvs',
+                'type': 'primer',
+                'sequence': part.reverse_primer.seq
+            }
+        ])
+
+    for enzyme in enzymes:
+        enzyme_list.append(
+            {
+                'id': enzyme,
+                'type': 'enzyme',
+                'sequence': 'none'
+            }
+        )
+
+    with open(temp_file, 'w', newline='') as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fields, restval='NONE')
+        writer.writeheader()
+        writer.writerows(part_list)
+        writer.writerows(primer_list)
+        writer.writerows(enzyme_list)
+
+    solution_model.order_file.save(file_name, File(open(temp_file, newline='')))
+    solution_model.save()
+    os.remove(temp_file)
+
 def costs(nt_costs, nt_lengths, plasmid_count, enz_costs, enz_types):
     nt_types = ['oligos', 'blocks', 'genes', 'plasmids']
     nt_totals = [0.0, 0.0, 0.0, 0.0]
@@ -755,6 +806,14 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
     primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
+    enzyme_orders = []
+    
+    if obj.exonuclease_cost > 0.0:
+        enzyme_orders.append('T5 exonuclease')
+    if obj.ligase_cost > 0.0:
+        enzyme_orders.append('Taq ligase')
+    if obj.polymerase_cost > 0.0:
+        enzyme_orders.append('Phusion polymerase')
 
     pcr = pcr_time(part_lengths + primer_lengths)
     gibson_time = gibson_times(pcr)
@@ -802,6 +861,7 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     plasmid_map(gibson_solution, assembly, obj.title, 0, total_len)
     parts_csv(gibson_solution, assembly)
     primers_csv(gibson_solution, assembly)
+    order_csv(gibson_solution, assembly, enzyme_orders)
 
     for i, part in enumerate(assembly):
         gibson_part_entry = GibsonPart(

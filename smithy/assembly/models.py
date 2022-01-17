@@ -151,6 +151,7 @@ class AssemblySolution(models.Model):
     cost_summary = models.CharField(max_length=10000, default='{}')
     time_summary = models.CharField(max_length=10000, default='{}')
     risk_summary = models.CharField(max_length=10000, default='{}')
+    order_file = models.FileField(default='default-order.csv', upload_to='csv/orders/')
 
     class Meta:
         abstract = True
@@ -181,10 +182,10 @@ class GibsonAssembly(Assembly):
 
 
 class BioBricksAssembly(Assembly):
-    EcoRI_cost = models.FloatField(verbose_name='EcoRI cost ($)', default=0.0, choices=enzyme_options)
-    XbaI_cost = models.FloatField(verbose_name='XbaI cost ($)', default=0.0, choices=enzyme_options)
-    SpeI_cost = models.FloatField(verbose_name='SpeI cost ($)', default=0.0, choices=enzyme_options)
-    PstI_cost = models.FloatField(verbose_name='PstI cost ($)', default=0.0, choices=enzyme_options)
+    EcoRI_cost = models.FloatField(verbose_name='EcoRI cost ($)', default=0.0)
+    XbaI_cost = models.FloatField(verbose_name='XbaI cost ($)', default=0.0)
+    SpeI_cost = models.FloatField(verbose_name='SpeI cost ($)', default=0.0)
+    PstI_cost = models.FloatField(verbose_name='PstI cost ($)', default=0.0)
 
     def get_absolute_url(self):
         return reverse('biobricks-detail', kwargs={'pk': self.pk})
@@ -192,7 +193,7 @@ class BioBricksAssembly(Assembly):
 
 class PCRAssembly(Assembly):
     overlap = models.PositiveIntegerField()
-    polymerase_cost = models.FloatField(verbose_name='polymerase cost ($)', default=0.0, choices=enzyme_options)
+    polymerase_cost = models.FloatField(verbose_name='polymerase cost ($)', default=0.0)
 
     def get_absolute_url(self):
         return reverse('pcr-detail', kwargs={'pk': self.pk})
@@ -200,8 +201,8 @@ class PCRAssembly(Assembly):
 
 class SLICAssembly(Assembly):
     overlap = models.PositiveIntegerField()
-    exonuclease_cost = models.FloatField(verbose_name='exonuclease cost ($)', default=0.0, choices=enzyme_options)
-    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0, choices=enzyme_options)
+    exonuclease_cost = models.FloatField(verbose_name='exonuclease cost ($)', default=0.0)
+    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
 
     def get_absolute_url(self):
         return reverse('slic-detail', kwargs={'pk': self.pk})

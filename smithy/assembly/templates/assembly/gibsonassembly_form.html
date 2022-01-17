@@ -376,14 +376,14 @@
                     <h4>Enzymes</h4>
                     <p>Which enzymes do you need to purchase?</p>
                     <div class="col">
-                        <div class="form-check form-switch">
+                        <!-- <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="exo_check">
                             <label class="form-check-label" for="exo_check">Exonuclease</label>
-                        </div>
-                        <div class="input-group mt-2" id="{{ form.exonuclease_cost.id_for_label }}" hidden>
+                        </div> -->
+                        <div class="input-group mt-2" id="{{ form.exonuclease_cost.id_for_label }}">
                             <span class="input-group-text" id="exo_enz">$</span>
-                            <input type="number" name="{{ form.exonuclease_cost.html_name }}" class="form-control" placeholder="100.00" 
-                            id="{{ form..exonuclease_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.exonuclease_cost.value }}" {% endif %}>
+                            <input type="number" name="{{ form.exonuclease_cost.html_name }}" class="form-control" placeholder="0.00" 
+                            id="{{ form.exonuclease_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.exonuclease_cost.value }}" {% endif %}>
                         </div>
                         {% if form.exonuclease_cost.errors %}
                             <ul class="errorList">
@@ -394,14 +394,14 @@
                         {% endif %}
                     </div>
                     <div class="col-md-4">
-                        <div class="form-check form-switch">
+                        <!-- <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="ligase_check">
                             <label class="form-check-label" for="ligase_check">Ligase</label>
-                        </div>
-                        <div class="input-group mt-2" id="{{ form.ligase_cost.id_for_label }}" hidden>
+                        </div> -->
+                        <div class="input-group mt-2" id="{{ form.ligase_cost.id_for_label }}">
                             <span class="input-group-text" id="ligase_enz">$</span>
-                            <input type="number" name="{{ form.ligase_cost.html_name }}" class="form-control" placeholder="100.00" 
-                            id="{{ form..ligase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.ligase_cost.value }}" {% endif %}>
+                            <input type="number" name="{{ form.ligase_cost.html_name }}" class="form-control" placeholder="0.00" 
+                            id="{{ form.ligase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.ligase_cost.value }}" {% endif %}>
                         </div>
                         {% if form.ligase_cost.errors %}
                         <ul class="errorList">
@@ -412,14 +412,14 @@
                         {% endif %}
                     </div>
                     <div class="col-md-4">
-                        <div class="form-check form-switch">
+                        <!-- <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="poly_check">
                             <label class="form-check-label" for="poly_check">Polymerase</label>
-                        </div>
-                        <div class="input-group mt-2" id="{{ form.polymerase_cost.id_for_label }}" hidden>
+                        </div> -->
+                        <div class="input-group mt-2" id="{{ form.polymerase_cost.id_for_label }}">
                             <span class="input-group-text" id="poly_enz">$</span>
-                            <input type="number" name="{{ form.polymerase_cost.html_name }}" class="form-control" placeholder="100.00" 
-                            id="{{ form..polymerase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.polymerase_cost.value }}" {% endif %}>
+                            <input type="number" name="{{ form.polymerase_cost.html_name }}" class="form-control" placeholder="0.00" 
+                            id="{{ form.polymerase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.polymerase_cost.value }}" {% endif %}>
                         </div>
                         {% if form.polymerase_cost.errors %}
                         <ul class="errorList">
