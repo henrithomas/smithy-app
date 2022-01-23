@@ -363,7 +363,7 @@
                         <div class="input-group mt-2" id="{{ form.EcoRI_cost.id_for_label }}" hidden>
                             <span class="input-group-text" id="ecori_enz">$</span>
                             <input type="number" name="{{ form.EcoRI_cost.html_name }}" class="form-control" placeholder="100.00" 
-                            id="{{ form.EcoRI_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.EcoRI_cost.value }}" {% endif %}>
+                            id="{{ form.EcoRI_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.EcoRI_cost.value }}" {% else %} value="0.0" {% endif %}>
                         </div>
                         {% if form.EcoRI_cost.errors %}
                         <ul class="errorList">
@@ -381,7 +381,7 @@
                         <div class="input-group mt-2" id="{{ form.XbaI_cost.id_for_label }}" hidden>
                             <span class="input-group-text" id="xbai_enz">$</span>
                             <input type="number" name="{{ form.XbaI_cost.html_name }}" class="form-control" placeholder="100.00" 
-                            id="{{ form.XbaI_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.XbaI_cost.value }}" {% endif %}>
+                            id="{{ form.XbaI_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.XbaI_cost.value }}" {% else %} value="0.0" {% endif %}>
                         </div>
                         {% if form.XbaI_cost.errors %}
                         <ul class="errorList">
@@ -399,7 +399,7 @@
                         <div class="input-group mt-2" id="{{ form.SpeI_cost.id_for_label }}" hidden>
                             <span class="input-group-text" id="spei_enz">$</span>
                             <input type="number" name="{{ form.SpeI_cost.html_name }}" class="form-control" placeholder="100.00" 
-                            id="{{ form.SpeI_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.SpeI_cost.value }}" {% endif %}>
+                            id="{{ form.SpeI_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.SpeI_cost.value }}" {% else %} value="0.0" {% endif %}>
                         </div>
                         {% if form.SpeI_cost.errors %}
                         <ul class="errorList">
@@ -417,7 +417,7 @@
                         <div class="input-group mt-2" id="{{ form.PstI_cost.id_for_label }}" hidden>
                             <span class="input-group-text" id="psti_enz">$</span>
                             <input type="number" name="{{ form.PstI_cost.html_name }}" class="form-control" placeholder="100.00" 
-                            id="{{ form.PstI_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.PstI_cost.value }}" {% endif %}>
+                            id="{{ form.PstI_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.PstI_cost.value }}" {% else %} value="0.0" {% endif %}>
                         </div>
                         {% if form.PstI_cost.errors %}
                         <ul class="errorList">

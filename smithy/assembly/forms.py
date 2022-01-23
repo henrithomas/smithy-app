@@ -53,3 +53,18 @@ class BundleForm(forms.Form):
     slic = forms.BooleanField(required=False)
     pcr = forms.BooleanField(required=False)
     biobricks = forms.BooleanField(required=False)
+    gib_exonuclease_cost = forms.FloatField(required=False)
+    gib_ligase_cost = forms.FloatField(required=False)
+    gib_polymerase_cost = forms.FloatField(required=False)
+    bb_EcoRI_cost = forms.FloatField(required=False)
+    bb_XbaI_cost = forms.FloatField(required=False)
+    bb_SpeI_cost = forms.FloatField(required=False)
+    bb_PstI_cost = forms.FloatField(required=False)
+    gg_re_cost = forms.FloatField(required=False)
+    gg_ligase_cost = forms.FloatField(required=False)
+    pcr_polymerase_cost = forms.FloatField(required=False)
+    slic_exonuclease_cost = forms.FloatField(required=False)
+    slic_ligase_cost = forms.FloatField(required=False)
+
+
+

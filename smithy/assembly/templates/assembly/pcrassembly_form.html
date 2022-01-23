@@ -381,7 +381,7 @@
                         <div class="input-group mt-2" id="{{ form.polymerase_cost.id_for_label }}" hidden>
                             <span class="input-group-text" id="poly_enz">$</span>
                             <input type="number" name="{{ form.polymerase_cost.html_name }}" class="form-control" placeholder="100.00" 
-                            id="{{ form..polymerase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.polymerase_cost.value }}" {% endif %}>
+                            id="{{ form.polymerase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.polymerase_cost.value }}" {% else %} value="0.0" {% endif %}>
                         </div>
                         {% if form.polymerase_cost.errors %}
                         <ul class="errorList">

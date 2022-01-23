@@ -1,4 +1,5 @@
 {% extends 'proj_site/base.html' %}
+{% load static %}
 {% block content %}
     <h1>Assembly Bundle</h1>
 
@@ -137,66 +138,6 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
-            </div>
-        </div>
-        <hr/>
-
-        <div class="row mb-5">
-            <h2>Overlap</h2>
-            <div class="col">
-                <p>
-                    How much of an overlap would you like between your parts?
-                </p>
-                {{ bundle_form.overlap.label_tag }}
-                <div class="input-group mt-2">
-                    <input type="number" name="{{ bundle_form.overlap.html_name }}" class="form-control" placeholder="30" 
-                    id="{{ bundle_form.overlap.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.overlap.value }}" {% endif %}>
-                    <span class="input-group-text" id="{{ bundle_form.overlap.id_for_label }}">nt</span>
-                </div>
-                {% if bundle_form.overlap.errors %}
-                    <ul class="errorList">
-                        {% for error in bundle_form.overlap.errors %}
-                            <li class="text-danger">{{ error|escape }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-        </div>
-        <hr/>
-
-        <div class="row mb-5">
-            <h2>Overhangs</h2>
-            <div class="col">
-                <p>
-                    Which high-fidelity overhang set will you use for your experiment?
-                </p>        
-                <label for="id_overhangs">Overhangs set:</label>
-                <select class="form-select mt-2" name="{{ bundle_form.overhangs.html_name }}" required="" id="{{bundle_form.overhangs.id_for_label}}">
-                    {% for value, text in bundle_form.fields.overhangs.choices %}
-                        <option value="{{ value }}">{{ text }}</option>
-                    {% endfor %}
-                </select>
-                {% if bundle_form.overhangs.errors %}
-                    <ul class="errorList">
-                        {% for error in bundle_form.overhangs.errors %}
-                            <li class="text-danger">{{ error|escape }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                <p class="fw-light fst-italic">
-                    - Potapov et al 2018 <a href="https://pubs.acs.org/doi/10.1021/acssynbio.8b00333" target="_blank" rel="noopener noreferrer">Go to paper...</a>
-                 </p>
-                <p class="mt-4">
-                    <strong>Would you like scarless primer design?</strong>
-                </p>
-                {{ bundle_form.scarless.label_tag }}
-                <div id="scarCheck">
-                    <div class="form-check form-check-inline form-switch">
-                        <input class="form-check-input" type="checkbox" name="{{ bundle_form.scarless.html_name }}" 
-                        id="{{ bundle_form.scarless.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.scarless.value }}" {% endif %}>
-                        <label class="form-check-label" for="{{ bundle_form.scarless.id_for_label }}">Yes</label>
-                    </div>
-                </div>
             </div>
         </div>
         <hr/>
@@ -394,6 +335,270 @@
         </div>
         <hr/>
 
+        <!-- Gibson -->
+        <div id="gibson_input">
+            <div class="row mb-5">
+                <h2>Gibson</h2>
+                <div class="col">
+                    <div class="row mb-2">
+                        <h3>Overlap</h3>
+                        <p>
+                            How much of an overlap would you like between your parts?
+                        </p>
+                        {{ bundle_form.overlap.label_tag }}
+                        <div class="input-group mt-2">
+                            <input type="number" name="{{ bundle_form.overlap.html_name }}" class="form-control" placeholder="30" 
+                            id="{{ bundle_form.overlap.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.overlap.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ bundle_form.overlap.id_for_label }}">nt</span>
+                        </div>
+                        {% if bundle_form.overlap.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.overlap.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    <div class="row">
+                        <h3>Enzymes</h3>
+                        <p>Which enzymes do you need to purchase?</p>
+                        <div class="col-md-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="gib_exo_check">
+                                <label class="form-check-label" for="gib_exo_check">Exonuclease</label>
+                            </div>
+                            <div class="input-group mt-2" id="{{ bundle_form.gib_exonuclease_cost.id_for_label }}" hidden>
+                                <span class="input-group-text" id="gib_exo_enz">$</span>
+                                <input type="number" name="{{ bundle_form.gib_exonuclease_cost.html_name }}" class="form-control" placeholder="0.0" 
+                                id="{{ bundle_form.gib_exonuclease_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_exonuclease_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            </div>
+                            {% if bundle_form.gib_exonuclease_cost.errors %}
+                                <ul class="errorList">
+                                    {% for error in bundle_form.gib_exonuclease_cost.errors %}
+                                        <li class="text-danger">{{ error|escape }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="gib_ligase_check">
+                                <label class="form-check-label" for="gib_ligase_check">Ligase</label>
+                            </div>
+                            <div class="input-group mt-2" id="{{ bundle_form.gib_ligase_cost.id_for_label }}" hidden>
+                                <span class="input-group-text" id="gib_ligase_enz">$</span>
+                                <input type="number" name="{{ bundle_form.gib_ligase_cost.html_name }}" class="form-control" placeholder="0.00" 
+                                id="{{ bundle_form.gib_ligase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_ligase_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            </div>
+                            {% if bundle_form.gib_ligase_cost.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.gib_ligase_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="gib_poly_check">
+                                <label class="form-check-label" for="gib_poly_check">Polymerase</label>
+                            </div>
+                            <div class="input-group mt-2" id="{{ bundle_form.gib_polymerase_cost.id_for_label }}" hidden>
+                                <span class="input-group-text" id="gib_poly_enz">$</span>
+                                <input type="number" name="{{ bundle_form.gib_polymerase_cost.html_name }}" class="form-control" placeholder="0.00" 
+                                id="{{ bundle_form.gib_polymerase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_polymerase_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            </div>
+                            {% if bundle_form.gib_polymerase_cost.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.gib_polymerase_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+        </div>
+
+
+        <!-- Golden Gate -->
+        <div id="goldengate_input">
+            <div class="row mb-5">
+                <h2>Golden Gate</h2>
+                <div class="col">
+                    <div class="row mb-2">
+                        <h3>Overhangs</h3>
+                        <p>
+                            Which high-fidelity overhang set will you use for your experiment?
+                        </p>        
+                        <label for="id_overhangs">Overhangs set:</label>
+                        <select class="form-select mt-2" name="{{ bundle_form.overhangs.html_name }}" required="" id="{{bundle_form.overhangs.id_for_label}}">
+                            {% for value, text in bundle_form.fields.overhangs.choices %}
+                                <option value="{{ value }}">{{ text }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if bundle_form.overhangs.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.overhangs.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <p class="fw-light fst-italic">
+                            - Potapov et al 2018 <a href="https://pubs.acs.org/doi/10.1021/acssynbio.8b00333" target="_blank" rel="noopener noreferrer">Go to paper...</a>
+                         </p>
+                        <p class="mt-4">
+                            <strong>Would you like scarless primer design?</strong>
+                        </p>
+                        {{ bundle_form.scarless.label_tag }}
+                        <div id="scarCheck">
+                            <div class="form-check form-check-inline form-switch">
+                                <input class="form-check-input" type="checkbox" name="{{ bundle_form.scarless.html_name }}" 
+                                id="{{ bundle_form.scarless.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.scarless.value }}" {% endif %}>
+                                <label class="form-check-label" for="{{ bundle_form.scarless.id_for_label }}">Yes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h3>Enzymes</h3>
+                        <p>Which enzymes do you need to purchase?</p>
+                        <div class="col-md-6">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="gg_re_check">
+                                <label class="form-check-label" for="gg_re_check">BsaI</label>
+                            </div>
+                            <div class="input-group mt-2" id="{{ bundle_form.gg_re_cost.id_for_label }}" hidden>
+                                <span class="input-group-text" id="gg_re_enz">$</span>
+                                <input type="number" name="{{ bundle_form.gg_re_cost.html_name }}" class="form-control" placeholder="100.00" 
+                                id="{{ bundle_form.gg_re_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gg_re_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            </div>
+                            {% if bundle_form.gg_re_cost.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.gg_re_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="gg_ligase_check">
+                                <label class="form-check-label" for="gg_ligase_check">Ligase</label>
+                            </div>
+                            <div class="input-group mt-2" id="{{ bundle_form.gg_ligase_cost.id_for_label }}" hidden>
+                                <span class="input-group-text" id="gg_ligase_enz">$</span>
+                                <input type="number" name="{{ bundle_form.gg_ligase_cost.html_name }}" class="form-control" placeholder="100.00" 
+                                id="{{ bundle_form.gg_ligase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gg_ligase_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            </div>
+                            {% if bundle_form.gg_ligase_cost.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.gg_ligase_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+        </div>
+
+        <!-- PCR -->
+        <div id="pcr_input">
+            <div class="row mb-5">
+                <h2>PCR-SOE</h2>
+                <div class="col">
+                    <div class="row">
+                        <h3>Enzymes</h3>
+                        <p>Which enzymes do you need to purchase?</p>
+                        <div class="col">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="pcr_poly_check">
+                                <label class="form-check-label" for="pcr_poly_check">Polymerase</label>
+                            </div>
+                            <div class="input-group mt-2" id="{{ bundle_form.pcr_polymerase_cost.id_for_label }}" hidden>
+                                <span class="input-group-text" id="pcr_poly_enz">$</span>
+                                <input type="number" name="{{ bundle_form.pcr_polymerase_cost.html_name }}" class="form-control" placeholder="100.00" 
+                                id="{{ bundle_form.pcr_polymerase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.pcr_polymerase_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            </div>
+                            {% if bundle_form.pcr_polymerase_cost.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.pcr_polymerase_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+        </div>
+
+        <!-- SLIC -->
+        <div id="slic_input">
+            <div class="row mb-5">
+                <h2>SLIC</h2>
+                <div class="col">
+                    <div class="row">
+                        <h3>Enzymes</h3>
+                        <p>Which enzymes do you need to purchase?</p>
+                        <div class="col-md-6">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="slic_exo_check">
+                                <label class="form-check-label" for="slic_exo_check">Exonuclease</label>
+                            </div>
+                            <div class="input-group mt-2" id="{{ bundle_form.slic_exonuclease_cost.id_for_label }}" hidden>
+                                <span class="input-group-text" id="slic_exo_enz">$</span>
+                                <input type="number" name="{{ bundle_form.slic_exonuclease_cost.html_name }}" class="form-control" placeholder="100.00" 
+                                id="{{ bundle_form.slic_exonuclease_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.slic_exonuclease_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            </div>
+                            {% if bundle_form.slic_exonuclease_cost.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.slic_exonuclease_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="slic_ligase_check">
+                                <label class="form-check-label" for="slic_ligase_check">Ligase</label>
+                            </div>
+                            <div class="input-group mt-2" id="{{ bundle_form.slic_ligase_cost.id_for_label }}" hidden>
+                                <span class="input-group-text" id="slic_ligase_enz">$</span>
+                                <input type="number" name="{{ bundle_form.slic_ligase_cost.html_name }}" class="form-control" placeholder="100.00" 
+                                id="{{ bundle_form.slic_ligase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.slic_ligase_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            </div>
+                            {% if bundle_form.slic_ligase_cost.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.slic_ligase_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+        </div>
+        
+
+        <!-- BioBricks -->
+        <div id="biobricks_input">
+
+        </div>
+        <div class="row mb-5">
+            <h2>BioBricks</h2>
+        </div>
+        <hr/>
         <button type="submit" id="formButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assemblyModal">Assemble</button>
     </form>
+
+    <script src="{% static 'proj_site/bundle_form.js' %}"></script>
 {% endblock content %}

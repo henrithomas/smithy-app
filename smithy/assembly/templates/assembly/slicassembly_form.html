@@ -383,7 +383,7 @@
                         <div class="input-group mt-2" id="{{ form.exonuclease_cost.id_for_label }}" hidden>
                             <span class="input-group-text" id="exo_enz">$</span>
                             <input type="number" name="{{ form.exonuclease_cost.html_name }}" class="form-control" placeholder="100.00" 
-                            id="{{ form..exonuclease_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.exonuclease_cost.value }}" {% endif %}>
+                            id="{{ form.exonuclease_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.exonuclease_cost.value }}" {% else %} value="0.0" {% endif %}>
                         </div>
                         {% if form.exonuclease_cost.errors %}
                         <ul class="errorList">
@@ -401,7 +401,7 @@
                         <div class="input-group mt-2" id="{{ form.ligase_cost.id_for_label }}" hidden>
                             <span class="input-group-text" id="ligase_enz">$</span>
                             <input type="number" name="{{ form.ligase_cost.html_name }}" class="form-control" placeholder="100.00" 
-                            id="{{ form..ligase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.ligase_cost.value }}" {% endif %}>
+                            id="{{ form.ligase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.ligase_cost.value }}" {% else %} value="0.0" {% endif %}>
                         </div>
                         {% if form.ligase_cost.errors %}
                         <ul class="errorList">
