@@ -591,12 +591,90 @@
 
         <!-- BioBricks -->
         <div id="biobricks_input">
-
+            <div class="row mb-5">
+                <h2>BioBricks</h2>
+                <div class="col">
+                    <div class="row">
+                        <h3>Enzymes</h3>
+                        <p>Which enzymes do you need to purchase?</p>
+                        <div class="col-md-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="bb_ecori_check">
+                                <label class="form-check-label" for="bb_ecori_check">EcoRI</label>
+                            </div>
+                            <div class="input-group mt-2" id="{{ bundle_form.bb_EcoRI_cost.id_for_label }}" hidden>
+                                <span class="input-group-text" id="bb_ecori_enz">$</span>
+                                <input type="number" name="{{ bundle_form.bb_EcoRI_cost.html_name }}" class="form-control" placeholder="100.00" 
+                                id="{{ bundle_form.bb_EcoRI_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_EcoRI_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            </div>
+                            {% if bundle_form.bb_EcoRI_cost.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.bb_EcoRI_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="bb_xbai_check">
+                                <label class="form-check-label" for="bb_xbai_check">XbaI</label>
+                            </div>
+                            <div class="input-group mt-2" id="{{ bundle_form.bb_XbaI_cost.id_for_label }}" hidden>
+                                <span class="input-group-text" id="bb_xbai_enz">$</span>
+                                <input type="number" name="{{ bundle_form.bb_XbaI_cost.html_name }}" class="form-control" placeholder="100.00" 
+                                id="{{ bundle_form.bb_XbaI_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_XbaI_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            </div>
+                            {% if bundle_form.bb_XbaI_cost.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.bb_XbaI_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="bb_spei_check">
+                                <label class="form-check-label" for="bb_spei_check">SpeI</label>
+                            </div>
+                            <div class="input-group mt-2" id="{{ bundle_form.bb_SpeI_cost.id_for_label }}" hidden>
+                                <span class="input-group-text" id="bb_spei_enz">$</span>
+                                <input type="number" name="{{ bundle_form.bb_SpeI_cost.html_name }}" class="form-control" placeholder="100.00" 
+                                id="{{ bundle_form.bb_SpeI_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_SpeI_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            </div>
+                            {% if bundle_form.bb_SpeI_cost.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.bb_SpeI_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="bb_psti_check">
+                                <label class="form-check-label" for="bb_psti_check">PstI</label>
+                            </div>
+                            <div class="input-group mt-2" id="{{ bundle_form.bb_PstI_cost.id_for_label }}" hidden>
+                                <span class="input-group-text" id="bb_psti_enz">$</span>
+                                <input type="number" name="{{ bundle_form.bb_PstI_cost.html_name }}" class="form-control" placeholder="100.00" 
+                                id="{{ bundle_form.bb_PstI_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_PstI_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            </div>
+                            {% if bundle_form.bb_PstI_cost.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.bb_PstI_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
         </div>
-        <div class="row mb-5">
-            <h2>BioBricks</h2>
-        </div>
-        <hr/>
+        
         <button type="submit" id="formButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assemblyModal">Assemble</button>
     </form>
 

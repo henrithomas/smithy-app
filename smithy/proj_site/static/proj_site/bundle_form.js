@@ -69,3 +69,39 @@ document.getElementById('slic_ligase_check').addEventListener('click', function(
         document.getElementById('id_slic_ligase_cost').setAttribute('hidden', true);
     }
 });
+
+document.getElementById('bb_ecori_check').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('id_bb_EcoRI_cost').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('id_bb_EcoRI_cost').setAttribute('hidden', true);
+    }
+});
+
+document.getElementById('bb_xbai_check').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('id_bb_XbaI_cost').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('id_bb_XbaI_cost').setAttribute('hidden', true);
+    }
+});
+
+document.getElementById('bb_spei_check').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('id_bb_SpeI_cost').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('id_bb_SpeI_cost').setAttribute('hidden', true);
+    }
+});
+
+document.getElementById('bb_psti_check').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('id_bb_PstI_cost').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('id_bb_PstI_cost').setAttribute('hidden', true);
+    }
+});
