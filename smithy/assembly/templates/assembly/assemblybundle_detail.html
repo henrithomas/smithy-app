@@ -13,7 +13,7 @@
 
     <div class="row mb-4">
         {% if gibson %}
-            <div class="col">
+            <div class="col" id="gibson-dashboard">
                 <h3>Gibson <br><a class="btn btn-outline-primary btn-sm" href="{% url 'gibson-detail' gibson.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
                 <div class="row mb-4">
@@ -34,7 +34,7 @@
                 </div>
                 
                 <hr/>
-
+                
                 {% for gibson_solution in gibson_solutions %}
                     <div class="card">
                         <div class="card-body">
@@ -83,12 +83,15 @@
                             <a href="{% url 'gibson-solution-detail' gibson_solution.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i> View Solution</a>
                         </div>
                     </div>
+                    {{ gibson_solution.time_summary|json_script:"gibson_times" }}
+                    {{ gibson_solution.cost_summary|json_script:"gibson_costs" }}
+                    {{ gibson_solution.risk_summary|json_script:"gibson_risks" }}
                 {% endfor %}
             </div>
         {% endif %}
 
         {% if goldengate %}
-            <div class="col">
+            <div class="col" id="goldengate-dashboard">
                 <h3>Golden Gate <br><a class="btn btn-outline-primary btn-sm" href="{% url 'goldengate-detail' goldengate.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
                 <div class="row mb-4">
@@ -161,14 +164,35 @@
                             <a href="{% url 'goldengate-solution-detail' goldengate_solution.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i> View Solution</a>
                         </div>
                     </div>
+                    {{ goldengate_solution.time_summary|json_script:"goldengate_times" }}
+                    {{ goldengate_solution.cost_summary|json_script:"goldengate_costs" }}
+                    {{ goldengate_solution.risk_summary|json_script:"goldengate_risks" }}
                 {% endfor %}
             </div>
         {% endif %}
         
         {% if slic %}
-            <div class="col">
+            <div class="col" id="slic-dashboard">
                 <h3>SLIC <br><a class="btn btn-outline-primary btn-sm" href="{% url 'slic-detail' slic.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
+                <div class="row mb-4">
+                    <div class="chart-container">
+                        <canvas id="slic-time"></canvas>    
+                    </div>
+                    <div class="time-sum text-center" id="slic-time-sum"></div>
+                </div>
+                
+                <div class="row mb-4">
+                    <canvas id="slic-cost"></canvas>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="chart-container">
+                        <canvas id="slic-risk"></canvas>
+                    </div>
+                </div>
+
+                <hr/>
 
                 {% for slic_solution in slic_solutions %}
                     <div class="card">
@@ -218,12 +242,15 @@
                             <a href="{% url 'slic-solution-detail' slic_solution.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i> View Solution</a>
                         </div>
                     </div>
+                    {{ slic_solution.time_summary|json_script:"slic_times" }}
+                    {{ slic_solution.cost_summary|json_script:"slic_costs" }}
+                    {{ slic_solution.risk_summary|json_script:"slic_risks" }}
                 {% endfor %}
             </div>
         {% endif %}
 
         {% if pcr %}
-            <div class="col">
+            <div class="col" id="pcr-dashboard">
                 <h3>PCR <br><a class="btn btn-outline-primary btn-sm" href="{% url 'pcr-detail' pcr.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
 
                 <div class="row mb-4">
@@ -231,6 +258,16 @@
                         <canvas id="pcr-time"></canvas>    
                     </div>
                     <div class="time-sum text-center" id="pcr-time-sum"></div>
+                </div>
+
+                <div class="row mb-4">
+                    <canvas id="pcr-cost"></canvas>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="chart-container">
+                        <canvas id="pcr-risk"></canvas>
+                    </div>
                 </div>
 
                 <hr/>
@@ -283,14 +320,35 @@
                             <a href="{% url 'pcr-solution-detail' pcr_solution.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i> View Solution</a>
                         </div>
                     </div>
+                    {{ pcr_solution.time_summary|json_script:"pcr_times" }}
+                    {{ pcr_solution.cost_summary|json_script:"pcr_costs" }}
+                    {{ pcr_solution.risk_summary|json_script:"pcr_risks" }}
                 {% endfor %}
             </div>
         {% endif %}
         
         {% if biobrick %}
-            <div class="col">
+            <div class="col" id="biobricks-dashboard">
                 <h3>BioBricks <br><a class="btn btn-outline-primary btn-sm" href="{% url 'biobricks-detail' biobrick.pk %}"><i class="bi bi-eye"></i> View Assembly</a></h3>
             
+                <div class="row mb-4">
+                    <div class="chart-container">
+                        <canvas id="biobricks-time"></canvas>    
+                    </div>
+                    <div class="time-sum text-center" id="biobricks-time-sum"></div>
+                </div>
+
+                <div class="row mb-4">
+                    <canvas id="biobricks-cost"></canvas>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="chart-container">
+                        <canvas id="biobricks-risk"></canvas>
+                    </div>
+                </div>
+
+                <hr/>
 
                 {% for biobricks_solution in biobrick_solutions %}
                     <div class="card">
@@ -343,6 +401,9 @@
                             <a href="{% url 'biobricks-solution-detail' biobricks_solution.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-eye"></i> View Solution</a>
                         </div>
                     </div>
+                    {{ biobricks_solution.time_summary|json_script:"biobricks_times" }}
+                    {{ biobricks_solution.cost_summary|json_script:"biobricks_costs" }}
+                    {{ biobricks_solution.risk_summary|json_script:"biobricks_risks" }}
                 {% endfor %}
             </div>
         {% endif %}

@@ -1545,7 +1545,13 @@ def bundle_create_service(bundle_data):
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
             multi_query=bundle_data['multi_query'],
-            overlap=bundle_data['overlap']
+            overlap=bundle_data['overlap'],
+            primer_cost=bundle_data['primer_cost'],
+            part_cost=bundle_data['part_cost'],
+            gene_cost=bundle_data['gene_cost'],
+            exonuclease_cost=bundle_data['gib_exonuclease_cost'],
+            ligase_cost=bundle_data['gib_ligase_cost'],
+            polymerase_cost=bundle_data['gib_polymerase_cost']
         )
         gibson_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         gibson_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
@@ -1590,7 +1596,12 @@ def bundle_create_service(bundle_data):
             tm=bundle_data['tm'],
             multi_query=bundle_data['multi_query'],
             overhangs=bundle_data['overhangs'],
-            scarless=bundle_data['scarless']
+            scarless=bundle_data['scarless'],
+            primer_cost=bundle_data['primer_cost'],
+            part_cost=bundle_data['part_cost'],
+            gene_cost=bundle_data['gene_cost'],
+            re_cost=bundle_data['gg_re_cost'],
+            ligase_cost=bundle_data['gg_ligase_cost']
         )
         goldengate_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         goldengate_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
@@ -1635,6 +1646,13 @@ def bundle_create_service(bundle_data):
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
             multi_query=bundle_data['multi_query'],
+            primer_cost=bundle_data['primer_cost'],
+            part_cost=bundle_data['part_cost'],
+            gene_cost=bundle_data['gene_cost'],
+            EcoRI_cost=bundle_data['bb_EcoRI_cost'],
+            XbaI_cost=bundle_data['bb_XbaI_cost'],
+            SpeI_cost=bundle_data['bb_SpeI_cost'],
+            PstI_cost=bundle_data['bb_PstI_cost']
         )
         biobricks_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         biobricks_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))        
@@ -1677,7 +1695,11 @@ def bundle_create_service(bundle_data):
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
             multi_query=bundle_data['multi_query'],
-            overlap=bundle_data['overlap']
+            overlap=bundle_data['overlap'],
+            primer_cost=bundle_data['primer_cost'],
+            part_cost=bundle_data['part_cost'],
+            gene_cost=bundle_data['gene_cost'],
+            polymerase_cost=bundle_data['pcr_polymerase_cost']
         )
         pcr_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         pcr_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
@@ -1721,7 +1743,12 @@ def bundle_create_service(bundle_data):
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
             multi_query=bundle_data['multi_query'],
-            overlap=bundle_data['overlap']
+            overlap=bundle_data['overlap'],
+            primer_cost=bundle_data['primer_cost'],
+            part_cost=bundle_data['part_cost'],
+            gene_cost=bundle_data['gene_cost'],
+            exonuclease_cost=bundle_data['slic_exonuclease_cost'],
+            ligase_cost=bundle_data['slic_ligase_cost']
         )
         slic_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         slic_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))

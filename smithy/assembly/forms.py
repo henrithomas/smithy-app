@@ -65,6 +65,6 @@ class BundleForm(forms.Form):
     pcr_polymerase_cost = forms.FloatField(required=False)
     slic_exonuclease_cost = forms.FloatField(required=False)
     slic_ligase_cost = forms.FloatField(required=False)
-
-
-
+    primer_cost = forms.FloatField(required=False)
+    part_cost = forms.FloatField(required=False)
+    gene_cost = forms.FloatField(required=False)

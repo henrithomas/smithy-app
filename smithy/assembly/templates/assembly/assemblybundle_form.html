@@ -335,8 +335,61 @@
         </div>
         <hr/>
 
+        <div class="row mb-5">
+            <h2>Nucleotides</h2>
+            <p>
+                Enter values for nucleotide costs of your assembly experiment.
+            </p>
+            <div class="col-md-4">
+                {{ bundle_form.primer_cost.label_tag }}
+                <div class="input-group mt-2" id="{{ bundle_form.primer_cost.id_for_label }}">
+                    <span class="input-group-text" id="{{ bundle_form.primer_cost.id_for_label }}">$</span>
+                    <input type="number" name="{{ bundle_form.primer_cost.html_name }}" class="form-control" placeholder="0.01" 
+                    id="{{ bundle_form.primer_cost.id_for_label }}" {% if form.is_bound %} value="{{ bundle_form.primer_cost.value }}" {% endif %}>
+                </div>
+                {% if bundle_form.primer_cost.errors %}
+                <ul class="errorList">
+                    {% for error in bundle_form.primer_cost.errors %}
+                        <li class="text-danger">{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                {{ bundle_form.part_cost.label_tag }}
+                <div class="input-group mt-2" id="{{ bundle_form.part_cost.id_for_label }}">
+                    <span class="input-group-text" id="{{ bundle_form.part_cost.id_for_label }}">$</span>
+                    <input type="number" name="{{ bundle_form.part_cost.html_name }}" class="form-control" placeholder="0.01" 
+                    id="{{ bundle_form.part_cost.id_for_label }}" {% if form.is_bound %} value="{{ bundle_form.part_cost.value }}" {% endif %}>
+                </div>
+                {% if bundle_form.part_cost.errors %}
+                <ul class="errorList">
+                    {% for error in bundle_form.part_cost.errors %}
+                        <li class="text-danger">{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                {{ bundle_form.gene_cost.label_tag }}
+                <div class="input-group mt-2" id="{{ bundle_form.gene_cost.id_for_label }}">
+                    <span class="input-group-text" id="{{ bundle_form.gene_cost.id_for_label }}">$</span>
+                    <input type="number" name="{{ bundle_form.gene_cost.html_name }}" class="form-control" placeholder="0.01" 
+                    id="{{ bundle_form.gene_cost.id_for_label }}" {% if form.is_bound %} value="{{ bundle_form.gene_cost.value }}" {% endif %}>
+                </div>
+                {% if bundle_form.gene_cost.errors %}
+                <ul class="errorList">
+                    {% for error in bundle_form.gene_cost.errors %}
+                        <li class="text-danger">{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+        <hr/>
+
         <!-- Gibson -->
-        <div id="gibson_input">
+        <div id="gibson_input" hidden>
             <div class="row mb-5">
                 <h2>Gibson</h2>
                 <div class="col">
@@ -424,7 +477,7 @@
 
 
         <!-- Golden Gate -->
-        <div id="goldengate_input">
+        <div id="goldengate_input" hidden>
             <div class="row mb-5">
                 <h2>Golden Gate</h2>
                 <div class="col">
@@ -507,7 +560,7 @@
         </div>
 
         <!-- PCR -->
-        <div id="pcr_input">
+        <div id="pcr_input" hidden>
             <div class="row mb-5">
                 <h2>PCR-SOE</h2>
                 <div class="col">
@@ -539,7 +592,7 @@
         </div>
 
         <!-- SLIC -->
-        <div id="slic_input">
+        <div id="slic_input" hidden>
             <div class="row mb-5">
                 <h2>SLIC</h2>
                 <div class="col">
@@ -590,7 +643,7 @@
         
 
         <!-- BioBricks -->
-        <div id="biobricks_input">
+        <div id="biobricks_input" hidden>
             <div class="row mb-5">
                 <h2>BioBricks</h2>
                 <div class="col">

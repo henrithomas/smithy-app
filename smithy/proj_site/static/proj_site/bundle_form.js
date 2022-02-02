@@ -1,3 +1,48 @@
+document.getElementById('id_gibson').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('gibson_input').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('gibson_input').setAttribute('hidden', true);
+    }
+});
+
+document.getElementById('id_goldengate').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('goldengate_input').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('goldengate_input').setAttribute('hidden', true);
+    }
+});
+
+document.getElementById('id_pcr').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('pcr_input').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('pcr_input').setAttribute('hidden', true);
+    }
+});
+
+document.getElementById('id_slic').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('slic_input').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('slic_input').setAttribute('hidden', true);
+    }
+});
+
+document.getElementById('id_biobricks').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('biobricks_input').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('biobricks_input').setAttribute('hidden', true);
+    }
+});
+
 document.getElementById('gib_exo_check').addEventListener('click', function() {
     if (this.checked) {
         document.getElementById('id_gib_exonuclease_cost').removeAttribute('hidden');
