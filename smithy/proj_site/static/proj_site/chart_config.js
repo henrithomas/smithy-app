@@ -29,7 +29,23 @@ function array_max(arr) {
     return Math.max.apply(null, arr);
 }
 
-function time_config(dataset_obj) {
+function cost_cleanup(data, labels, colors) {
+    let new_data = [];
+    let new_labels = [];
+    let new_colors = [];
+
+    for (let i = 0; i < data.length; i++) {
+        if (data[i] > 0) {
+            new_labels.push(labels[i]);
+            new_data.push(data[i]);
+            new_colors.push(colors[i]);
+        }
+    }
+
+    return [new_data, new_labels, new_colors];
+}
+
+function time_config(dataset_obj, yMax) {
     return {
         type: 'bar',
         data: dataset_obj,
@@ -50,6 +66,7 @@ function time_config(dataset_obj) {
                 },
                 y: {
                     stacked: true,
+                    max: yMax,
                     // grid: {
                     //     display: false,    
                     // }
@@ -130,7 +147,7 @@ const risk_labels = ['thing1', 'thing2', 'thing3', 'thing4'];
 // colors 
 const time_colors = ['#69130F', '#B72D26', '#FF2A1F'];
 // TODO: remove transparent so that it can be appended after the cost differences are calculated
-const cost_colors = ['#49EC7A', '#3ACB66', '#2EAA53', '#238A42', '#195C2D'];
+const cost_colors = ['#49EC7A', '#3ACB66', '#2EAA53', '#238A42', '#195C2D','#49EC7A', '#3ACB66', '#2EAA53', '#238A42', '#195C2D', '#49EC7A', '#3ACB66', '#2EAA53', '#238A42', '#195C2D'];
 // '#0F341A'
 const risk_colors = [
     'rgba(92, 230, 230, 0.5)',

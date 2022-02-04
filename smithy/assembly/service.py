@@ -302,13 +302,13 @@ def goldengate_times(pcr, insert_count):
     time_vals = [pcr]
 
     if insert_count == 1:
-        time_vals.append(5)
+        time_vals.append(0.1)
     elif insert_count >= 2 and insert_count < 5:
-        time_vals.append(65)
+        time_vals.append(1.1)
     elif insert_count >= 5 and insert_count < 11:
-        time_vals.append(65)
+        time_vals.append(1.1)
     elif insert_count >= 11:
-        time_vals.append(305)
+        time_vals.append(5.01)
 
     times.update({'total': round(sum(time_vals), 2)})
     times.update({'types': time_types})
@@ -333,13 +333,13 @@ def slic_times(pcr, overlap):
     times = {}
     times_types = ['pcr', 'chewback', 'ligation']
     chewback = 0
-    cooling = 5
-    ligation = 30 + cooling
+    cooling = 0.1
+    ligation = 0.5 + cooling
 
     if overlap < 40: 
-        chewback = 50
+        chewback = 0.8
     else:
-        chewback = 80
+        chewback = 1.35
 
     time_vals = [pcr, chewback, ligation]
 
@@ -353,7 +353,7 @@ def biobricks_times(pcr, insert_count):
     # iGEM and Ginko Bioworks protocol 
     times = {}
     times_types = ['pcr', 'digestion', 'ligation']
-    time_vals = [pcr, 50, 30]
+    time_vals = [pcr, 0.8, 0.5]
     
     times.update({'total': round(sum(time_vals), 2)})
     times.update({'types': times_types})
@@ -951,6 +951,12 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
     primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
+    enzyme_orders = []
+    
+    if obj.re_cost > 0.0:
+        enzyme_orders.append('Type2S')
+    if obj.ligase_cost > 0.0:
+        enzyme_orders.append('Ligase')
 
     pcr = pcr_time(part_lengths + primer_lengths)
     goldengate_time = goldengate_times(pcr, len(fragments))
@@ -999,6 +1005,7 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     plasmid_map(goldengate_solution, assembly, obj.title, space, total_len)
     parts_csv(goldengate_solution, assembly)
     primers_csv(goldengate_solution, assembly)
+    order_csv(goldengate_solution, assembly, enzyme_orders)
 
     for i, part in enumerate(assembly):
         goldengate_part_entry = GoldenGatePart(
@@ -1089,7 +1096,17 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
     primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
+    enzyme_orders = []
     
+    if obj.EcoRI_cost > 0.0:
+        enzyme_orders.append('EcoRI')
+    if obj.XbaI_cost > 0.0:
+        enzyme_orders.append('XbaI')
+    if obj.SpeI_cost > 0.0:
+        enzyme_orders.append('SpeI')
+    if obj.PstI_cost > 0.0:
+        enzyme_orders.append('PstI')
+
     pcr = pcr_time(part_lengths + primer_lengths)
     biobricks_time = biobricks_times(pcr, len(fragments))
 
@@ -1135,6 +1152,7 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
     plasmid_map(biobricks_solution, assembly, obj.title, 0, total_len)
     parts_csv(biobricks_solution, assembly)
     primers_csv(biobricks_solution, assembly)
+    order_csv(biobricks_solution, assembly, enzyme_orders)
 
     for i, part in enumerate(assembly):
         biobricks_part_entry = BioBricksPart(
@@ -1224,6 +1242,10 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
     primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
+    enzyme_orders = []
+    
+    if obj.polymerase_cost > 0.0:
+        enzyme_orders.append('Phusion polymerase')
 
     pcr = pcr_time(part_lengths + primer_lengths)
     pcr_soe_time = pcr_soe_times(part_lengths + primer_lengths)
@@ -1270,6 +1292,7 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     plasmid_map(pcr_solution, assembly, obj.title, 0, total_len)
     parts_csv(pcr_solution, assembly)
     primers_csv(pcr_solution, assembly)
+    order_csv(pcr_solution, assembly, enzyme_orders)
 
     for i, part in enumerate(assembly):
         pcr_part_entry = PCRPart(
@@ -1358,7 +1381,13 @@ def slic_solution_service(obj, assembler, assembly, fragments):
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
     primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
+    enzyme_orders = []
     
+    if obj.exonuclease_cost > 0.0:
+        enzyme_orders.append('T5 exonuclease')
+    if obj.ligase_cost > 0.0:
+        enzyme_orders.append('Taq ligase')
+
     pcr = pcr_time(part_lengths + primer_lengths)
     slic_time = slic_times(pcr, obj.overlap)
     slic_cost = costs(
@@ -1402,6 +1431,7 @@ def slic_solution_service(obj, assembler, assembly, fragments):
     plasmid_map(slic_solution, assembly, obj.title, 0, total_len)
     parts_csv(slic_solution, assembly)
     primers_csv(slic_solution, assembly)
+    order_csv(slic_solution, assembly, enzyme_orders)
 
     for i, part in enumerate(assembly):
         slic_part_entry = SLICPart(

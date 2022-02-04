@@ -1,7 +1,7 @@
 {% extends 'proj_site/base.html' %}
 {% load static %}
 {% block content %}
-    <h1>{{ title }}</h1>
+    <h1>{{ title }} <span class="badge rounded-pill bg-secondary float-end">Golden Gate</span></h1>
     <p>
         <strong class="text-muted">
             {{ goldengate_solution.date_created }}
@@ -60,6 +60,7 @@
         <div class="col">
             <a href="{{ goldengate_solution.parts_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Parts</a>
             <a href="{{ goldengate_solution.primers_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Primers</a> 
+            <a href="{{ goldengate_solution.order_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Order</a> 
         </div>
     </div>
 

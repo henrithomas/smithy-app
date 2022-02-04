@@ -1,4 +1,4 @@
-function gibson_time_chart(data, labels, sum, chart_elem, sum_elem) {
+function gibson_time_chart(data, labels, sum, chart_elem, sum_elem, yMax) {
     let gibson_time_div = document.getElementById(sum_elem);
     let time_dataset = [];
     let gibson_time_sum = arr_sum(data);
@@ -19,7 +19,7 @@ function gibson_time_chart(data, labels, sum, chart_elem, sum_elem) {
         datasets: time_dataset
     };
 
-    const gibson_time_config = time_config(gibson_time);
+    const gibson_time_config = time_config(gibson_time, yMax);
 
     const gibson_time_bar = new Chart(
         document.getElementById(chart_elem),
@@ -29,14 +29,21 @@ function gibson_time_chart(data, labels, sum, chart_elem, sum_elem) {
     gibson_time_div.innerHTML = sum + "hr";
 }
 
-function gibson_cost_chart(data, labels, sum, chart_elem) {
+function gibson_cost_chart(data, labels, sum, chart_elem, offset, offset_amt) {
+    let [clean_data, clean_labels, clean_colors] = cost_cleanup(data, labels, cost_colors);
+
+       
+    if(offset) {
+        clean_colors.push('transparent');
+        clean_data.push(offset_amt)
+    }
 
     const gibson_cost = {
-        labels: labels,
+        labels: clean_labels,
         datasets: [{
             label: 'My First Dataset',
-            data: data,
-            backgroundColor: cost_colors,
+            data: clean_data,
+            backgroundColor: clean_colors,
             hoverOffset: 4,
             borderRadius: 6
         }]

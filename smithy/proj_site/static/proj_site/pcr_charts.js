@@ -1,4 +1,4 @@
-function pcr_time_chart(data, labels, sum, chart_elem, sum_elem) {
+function pcr_time_chart(data, labels, sum, chart_elem, sum_elem, yMax) {
     let pcr_time_div = document.getElementById(sum_elem);
     let time_dataset = [];
 
@@ -17,7 +17,7 @@ function pcr_time_chart(data, labels, sum, chart_elem, sum_elem) {
         datasets: time_dataset
     };
 
-    const pcr_time_config = time_config(pcr_time);
+    const pcr_time_config = time_config(pcr_time, yMax);
 
     const pcr_time_bar = new Chart(
         document.getElementById(chart_elem),
@@ -27,14 +27,20 @@ function pcr_time_chart(data, labels, sum, chart_elem, sum_elem) {
     pcr_time_div.innerHTML = sum + "hr";
 }
 
-function pcr_cost_chart(data, labels, sum, chart_elem) {
-
+function pcr_cost_chart(data, labels, sum, chart_elem, offset, offset_amt) {
+    let [clean_data, clean_labels, clean_colors] = cost_cleanup(data, labels, cost_colors);
+       
+    if(offset) {
+        clean_colors.push('transparent');
+        clean_data.push(offset_amt)
+    }
+    
     const pcr_cost = {
-        labels: labels,
+        labels: clean_labels,
         datasets: [{
             label: 'My First Dataset',
-            data: data,
-            backgroundColor: cost_colors,
+            data: clean_data,
+            backgroundColor: clean_colors,
             hoverOffset: 4,
             borderRadius: 6
         }]

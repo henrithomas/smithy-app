@@ -1,7 +1,7 @@
 {% extends 'proj_site/base.html' %}
 {% load static %}
 {% block content %}
-    <h1>{{ title }}</h1>
+    <h1>{{ title }} <span class="badge rounded-pill bg-secondary float-end">PCR</span></h1>
     <p>
         <strong class="text-muted">
             {{ pcr_solution.date_created }}
@@ -57,6 +57,7 @@
         <div class="col">
             <a href="{{ pcr_solution.parts_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Parts</a>
             <a href="{{ pcr_solution.primers_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Primers</a> 
+            <a href="{{ pcr_solution.order_file.url }}" class="btn btn-outline-primary"><i class="bi bi-download"></i> Download Order</a> 
         </div>
     </div>
 
