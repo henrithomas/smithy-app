@@ -43,6 +43,8 @@ from datetime import datetime, time
 import csv
 import matplotlib.pyplot as plt
 from statistics import mean
+from math import log10
+
 
 gibson_times_json = {
     'times': [34, 20, 6]
@@ -802,6 +804,10 @@ def slic_create_service(obj):
     slic_solution_service(obj, assembler, assembly, fragments)    
 
 def gibson_solution_service(obj, assembler, assembly, fragments):
+    # Log based odds of success: risk = log((1 - P_s) / P_s)
+    # pcr: P_s = 0.8
+    # chewback, ligation, repair: P_s = 0.7
+
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
@@ -829,7 +835,10 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     gibson_risk = {
         'total': 0.35,
         'types': ['pcr', 'chewback, ligation, repair'],
-        'risks': [0.6, -0.5]
+        'risks': [
+            log10((0.2) / 0.8), 
+            log10((0.3) / 0.7)
+        ]
     }
 
     # TODO add a foreach solution in for the assembly
@@ -946,6 +955,10 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
         reverse_primer.save()
 
 def goldengate_solution_service(obj, assembler, assembly, fragments):
+    # Log based odds of success: risk = log((1 - P_s) / P_s)
+    # pcr: P_s = 0.8
+    # digestion, ligation: P_s = 0.9
+
     space = 0 if obj.scarless else 4
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length + space
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
@@ -971,8 +984,11 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
 
     goldengate_risk = {
         'total': 0.35,
-        'types': ['pcr', 'chewback, ligation, repair'],
-        'risks': [0.6, -0.5]
+        'types': ['pcr', 'digestion, ligation'],
+        'risks': [
+            log10((0.2) / 0.8), 
+            log10((0.1) / 0.9)
+        ]
     }
 
     # TODO update to have a match % and BLAST solution sequence
@@ -1092,6 +1108,11 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
         reverse_primer.save()
 
 def biobricks_solution_service(obj, assembler, assembly, fragments):
+    # Log based odds of success: risk = log((1 - P_s) / P_s)
+    # pcr: P_s = 0.8
+    # digestion: P_s = 0.9 
+    # ligation: P_s = 0.8
+
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
@@ -1120,8 +1141,12 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
 
     biobricks_risk = {
         'total': 0.35,
-        'types': ['pcr', 'chewback, ligation, repair'],
-        'risks': [0.6, -0.5]
+        'types': ['pcr', 'digestion', 'ligation'],
+        'risks': [
+            log10((1 - 0.8) / 0.8), 
+            log10((1 - 0.9) / 0.9), 
+            log10((1 - 0.8) / 0.8)
+        ]
     }
 
     biobricks_solution = BioBricksSolution(
@@ -1238,6 +1263,9 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         reverse_primer.save()  
 
 def pcr_solution_service(obj, assembler, assembly, fragments):
+    # Log based odds of success: risk = log((1 - P_s) / P_s)
+    # pcr: P_s = 0.8
+
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
@@ -1260,8 +1288,10 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
 
     pcr_risk = {
         'total': 0.35,
-        'types': ['pcr', 'chewback, ligation, repair'],
-        'risks': [0.6, -0.5]
+        'types': ['amplification-recombination'],
+        'risks': [
+            log10((0.2) / 0.8)
+        ]
     }
 
     pcr_solution = PCRSolution(
@@ -1377,6 +1407,11 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
         reverse_primer.save()
 
 def slic_solution_service(obj, assembler, assembly, fragments):
+    # Log based odds of success: risk = log((1 - P_s) / P_s)
+    # pcr: P_s = 0.8
+    # chewback: P_s = 0.8 
+    # ligation: P_s = 0.8
+
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
@@ -1399,8 +1434,12 @@ def slic_solution_service(obj, assembler, assembly, fragments):
     )
     slic_risk = {
         'total': 0.35,
-        'types': ['pcr', 'chewback, ligation, repair'],
-        'risks': [0.6, -0.5]
+        'types': ['pcr', 'chewback', 'ligation'],
+        'risks': [
+            log10((0.2) / 0.8), 
+            log10((0.2) / 0.8), 
+            log10((0.2) / 0.8)
+        ]
     }
 
     slic_solution = SLICSolution(
