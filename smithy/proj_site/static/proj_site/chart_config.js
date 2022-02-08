@@ -145,10 +145,8 @@ const goldengate_cost_labels = ['primers', 'parts', 'genes', 'ligase', 'type2s r
 const risk_labels = ['thing1', 'thing2', 'thing3', 'thing4'];
 
 // colors 
-const time_colors = ['#69130F', '#B72D26', '#FF2A1F'];
-// TODO: remove transparent so that it can be appended after the cost differences are calculated
+const time_colors = ['#69130F', '#B72D26', '#FF2A1F'];0
 const cost_colors = ['#49EC7A', '#3ACB66', '#2EAA53', '#238A42', '#195C2D','#49EC7A', '#3ACB66', '#2EAA53', '#238A42', '#195C2D', '#49EC7A', '#3ACB66', '#2EAA53', '#238A42', '#195C2D'];
-// '#0F341A'
 const risk_colors = [
     'rgba(92, 230, 230, 0.5)',
     'rgba(74, 185, 185, 0.5)',

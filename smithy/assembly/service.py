@@ -46,10 +46,6 @@ from statistics import mean
 from math import log10
 
 
-gibson_times_json = {
-    'times': [34, 20, 6]
-}
-
 def lengths_and_plasmids(assembly):
     primer_lengths = []
     part_lengths = []
@@ -823,7 +819,6 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
 
     pcr = pcr_time(part_lengths + primer_lengths)
     gibson_time = gibson_times(pcr)
-
     gibson_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
@@ -831,7 +826,6 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
         [obj.exonuclease_cost, obj.ligase_cost, obj.polymerase_cost],
         ['exonuclease', 'ligase', 'polymerase']
     )
-
     gibson_risk = {
         'total': 0.35,
         'types': ['pcr', 'chewback, ligation, repair'],
@@ -973,7 +967,6 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
 
     pcr = pcr_time(part_lengths + primer_lengths)
     goldengate_time = goldengate_times(pcr, len(fragments))
-
     goldengate_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
@@ -981,7 +974,6 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
         [obj.re_cost, obj.ligase_cost],
         ['type2s RE', 'ligase']
     )
-
     goldengate_risk = {
         'total': 0.35,
         'types': ['pcr', 'digestion, ligation'],
@@ -1130,7 +1122,6 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
 
     pcr = pcr_time(part_lengths + primer_lengths)
     biobricks_time = biobricks_times(pcr, len(fragments))
-
     biobricks_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
@@ -1138,14 +1129,13 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         [obj.EcoRI_cost, obj.XbaI_cost, obj.SpeI_cost, obj.PstI_cost],
         ['EcoRI', 'XbaI', 'SpeI', 'PstI']
     )
-
     biobricks_risk = {
         'total': 0.35,
         'types': ['pcr', 'digestion', 'ligation'],
         'risks': [
-            log10((1 - 0.8) / 0.8), 
-            log10((1 - 0.9) / 0.9), 
-            log10((1 - 0.8) / 0.8)
+            log10((0.2) / 0.8), 
+            log10((0.1) / 0.9), 
+            log10((0.2) / 0.8)
         ]
     }
 
@@ -1277,7 +1267,6 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
 
     pcr = pcr_time(part_lengths + primer_lengths)
     pcr_soe_time = pcr_soe_times(part_lengths + primer_lengths)
-
     pcr_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
@@ -1285,7 +1274,6 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
         [obj.polymerase_cost],
         ['polymerase']
     )
-
     pcr_risk = {
         'total': 0.35,
         'types': ['amplification-recombination'],
