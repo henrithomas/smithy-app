@@ -45,6 +45,10 @@ import matplotlib.pyplot as plt
 from statistics import mean
 from math import log10
 
+def part_indexes(idx, length):
+    left = length - 1 if idx == 0 else idx - 1
+    right = 0 if idx == length - 1 else idx + 1 
+    return left, right
 
 def lengths_and_plasmids(assembly):
     primer_lengths = []
@@ -883,15 +887,7 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
         )
         gibson_part_entry.save()
 
-        if i == 0:
-            left_index = len(assembly) - 1
-        else:
-            left_index = i - 1
-
-        if i == len(assembly) - 1:
-            right_index = 0
-        else:
-            right_index = i + 1
+        left_index, right_index = part_indexes(i, len(assembly))
 
         part_map(
             gibson_part_entry, 
@@ -1034,15 +1030,7 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
         )
         goldengate_part_entry.save()
 
-        if i == 0:
-            left_index = len(assembly) - 1
-        else:
-            left_index = i - 1
-
-        if i == len(assembly) - 1:
-            right_index = 0
-        else:
-            right_index = i + 1
+        left_index, right_index = part_indexes(i, len(assembly))
 
         part_map(
             goldengate_part_entry, 
@@ -1187,15 +1175,7 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         )
         biobricks_part_entry.save()
 
-        if i == 0:
-            left_index = len(assembly) - 1
-        else:
-            left_index = i - 1
-
-        if i == len(assembly) - 1:
-            right_index = 0
-        else:
-            right_index = i + 1
+        left_index, right_index = part_indexes(i, len(assembly))
 
         part_map(
             biobricks_part_entry, 
@@ -1329,15 +1309,7 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
         )
         pcr_part_entry.save()
 
-        if i == 0:
-            left_index = len(assembly) - 1
-        else:
-            left_index = i - 1
-
-        if i == len(assembly) - 1:
-            right_index = 0
-        else:
-            right_index = i + 1
+        left_index, right_index = part_indexes(i, len(assembly))
 
         part_map(
             pcr_part_entry, 
@@ -1477,15 +1449,7 @@ def slic_solution_service(obj, assembler, assembly, fragments):
         )
         slic_part_entry.save()
 
-        if i == 0:
-            left_index = len(assembly) - 1
-        else:
-            left_index = i - 1
-
-        if i == len(assembly) - 1:
-            right_index = 0
-        else:
-            right_index = i + 1
+        left_index, right_index = part_indexes(i, len(assembly))
 
         part_map(
             slic_part_entry, 
