@@ -1,0 +1,75 @@
+body {
+    background: rgb(233, 233, 233);
+  }
+
+.bg-steel {
+    background-color: #4f5d66;
+}
+
+.site-header .navbar-brand {
+    color: #cbd5db;
+}
+
+.site-header .navbar-brand:hover {
+    color: #ffffff;
+}
+
+.site-header .navbar-nav .nav-link {
+    color: #cbd5db;
+}
+  
+.site-header .navbar-nav .nav-link:hover {
+    color: #ffffff;
+}
+  
+.site-header .navbar-nav .nav-link.active {
+    font-weight: 500;
+}
+  
+.navbar-dark .navbar-text {
+    color: #ffffff;
+}
+
+.content-section {
+    background: #ffffff;
+    padding: 10px 20px;
+    border: 1px solid #dddddd;
+    border-radius: 3px;
+    margin-bottom: 20px;
+  }
+
+.highlight {
+    background-color:paleturquoise;
+}
+
+.bg-igem {
+    background-color: rgb(255, 243, 218)!important;
+}
+
+.bg-addgene {
+    background-color: rgb(220, 255, 215)!important;
+}
+
+.bg-dnasu {
+    background-color: rgb(213, 254, 255)!important;
+}
+
+.bg-experiments {
+    background-color: #7fe2f6e5!important;
+}
+
+.bg-days {
+    background-color: #f6da7fea!important;
+}
+
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 30vh;
+    /* width: 20vw; */
+}
+
+.time-sum { 
+    font-size: 2rem;
+    font-family: sans-serif;
+}
