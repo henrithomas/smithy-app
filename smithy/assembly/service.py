@@ -1,5 +1,4 @@
 from django.db.models.deletion import Collector
-from tests import cut_locations
 from .models import (
     AssemblyBundle,
     GibsonAssembly, 
