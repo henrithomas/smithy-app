@@ -113,9 +113,9 @@ class Assembly(models.Model):
                         ],
                         blank=False)
     multi_query = models.BooleanField(default=False)
-    primer_cost = models.FloatField(verbose_name='primer cost ($)', default=0.0)
-    part_cost = models.FloatField(verbose_name='part cost ($)', default=0.0)
-    gene_cost = models.FloatField(verbose_name='gene cost ($)', default=0.0)
+    primer_cost = models.FloatField(verbose_name='oligo cost ($)', default=0.0)
+    part_cost = models.FloatField(verbose_name='block cost ($)', default=0.0)
+    gene_cost = models.FloatField(verbose_name='mega block cost ($)', default=0.0)
     plasmid_cost = models.FloatField(verbose_name='plasmid cost ($)', default=0.0)
 
     class Meta:

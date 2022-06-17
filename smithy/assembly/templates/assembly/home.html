@@ -4,13 +4,17 @@
         <div class="col">
             <h1>Assembly</h1>
             <p class="lead">Select a cloning method...</p>
-            <a class="btn btn-primary btn-lg" href="{% url 'gibson-create' %}" role="button">Gibson</a>
-            <a class="btn btn-primary btn-lg" href="{% url 'goldengate-create' %}" role="button">Golden Gate</a>           
-            <a class="btn btn-primary btn-lg" href="{% url 'pcr-create' %}" role="button">PCR-SOE</a>   
-            <a class="btn btn-primary btn-lg" href="{% url 'slic-create' %}" role="button">SLIC</a>
-            <a class="btn btn-primary btn-lg" href="{% url 'biobricks-create' %}" role="button">BioBricks</a>  
-            <a class="btn btn-primary btn-lg" href="{% url 'assembly-bundle' %}" role="button">Assembly Bundle</a>
+            <a class="btn btn-primary btn-lg mt-2" href="{% url 'gibson-create' %}" role="button">Gibson</a>
+            <a class="btn btn-primary btn-lg mt-2" href="{% url 'goldengate-create' %}" role="button">Golden Gate</a>           
+            <a class="btn btn-primary btn-lg mt-2" href="{% url 'pcr-create' %}" role="button">PCR-SOE</a>   
+            <a class="btn btn-primary btn-lg mt-2" href="{% url 'slic-create' %}" role="button">SLIC</a>
+            <a class="btn btn-primary btn-lg mt-2" href="{% url 'biobricks-create' %}" role="button">BioBricks</a>  
         </div>
+	<div class="col">
+	    <h1>Assembly Bundle</h1>
+ 	    <p class="lead">Create an assembly bundle...</p>
+	    <a class="btn btn-primary btn-lg mt-2" href="{% url 'assembly-bundle' %}" role="button">Assembly Bundle</a>
+	</div>
     </div>
     <div class="row mb-4">
         <div class="col">

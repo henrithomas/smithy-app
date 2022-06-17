@@ -16,3 +16,9 @@ smithy/assembly/migrations/
 smithy/media/
 tests.py
 multi.fasta
+smithy/smithy/settings.py.orig
+smithy/smithy_uwsgi.ini
+smithy/test.py
+uwsgi_params
+venv_smithy/
+smithy/smithy.sock
