@@ -58,10 +58,10 @@ class GoldenGateAssembler(TraditionalREAssembler):
     cloning_type = 'Golden Gate'
     # potapov et al 2018
     overhang_files = [
-        '~/projects/smithy-app/assemblies/overhangs/goldengate/oh1.json',
-        '~/projects/smithy-app/assemblies/overhangs/goldengate/oh2.json',
-        '~/projects/smithy-app/assemblies/overhangs/goldengate/oh3.json',
-	'~/projects/smithy-app/assemblies/overhangs/goldengate/oh4.json'
+        '/home/dkoch/smithy-app/assemblies/overhangs/goldengate/oh1.json',
+        '/home/dkoch/smithy-app/assemblies/overhangs/goldengate/oh2.json',
+        '/home/dkoch/smithy-app/assemblies/overhangs/goldengate/oh3.json',
+	'/home/dkoch/smithy-app/assemblies/overhangs/goldengate/oh4.json'
     ]
 
     def __init__(self, *args, ovhngs=0, re='BsaI', ligase='T4-DNA', scarless=True, **kwargs):
