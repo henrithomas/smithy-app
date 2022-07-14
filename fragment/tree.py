@@ -94,7 +94,30 @@ class FragmentTree:
     def max_score(self, v, path=None):
         Performs a depth-first search on the FragmentTree to find the max solution score
     """
-    def __init__(self, query, nodes=None, query_len=0, min_synth=0, max_synth=1000):
+    def __init__(
+	    self,
+	    query,
+	    nodes=None,
+	    query_len=0,
+	    min_synth=0,
+	    max_synth=1000,
+	    assembly_type='gibson',
+            part_costs=[0.0, 0.0, 0.0],
+	    pcr_polymerase_cost=0.0,
+ 	    polymerase_cost=0.0,
+	    exonuclease_cost=0.0,
+	    ligase_cost=0.0,
+            biobricks_digest_cost=0.0,
+	    restenz_cost=0.0,
+	    parts_pref=1.0,
+	    cost_pref=1.0,
+	    pcr_ps=0.0,
+	    gibson_ps=0.0,
+	    goldengate_ps=0.0,
+	    slic_exo_ps=0.0,
+	    ligation_ps=0.0,
+	    biobricks_digest_ps=0.0
+        ):
         """
         Constructs all attributes for a FragmentTree
 
@@ -119,7 +142,7 @@ class FragmentTree:
         self.node_list = nodes
         self.min_synth = min_synth
         self.max_synth = max_synth
-        self.adjacency_set = defaultdict(set) 
+        self.adjacency_set = defaultdict(set)
         self.node_ends = set()
         self.visited = None
         self.solutions = []
@@ -129,6 +152,85 @@ class FragmentTree:
         self.max = 0
         self.multi_query_node_list = []
         self.multi_query_solutions = []
+	self.part_costs = part_costs
+	self.pcr_polymerase_cost = pcr_polymerase_cost
+	self.polymerase_cost = polymerase_cost
+	self.exonuclease_cost = exonuclease_cost
+	self.ligase_cost = ligase_cost
+	self.biobricks_digest_cost = biobricks_digest_cost
+	self.restenz_cost = restenz_cost
+	self.parts_pref = parts_pref
+	self.cost_pref = cost_pref
+	self.pcr_ps = pcr_ps
+	self.gibson_ps = gibson_ps
+	self.goldengate_ps = goldengate_ps
+	self.slic_exo_ps = slic_exo_ps
+	self.ligation_ps = ligation_ps
+	self.biobricks_digest_ps = biobricks_digest_ps
+	self.assembly_type = assembly_type
+
+    def part_lengths(self, path):
+	lengths = [
+	    len(node.subject_seq)
+	    for node in [
+		self.node_list[i]
+		for i in path
+	    ]
+	]
+
+	return lengths
+
+    def pcr_amp_cost(self, lengths):
+	seq_costs = []
+	total = 0
+
+	for l in lengths:
+	    if l <= 100:
+		seq_costs.append(l * part_costs[0])
+	    elif l > 100 and l <= 1000:
+		seq_costs.append(l * part_costs[1])
+	    else:
+		seq_costs.append(l * part_costs[2])
+
+	for cost in seq_costs:
+	    total += (cost + self.pcr_polymerase_cost) / self.pcr_ps
+
+	return total
+
+    def gibson_cost(self):
+	return (self.polymerase_cost + self.exonuclease_cost + self.ligase_cost) / self.gibson_ps
+
+    def goldengate_cost(self):
+	return (self.restenz_cost + self.ligase_cost) / self.goldengate_ps
+
+    def slic_cost(self):
+	return (self.exonuclease_cost / self.slic_exo_ps) + (self.ligase_cost / self.ligation_ps)
+
+    def pcrsoe_cost(self):
+	return 0.0
+
+    def biobricks_cost(self, n):
+	return (2 * n - 1)((self.biobricks_digest_cost / self.biobricks_digest_ps) + (self.ligase_cost / self.ligation_ps))
+
+    def score(self, path):
+	expected_assembly_cost = 0
+	num_parts = len(path[1:])
+	lengths = self.part_lengths(path)
+
+	if self.assembly_type == 'gibson':
+	    expected_assembly_cost = self.gibson_cost()
+	elif self.assembly_type == 'goldengate':
+	    expected_assembly_cost = self.goldengate_cost()
+	elif self.assembly_type == 'slic':
+	    expected_assembly_cost = self.slic_cost()
+	elif self.assembly_type == 'pcrsoe':
+	    expected_assembly_cost = self.pcrsoe_cost()
+	elif self.assembly_type == 'biobricks':
+	    expected_assembly_cost = self.biobricks_cost(num_parts)
+
+	pcr_cost = self.pcr_amp_cost(lengths)
+
+	return self.parts_pref * num_parts + self.cost_pref * (pcr_cost + expected_assembly_cost)
 
     def build_edge_set(self):
         """
@@ -145,10 +247,10 @@ class FragmentTree:
         None
         """
         for i, j in combinations(range(len(self.node_list)), 2):
-            
+
             node_a_start, node_a_end = self.node_list[i].coordinates
             node_b_start, node_b_end = self.node_list[j].coordinates
-            
+
             if node_b_start > (node_a_end + 1 + self.min_synth) \
                 and node_b_start < (node_a_end + 1 + self.max_synth) \
                     and (node_b_start - 1) not in self.node_ends:
@@ -333,7 +435,7 @@ class FragmentTree:
         path.append(v)
 
         if not self.adjacency_set[v]:
-            score = self.solution_score(path)
+            score = self.score(path)
             self.scores.append(score)
 
             p = path.copy()
@@ -426,7 +528,7 @@ class FragmentTree:
 
     def solution_nodes(self, s):
         """
-        Creates a list of all FragmentNodes for a solution (s) to an assembly insert
+        Creates a list of all 	FragmentNodes for a solution (s) to an assembly insert
 
 
 
@@ -448,7 +550,7 @@ class FragmentTree:
             ]
         ]
         return nodes
-    
+
     def solution_names(self, s):
         pass
 
