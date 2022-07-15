@@ -91,7 +91,16 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
         'gene_cost',
         'exonuclease_cost',
         'ligase_cost',
-        'polymerase_cost'
+        'polymerase_cost',
+        'pcr_polymerase_cost',
+        'pcr_polymerase_n_reacts',
+        'pcr_ps',
+        'cost_pref',
+        'parts_pref',
+        'ligase_n_reacts',
+        'exonuclease_n_reacts',
+        'polymerase_n_reacts',
+        'assembly_ps'
     ]
 
     def form_valid(self, form):
@@ -195,7 +204,15 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
         'part_cost',
         'gene_cost',
         're_cost',
-        'ligase_cost'
+        'ligase_cost',
+        'pcr_polymerase_cost',
+        'pcr_polymerase_n_reacts',
+        'pcr_ps',
+        'cost_pref',
+        'parts_pref',
+        're_n_reacts',
+        'ligase_n_reacts',
+        'assembly_ps'
     ]
 
     def form_valid(self, form):
@@ -298,7 +315,20 @@ class BioBricksCreateView(SuccessMessageMixin, CreateView):
         'EcoRI_cost',
         'XbaI_cost',
         'SpeI_cost',
-        'PstI_cost'
+        'PstI_cost',
+        'pcr_polymerase_cost',
+        'pcr_polymerase_n_reacts',
+        'pcr_ps',
+        'cost_pref',
+        'parts_pref',
+        'EcoRI_n_reacts',
+        'XbaI_n_reacts',
+        'SpeI_n_reacts',
+        'PstI_n_reacts',
+        'digestion_ps',
+        'ligation_ps',
+        'ligase_cost',
+        'ligase_n_reacts'
     ]
 
     def form_valid(self, form):
@@ -401,7 +431,12 @@ class PCRCreateView(SuccessMessageMixin, CreateView):
         'primer_cost',
         'part_cost',
         'gene_cost',
-        'polymerase_cost'
+        'polymerase_cost',
+        'pcr_polymerase_cost',
+        'pcr_polymerase_n_reacts',
+        'pcr_ps',
+        'cost_pref',
+        'parts_pref'
     ]
 
     def form_valid(self, form):
@@ -502,7 +537,16 @@ class SLICCreateView(SuccessMessageMixin, CreateView):
         'part_cost',
         'gene_cost',
         'exonuclease_cost',
-        'ligase_cost'
+        'ligase_cost',
+        'pcr_polymerase_cost',
+        'pcr_polymerase_n_reacts',
+        'pcr_ps',
+        'cost_pref',
+        'parts_pref',
+        'exonuclease_n_reacts',
+        'ligase_n_reacts',
+        'chewback_ps',
+        'ligation_ps'
     ]
 
     def form_valid(self, form):

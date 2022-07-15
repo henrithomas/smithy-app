@@ -634,10 +634,42 @@ def gibson_create_service(obj):
 
     if obj.multi_query:
         results, error = assembler.run_multi_query()
-        assembler.multi_query_solution_building(results)
+        assembler.multi_query_solution_building(
+            results,
+            assembly_type='gibson',
+            part_costs=[
+                obj.primer_cost,
+                obj.part_cost,
+                obj.gene_cost
+            ],
+            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+            polymerase_cost=(obj.polymerase_cost / obj.polymerase_n_reacts),
+            exonuclease_cost=(obj.exonuclease_cost / obj.exonuclease_n_reacts),
+            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+            parts_pref=obj.parts_pref,
+            cost_pref=obj.cost_pref,
+            pcr_ps=obj.pcr_ps,
+            gibson_ps=obj.assembly_ps
+        )
     else:
         results, error = assembler.query()
-        assembler.solution_building(results)
+        assembler.solution_building(
+            results,
+            assembly_type='gibson',
+            part_costs=[
+                obj.primer_cost,
+                obj.part_cost,
+                obj.gene_cost
+            ],
+            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+            polymerase_cost=(obj.polymerase_cost / obj.polymerase_n_reacts),
+            exonuclease_cost=(obj.exonuclease_cost / obj.exonuclease_n_reacts),
+            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+            parts_pref=obj.parts_pref,
+            cost_pref=obj.cost_pref,
+            pcr_ps=obj.pcr_ps,
+            gibson_ps=obj.assembly_ps
+        )
     assembly, fragments = assembler.design(solution=0)
 
     gibson_solution_service(obj, assembler, assembly, fragments)
@@ -675,10 +707,40 @@ def goldengate_create_service(obj):
 
     if obj.multi_query:
         results, error = assembler.run_multi_query()
-        assembler.multi_query_solution_building(results)
+        assembler.multi_query_solution_building(
+            results,
+            assembly_type='goldengate',
+            part_costs=[
+                obj.primer_cost,
+                obj.part_cost,
+                obj.gene_cost
+            ],
+            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+            restenz_cost=(obj.re_cost / obj.re_n_reacts),
+            parts_pref=obj.parts_pref,
+            cost_pref=obj.cost_pref,
+            pcr_ps=obj.pcr_ps,
+            goldengate_ps=obj.assembly_ps
+        )
     else:
         results, error = assembler.query()
-        assembler.solution_building(results)
+        assembler.solution_building(
+            results,
+            assembly_type='goldengate',
+            part_costs=[
+                obj.primer_cost,
+                obj.part_cost,
+                obj.gene_cost
+            ],
+            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+            restenz_cost=(obj.re_cost / obj.re_n_reacts),
+            parts_pref=obj.parts_pref,
+            cost_pref=obj.cost_pref,
+            pcr_ps=obj.pcr_ps,
+            goldengate_ps=obj.assembly_ps
+        )
     assembly, fragments = assembler.design(solution=0)
 
     goldengate_solution_service(obj, assembler, assembly, fragments)
@@ -712,12 +774,47 @@ def biobricks_create_service(obj):
         multi_query=obj.multi_query  
     )
 
+    digest_cost = 2 * ((obj.EcoRI_cost + obj.XbaI_cost + obj.SpeI_cost + obj.PstI_cost) / 4)
+    digest_n = 2 * ((obj.EcoRI_n_reacts + obj.XbaI_n_reacts + obj.SpeI_n_reacts + obj.PstI_n_reacts) / 4)
+
     if obj.multi_query:
         results, error = assembler.run_multi_query()
-        assembler.multi_query_solution_building(results)
+        assembler.multi_query_solution_building(
+            results,
+            assembly_type='biobricks',
+            part_costs=[
+                obj.primer_cost,
+                obj.part_cost,
+                obj.gene_cost
+            ],
+            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+            biobricks_digest_cost=(digest_cost / digest_n),
+            parts_pref=obj.parts_pref,
+            cost_pref=obj.cost_pref,
+            pcr_ps=obj.pcr_ps,
+            ligation_ps=obj.ligation_ps,
+            biobricks_digest_ps=obj.digestion_ps
+        )
     else:
         results, error = assembler.query()
-        assembler.solution_building(results)
+        assembler.solution_building(
+            results,
+            assembly_type='biobricks',
+            part_costs=[
+                obj.primer_cost,
+                obj.part_cost,
+                obj.gene_cost
+            ],
+            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+            biobricks_digest_cost=(digest_cost / digest_n),
+            parts_pref=obj.parts_pref,
+            cost_pref=obj.cost_pref,
+            pcr_ps=obj.pcr_ps,
+            ligation_ps=obj.ligation_ps,
+            biobricks_digest_ps=obj.digestion_ps
+        )
     assembly, fragments = assembler.design(solution=0)
 
     biobricks_solution_service(obj, assembler, assembly, fragments)   
@@ -754,10 +851,34 @@ def pcr_create_service(obj):
 
     if obj.multi_query:
         results, error = assembler.run_multi_query()
-        assembler.multi_query_solution_building(results)
+        assembler.multi_query_solution_building(
+            results,
+            assembly_type='pcrsoe',
+            part_costs=[
+                obj.primer_cost,
+                obj.part_cost,
+                obj.gene_cost
+            ],
+            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+            parts_pref=obj.parts_pref,
+            cost_pref=obj.cost_pref,
+            pcr_ps=obj.pcr_ps
+        )
     else:
         results, error = assembler.query()
-        assembler.solution_building(results)
+        assembler.solution_building(
+            results,
+            assembly_type='pcrsoe',
+            part_costs=[
+                obj.primer_cost,
+                obj.part_cost,
+                obj.gene_cost
+            ],
+            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+            parts_pref=obj.parts_pref,
+            cost_pref=obj.cost_pref,
+            pcr_ps=obj.pcr_ps
+        )
     assembly, fragments = assembler.design(solution=0)
 
     pcr_solution_service(obj, assembler, assembly, fragments)
@@ -794,10 +915,40 @@ def slic_create_service(obj):
 
     if obj.multi_query:
         results, error = assembler.run_multi_query()
-        assembler.multi_query_solution_building(results)
+        assembler.multi_query_solution_building(
+            results,
+            assembly_type='slic',
+            part_costs=[
+                obj.primer_cost,
+                obj.part_cost,
+                obj.gene_cost
+            ],
+            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+            exonuclease_cost=(obj.exonuclease_cost / obj.exonuclease_n_reacts),
+            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+            parts_pref=obj.parts_pref,
+            cost_pref=obj.cost_pref,
+            slic_exo_ps=obj.chewback_ps,
+            ligation_ps=obj.ligation_ps
+        )
     else:
         results, error = assembler.query()
-        assembler.solution_building(results)
+        assembler.solution_building(
+            results,
+            assembly_type='slic',
+            part_costs=[
+                obj.primer_cost,
+                obj.part_cost,
+                obj.gene_cost
+            ],
+            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+            exonuclease_cost=(obj.exonuclease_cost / obj.exonuclease_n_reacts),
+            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+            parts_pref=obj.parts_pref,
+            cost_pref=obj.cost_pref,
+            slic_exo_ps=obj.chewback_ps,
+            ligation_ps=obj.ligation_ps
+        )
     assembly, fragments = assembler.design(solution=0)
 
     slic_solution_service(obj, assembler, assembly, fragments)    

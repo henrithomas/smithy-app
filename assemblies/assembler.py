@@ -521,7 +521,26 @@ class Assembler:
         return query_results, stderr
 
     # TODO separate into two methods to first build the frag tree, then select a solution
-    def solution_building(self, query_results):
+    def solution_building(
+        self,
+        query_results,
+        assembly_type='gibson',
+        part_costs=[0.0, 0.0, 0.0],
+        pcr_polymerase_cost=0.0,
+        polymerase_cost=0.0,
+        exonuclease_cost=0.0,
+        ligase_cost=0.0,
+        biobricks_digest_cost=0.0,
+        restenz_cost=0.0,
+        parts_pref=1.0,
+        cost_pref=1.0,
+        pcr_ps=0.0,
+        gibson_ps=0.0,
+        goldengate_ps=0.0,
+        slic_exo_ps=0.0,
+        ligation_ps=0.0,
+        biobricks_digest_ps=0.0
+    ):
         """
         Creates a Fragment tree using Blaster results and then initializes the assembler's solution_tree.
 
@@ -534,13 +553,31 @@ class Assembler:
 
         Returns
         -------
-        None        
+        None
         """
         sol_tree = FragmentTree(
-            self.query_record.seq.watson, nodes=[], 
-            query_len=self.query_record.seq.length, 
-            min_synth=self.min_synth, 
-            max_synth=self.max_synth)
+            self.query_record.seq.watson,
+            nodes=[],
+            query_len=self.query_record.seq.length,
+            min_synth=self.min_synth,
+            max_synth=self.max_synth,
+            assembly_type=assembly_type,
+            part_costs=part_costs,
+            pcr_polymerase_cost=pcr_polymerase_cost,
+            polymerase_cost=polymerase_cost,
+            exonuclease_cost=exonuclease_cost,
+            ligase_cost=ligase_cost,
+            biobricks_digest_cost=biobricks_digest_cost,
+            restenz_cost=restenz_cost,
+            parts_pref=parts_pref,
+            cost_pref=cost_pref,
+            pcr_ps=pcr_ps,
+            gibson_ps=gibson_ps,
+            goldengate_ps=goldengate_ps,
+            slic_exo_ps=slic_exo_ps,
+            ligation_ps=ligation_ps,
+            biobricks_digest_ps=biobricks_digest_ps
+        )
         sol_tree.build(query_results)
         self.solution_tree = sol_tree
 
@@ -614,7 +651,26 @@ class Assembler:
         query_results, stderr = blaster.run_multi_blastn(queries, lengths, num_fragments)
         return query_results, stderr
 
-    def multi_query_solution_building(self, query_results):
+    def multi_query_solution_building(
+        self,
+        query_results,
+        assembly_type='gibson',
+        part_costs=[0.0, 0.0, 0.0],
+        pcr_polymerase_cost=0.0,
+        polymerase_cost=0.0,
+        exonuclease_cost=0.0,
+        ligase_cost=0.0,
+        biobricks_digest_cost=0.0,
+        restenz_cost=0.0,
+        parts_pref=1.0,
+        cost_pref=1.0,
+        pcr_ps=0.0,
+        gibson_ps=0.0,
+        goldengate_ps=0.0,
+        slic_exo_ps=0.0,
+        ligation_ps=0.0,
+        biobricks_digest_ps=0.0
+    ):
         """
         Creates a Fragment tree using Blaster query_results and then initializes the assembler's solution_tree.
 
@@ -630,7 +686,25 @@ class Assembler:
         None  
         """
         sequences = [record.seq.watson for record in self.query_records]
-        sol_tree = FragmentTree('')
+        sol_tree = FragmentTree(
+            '',
+            assembly_type=assembly_type,
+            part_costs=part_costs,
+            pcr_polymerase_cost=pcr_polymerase_cost,
+            polymerase_cost=polymerase_cost,
+            exonuclease_cost=exonuclease_cost,
+            ligase_cost=ligase_cost,
+            biobricks_digest_cost=biobricks_digest_cost,
+            restenz_cost=restenz_cost,
+            parts_pref=parts_pref,
+            cost_pref=cost_pref,
+            pcr_ps=pcr_ps,
+            gibson_ps=gibson_ps,
+            goldengate_ps=goldengate_ps,
+            slic_exo_ps=slic_exo_ps,
+            ligation_ps=ligation_ps,
+            biobricks_digest_ps=biobricks_digest_ps
+        )
         sol_tree.multi_query_blast_input(query_results, sequences)
         sol_tree.build_multi_query_solutions(self.max_solutions)
         self.solution_tree = sol_tree

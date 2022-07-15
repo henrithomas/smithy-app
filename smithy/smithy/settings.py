@@ -39,6 +39,7 @@ ALLOWED_HOSTS = [
     'fungalgenomics.ca', 
     'i.fungalgenomics.ca', 
     'rs-loy-smithy.concordia.ca',
+    '127.0.0.1',
     'localhost'
 ]
 

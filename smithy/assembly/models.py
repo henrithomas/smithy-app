@@ -117,6 +117,11 @@ class Assembly(models.Model):
     part_cost = models.FloatField(verbose_name='block cost ($)', default=0.0)
     gene_cost = models.FloatField(verbose_name='mega block cost ($)', default=0.0)
     plasmid_cost = models.FloatField(verbose_name='plasmid cost ($)', default=0.0)
+    pcr_polymerase_cost = models.FloatField(verbose_name='PCR polymerase cost ($)', default=0.0)
+    pcr_polymerase_n_reacts = models.PositiveIntegerField(verbose_name='PCR polymerase number of reactions', default=1, validators=[MinValueValidator(1)])
+    pcr_ps = models.FloatField(verbose_name='PCR probability of success', default=0.0)
+    cost_pref = models.FloatField(verbose_name='cost preference', default=0.0)
+    parts_pref = models.FloatField(verbose_name='parts count preference', default=0.0)
 
     class Meta:
         abstract = True
@@ -217,6 +222,9 @@ class GoldenGateAssembly(Assembly):
     scarless = models.BooleanField(default=False)
     re_cost = models.FloatField(verbose_name='Type2s RE cost ($)', default=0.0)
     ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
+    re_n_reacts = models.PositiveIntegerField(verbose_name='Type2s RE number of reactions', default=1, validators=[MinValueValidator(1)])
+    ligase_n_reacts = models.PositiveIntegerField(verbose_name='ligase number of reactions', default=1, validators=[MinValueValidator(1)])
+    assembly_ps = models.FloatField(verbose_name='one-pot digestion-ligation probability of success', default=0.0)
 
     def get_absolute_url(self):
         return reverse('goldengate-detail', kwargs={'pk': self.pk})
@@ -227,6 +235,10 @@ class GibsonAssembly(Assembly):
     exonuclease_cost = models.FloatField(verbose_name='exonuclease cost ($)', default=0.0)
     ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
     polymerase_cost = models.FloatField(verbose_name='polymerase cost ($)', default=0.0)
+    exonuclease_n_reacts = models.PositiveIntegerField(verbose_name='exonuclease number of reactions', default=1, validators=[MinValueValidator(1)])
+    ligase_n_reacts = models.PositiveIntegerField(verbose_name='ligase number of reactions', default=1, validators=[MinValueValidator(1)])
+    polymerase_n_reacts = models.PositiveIntegerField(verbose_name='polymerase number of reactions', default=1, validators=[MinValueValidator(1)])
+    assembly_ps = models.FloatField(verbose_name='gibson assembly probability of success', default=0.0)
 
     def get_absolute_url(self):
         return reverse('gibson-detail', kwargs={'pk': self.pk})   
@@ -237,6 +249,14 @@ class BioBricksAssembly(Assembly):
     XbaI_cost = models.FloatField(verbose_name='XbaI cost ($)', default=0.0)
     SpeI_cost = models.FloatField(verbose_name='SpeI cost ($)', default=0.0)
     PstI_cost = models.FloatField(verbose_name='PstI cost ($)', default=0.0)
+    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
+    EcoRI_n_reacts = models.PositiveIntegerField(verbose_name='EcoRI number of reactions', default=1, validators=[MinValueValidator(1)])
+    XbaI_n_reacts = models.PositiveIntegerField(verbose_name='XbaI number of reactions', default=1, validators=[MinValueValidator(1)])
+    SpeI_n_reacts = models.PositiveIntegerField(verbose_name='SpeI number of reactions', default=1, validators=[MinValueValidator(1)])
+    PstI_n_reacts = models.PositiveIntegerField(verbose_name='PstI number of reactions', default=1, validators=[MinValueValidator(1)])
+    ligase_n_reacts = models.PositiveIntegerField(verbose_name='ligase number of reactions', default=1, validators=[MinValueValidator(1)])
+    digestion_ps = models.FloatField(verbose_name='digestion probability of success', default=0.0)
+    ligation_ps = models.FloatField(verbose_name='ligation probability of success', default=0.0)
 
     def get_absolute_url(self):
         return reverse('biobricks-detail', kwargs={'pk': self.pk})
@@ -254,6 +274,10 @@ class SLICAssembly(Assembly):
     overlap = models.PositiveIntegerField()
     exonuclease_cost = models.FloatField(verbose_name='exonuclease cost ($)', default=0.0)
     ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
+    exonuclease_n_reacts = models.PositiveIntegerField(verbose_name='exonuclease number of reactions', default=1, validators=[MinValueValidator(1)])
+    ligase_n_reacts = models.PositiveIntegerField(verbose_name='ligase number of reactions', default=1, validators=[MinValueValidator(1)])
+    chewback_ps = models.FloatField(verbose_name='chewback probability of success', default=0.0)
+    ligation_ps = models.FloatField(verbose_name='ligation probability of success', default=0.0)
 
     def get_absolute_url(self):
         return reverse('slic-detail', kwargs={'pk': self.pk})
