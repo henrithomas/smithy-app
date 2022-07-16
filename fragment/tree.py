@@ -101,7 +101,7 @@ class FragmentTree:
             query_len=0,
             min_synth=0,
             max_synth=1000,
-            assembly_type='gibson',
+            assembly_type='none',
             part_costs=[0.0, 0.0, 0.0],
             pcr_polymerase_cost=0.0,
             polymerase_cost=0.0,

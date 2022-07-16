@@ -524,7 +524,7 @@ class Assembler:
     def solution_building(
         self,
         query_results,
-        assembly_type='gibson',
+        assembly_type='none',
         part_costs=[0.0, 0.0, 0.0],
         pcr_polymerase_cost=0.0,
         polymerase_cost=0.0,

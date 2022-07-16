@@ -398,15 +398,15 @@
                         <p>
                             How much of an overlap would you like between your parts?
                         </p>
-                        {{ bundle_form.overlap.label_tag }}
+                        {{ bundle_form.gib_overlap.label_tag }}
                         <div class="input-group mt-2">
-                            <input type="number" name="{{ bundle_form.overlap.html_name }}" class="form-control" placeholder="30" 
-                            id="{{ bundle_form.overlap.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.overlap.value }}" {% endif %}>
-                            <span class="input-group-text" id="{{ bundle_form.overlap.id_for_label }}">nt</span>
+                            <input type="number" name="{{ bundle_form.gib_overlap.html_name }}" class="form-control" placeholder="30" 
+                            id="{{ bundle_form.gib_overlap.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_overlap.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ bundle_form.gib_overlap.id_for_label }}">nt</span>
                         </div>
-                        {% if bundle_form.overlap.errors %}
+                        {% if bundle_form.gib_overlap.errors %}
                             <ul class="errorList">
-                                {% for error in bundle_form.overlap.errors %}
+                                {% for error in bundle_form.gib_overlap.errors %}
                                     <li class="text-danger">{{ error|escape }}</li>
                                 {% endfor %}
                             </ul>
@@ -564,6 +564,25 @@
             <div class="row mb-5">
                 <h2>PCR-SOE</h2>
                 <div class="col">
+                    <div class="row mb-2">
+                        <h3>Overlap</h3>
+                        <p>
+                            How much of an overlap would you like between your parts?
+                        </p>
+                        {{ bundle_form.pcr_overlap.label_tag }}
+                        <div class="input-group mt-2">
+                            <input type="number" name="{{ bundle_form.pcr_overlap.html_name }}" class="form-control" placeholder="30" 
+                            id="{{ bundle_form.pcr_overlap.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.pcr_overlap.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ bundle_form.pcr_overlap.id_for_label }}">nt</span>
+                        </div>
+                        {% if bundle_form.pcr_overlap.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.pcr_overlap.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
                     <div class="row">
                         <h3>Enzymes</h3>
                         <p>Which enzymes do you need to purchase?</p>
@@ -596,6 +615,25 @@
             <div class="row mb-5">
                 <h2>SLIC</h2>
                 <div class="col">
+                    <div class="row mb-2">
+                        <h3>Overlap</h3>
+                        <p>
+                            How much of an overlap would you like between your parts?
+                        </p>
+                        {{ bundle_form.slic_overlap.label_tag }}
+                        <div class="input-group mt-2">
+                            <input type="number" name="{{ bundle_form.slic_overlap.html_name }}" class="form-control" placeholder="30" 
+                            id="{{ bundle_form.slic_overlap.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.slic_overlap.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ bundle_form.slic_overlap.id_for_label }}">nt</span>
+                        </div>
+                        {% if bundle_form.slic_overlap.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.slic_overlap.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
                     <div class="row">
                         <h3>Enzymes</h3>
                         <p>Which enzymes do you need to purchase?</p>

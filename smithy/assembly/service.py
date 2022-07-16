@@ -1687,10 +1687,34 @@ def bundle_create_service(bundle_data):
     )
     if bundle_data['multi_query']:
         results, error = query_assembler.run_multi_query()
-        query_assembler.multi_query_solution_building(results)
+        query_assembler.multi_query_solution_building(
+            results,
+            assembly_type='none',
+            part_costs=[
+                bundle_data['primer_cost'],
+                bundle_data['part_cost'],
+                bundle_data['gene_cost']
+            ]
+            pcr_polymerase_cost=(bundle_data['pcr_polymerase_cost'] / bundle_data['pcr_polymerase_n_reacts']),
+            parts_pref=bundle_data['parts_pref'],
+            cost_pref=bundle_data['cost_pref'],
+            pcr_ps=bundle_data['pcr_ps']
+        )
     else:
         results, error = query_assembler.query()
-        query_assembler.solution_building(results)
+        query_assembler.solution_building(
+            results,
+            assembly_type='none',
+            part_costs=[
+                bundle_data['primer_cost'],
+                bundle_data['part_cost'],
+                bundle_data['gene_cost']
+            ]
+            pcr_polymerase_cost=(bundle_data['pcr_polymerase_cost'] / bundle_data['pcr_polymerase_n_reacts']),
+            parts_pref=bundle_data['parts_pref'],
+            cost_pref=bundle_data['cost_pref'],
+            pcr_ps=bundle_data['pcr_ps']
+        )
 
     bundle = AssemblyBundle(
         title=bundle_data['title'],
@@ -1716,7 +1740,7 @@ def bundle_create_service(bundle_data):
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
             multi_query=bundle_data['multi_query'],
-            overlap=bundle_data['overlap'],
+            overlap=bundle_data['gib_overlap'],
             primer_cost=bundle_data['primer_cost'],
             part_cost=bundle_data['part_cost'],
             gene_cost=bundle_data['gene_cost'],
@@ -1741,7 +1765,7 @@ def bundle_create_service(bundle_data):
             max_frag=bundle_data['max_blast'], 
             min_synth=bundle_data['min_synth'], 
             max_synth=bundle_data['max_synth'],
-            overlap=bundle_data['overlap'],
+            overlap=bundle_data['gib_overlap'],
             multi_query=bundle_data['multi_query']
         )
         gibson_assembler.solution_tree = query_assembler.solution_tree
@@ -1866,7 +1890,7 @@ def bundle_create_service(bundle_data):
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
             multi_query=bundle_data['multi_query'],
-            overlap=bundle_data['overlap'],
+            overlap=bundle_data['pcr_overlap'],
             primer_cost=bundle_data['primer_cost'],
             part_cost=bundle_data['part_cost'],
             gene_cost=bundle_data['gene_cost'],
@@ -1889,7 +1913,7 @@ def bundle_create_service(bundle_data):
             max_frag=bundle_data['max_blast'], 
             min_synth=bundle_data['min_synth'], 
             max_synth=bundle_data['max_synth'],
-            overlap=bundle_data['overlap'],
+            overlap=bundle_data['pcr_overlap'],
             multi_query=bundle_data['multi_query']
         )
         pcr_assembler.solution_tree = query_assembler.solution_tree
@@ -1914,7 +1938,7 @@ def bundle_create_service(bundle_data):
             dna_conc=bundle_data['dna_conc'],
             tm=bundle_data['tm'],
             multi_query=bundle_data['multi_query'],
-            overlap=bundle_data['overlap'],
+            overlap=bundle_data['slic_overlap'],
             primer_cost=bundle_data['primer_cost'],
             part_cost=bundle_data['part_cost'],
             gene_cost=bundle_data['gene_cost'],
@@ -1938,7 +1962,7 @@ def bundle_create_service(bundle_data):
             max_frag=bundle_data['max_blast'], 
             min_synth=bundle_data['min_synth'], 
             max_synth=bundle_data['max_synth'],
-            overlap=bundle_data['overlap'],
+            overlap=bundle_data['slic_overlap'],
             multi_query=bundle_data['multi_query']
         )
         slic_assembler.solution_tree = query_assembler.solution_tree
