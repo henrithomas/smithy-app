@@ -64,7 +64,6 @@ class BundleForm(forms.Form):
     gg_re_cost = forms.FloatField(required=False)
     gg_ligase_cost = forms.FloatField(required=False)
     pcr_overlap = forms.IntegerField(required=False)
-    pcr_polymerase_cost = forms.FloatField(required=False)
     slic_overlap = forms.IntegerField(required=False)
     slic_exonuclease_cost = forms.FloatField(required=False)
     slic_ligase_cost = forms.FloatField(required=False)

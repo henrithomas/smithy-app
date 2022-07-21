@@ -1,3 +1,12 @@
+document.getElementById('pcr_poly_check').addEventListener('click', function() {
+    if (this.checked) {
+        document.getElementById('id_pcr_polymerase_cost').removeAttribute('hidden');
+    }
+    else {
+        document.getElementById('id_pcr_polymerase_cost').setAttribute('hidden', true);
+    }
+});
+
 document.getElementById('ecori_check').addEventListener('click', function() {
     if (this.checked) {
         document.getElementById('id_EcoRI_cost').removeAttribute('hidden');
