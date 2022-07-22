@@ -375,6 +375,36 @@
                     <p>Which enzymes do you need to purchase?</p>
                     <div class="col">
                         <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="pcr_poly_check">
+                            <label class="form-check-label" for="pcr_poly_check">PCR Polymerase</label>
+                        </div>
+                        <div class="input-group mt-2" id="{{ form.pcr_polymerase_cost.id_for_label }}" hidden>
+                            <span class="input-group-text" id="pcr_poly_enz">$</span>
+                            <input type="number" name="{{ form.pcr_polymerase_cost.html_name }}" class="form-control" placeholder="0.00" 
+                            id="{{ form.pcr_polymerase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.pcr_polymerase_cost.value }}" {% else %} value="0.0" {% endif %}>
+                        </div>
+                        {% if form.pcr_polymerase_cost.errors %}
+                        <ul class="errorList">
+                            {% for error in form.pcr_polymerase_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                        <div class="input-group mt-2" id="{{ form.pcr_polymerase_n_reacts.id_for_label }}" hidden>
+                            <input type="number" name="{{ form.pcr_polymerase_n_reacts.html_name }}" class="form-control" placeholder="1" 
+                            id="{{ form.pcr_polymerase_n_reacts.id_for_label }}" {% if form.is_bound %} value="{{ form.pcr_polymerase_n_reacts.value }}" {% else %} value="1" {% endif %}>
+                            <span class="input-group-text" id="pcr_poly_n">Reactions</span>
+                        </div>
+                        {% if form.pcr_polymerase_n_reacts.errors %}
+                        <ul class="errorList">
+                            {% for error in form.pcr_polymerase_n_reacts.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col">
+                        <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="poly_check">
                             <label class="form-check-label" for="poly_check">Polymerase</label>
                         </div>
@@ -386,6 +416,75 @@
                         {% if form.polymerase_cost.errors %}
                         <ul class="errorList">
                             {% for error in form.polymerase_cost.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <h2>Solution Ranking</h2>
+            <p>
+                Enter values for how solutions are ranked based on your preferences of number of parts and assembly cost.
+            </p>
+            <div class="col">
+                <div class="row mb-2">
+                    <div class="col">
+                        {{ form.parts_pref.label_tag }}
+                        <select class="form-select" name="{{ form.parts_pref.html_name }}" id="{{ form.parts_pref.id_for_label }}">
+                            <option selected value="1.0">1.0</option>
+                            <option value="0.9">0.9</option>
+                            <option value="0.8">0.8</option>
+                            <option value="0.7">0.7</option>
+                            <option value="0.6">0.6</option>
+                            <option value="0.5">0.5</option>
+                            <option value="0.4">0.4</option>
+                            <option value="0.3">0.3</option>
+                            <option value="0.2">0.2</option>
+                            <option value="0.1">0.1</option>
+                            <option value="0.0">0.0</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        {{ form.cost_pref.label_tag }}
+                        <select class="form-select" name="{{ form.cost_pref.html_name }}" id="{{ form.cost_pref.id_for_label }}">
+                            <option selected value="1.0">1.0</option>
+                            <option value="0.9">0.9</option>
+                            <option value="0.8">0.8</option>
+                            <option value="0.7">0.7</option>
+                            <option value="0.6">0.6</option>
+                            <option value="0.5">0.5</option>
+                            <option value="0.4">0.4</option>
+                            <option value="0.3">0.3</option>
+                            <option value="0.2">0.2</option>
+                            <option value="0.1">0.1</option>
+                            <option value="0.0">0.0</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <h2>Experimental Probabilities</h2>
+            <p>
+                Enter values for your expected experimental probabilities of success.
+            </p>
+            <div class="col">
+                <div class="row mb-2">
+                    <div class="col">
+                        {{ form.pcr_ps.label_tag }}
+                        <div class="input-group mt-2" id="{{ form.pcr_ps.id_for_label }}">
+                            <input type="number" name="{{ form.pcr_ps.html_name }}" class="form-control" placeholder="0.5" 
+                            id="{{ form.pcr_ps.id_for_label }}" {% if form.is_bound %} value="{{ form.pcr_ps.value }}" {% endif %}>
+                            <span class="input-group-text" id="{{ form.pcr_ps.id_for_label }}">P<sub>success</sub></span>
+                        </div>
+                        {% if form.pcr_ps.errors %}
+                        <ul class="errorList">
+                            {% for error in form.pcr_ps.errors %}
                                 <li class="text-danger">{{ error|escape }}</li>
                             {% endfor %}
                         </ul>
