@@ -1901,7 +1901,8 @@ def bundle_create_service(bundle_data):
             primer_cost=bundle_data['primer_cost'],
             part_cost=bundle_data['part_cost'],
             gene_cost=bundle_data['gene_cost'],
-            polymerase_cost=bundle_data['pcr_polymerase_cost']
+            pcr_polymerase_cost=bundle_data['pcr_polymerase_cost'],
+            pcr_polymerase_n_reacts=bundle_data['pcr_polymerase_n_reacts']
         )
         pcr_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         pcr_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))

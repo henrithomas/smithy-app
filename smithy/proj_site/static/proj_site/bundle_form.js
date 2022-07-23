@@ -99,15 +99,6 @@ document.getElementById('gg_ligase_check').addEventListener('click', function() 
     }
 });
 
-document.getElementById('pcr_poly_check').addEventListener('click', function() {
-    if (this.checked) {
-        document.getElementById('id_pcr_polymerase_cost').removeAttribute('hidden');
-    }
-    else {
-        document.getElementById('id_pcr_polymerase_cost').setAttribute('hidden', true);
-    }
-});
-
 document.getElementById('slic_exo_check').addEventListener('click', function() {
     if (this.checked) {
         document.getElementById('id_slic_exonuclease_cost').removeAttribute('hidden');

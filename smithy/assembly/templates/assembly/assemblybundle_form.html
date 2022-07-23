@@ -685,28 +685,6 @@
                             </ul>
                         {% endif %}
                     </div>
-                    <div class="row">
-                        <h3>Enzymes</h3>
-                        <p>Which enzymes do you need to purchase?</p>
-                        <div class="col">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="pcr_poly_check">
-                                <label class="form-check-label" for="pcr_poly_check">Polymerase</label>
-                            </div>
-                            <div class="input-group mt-2" id="{{ bundle_form.pcr_polymerase_cost.id_for_label }}" hidden>
-                                <span class="input-group-text" id="pcr_poly_enz">$</span>
-                                <input type="number" name="{{ bundle_form.pcr_polymerase_cost.html_name }}" class="form-control" placeholder="100.00" 
-                                id="{{ bundle_form.pcr_polymerase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.pcr_polymerase_cost.value }}" {% else %} value="0.0" {% endif %}>
-                            </div>
-                            {% if bundle_form.pcr_polymerase_cost.errors %}
-                            <ul class="errorList">
-                                {% for error in bundle_form.pcr_polymerase_cost.errors %}
-                                    <li class="text-danger">{{ error|escape }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                        </div>
-                    </div>
                 </div>
             </div>
             <hr/>
