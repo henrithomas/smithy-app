@@ -933,6 +933,7 @@ def slic_create_service(obj):
             ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
             parts_pref=obj.parts_pref,
             cost_pref=obj.cost_pref,
+            pcr_ps=obj.pcr_ps,
             slic_exo_ps=obj.chewback_ps,
             ligation_ps=obj.ligation_ps
         )
@@ -951,6 +952,7 @@ def slic_create_service(obj):
             ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
             parts_pref=obj.parts_pref,
             cost_pref=obj.cost_pref,
+            pcr_ps=obj.pcr_ps,
             slic_exo_ps=obj.chewback_ps,
             ligation_ps=obj.ligation_ps
         )
@@ -1397,7 +1399,7 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
     enzyme_orders = []
     
-    if obj.polymerase_cost > 0.0:
+    if obj.pcr_polymerase_cost > 0.0:
         enzyme_orders.append('Phusion polymerase')
 
     pcr = pcr_time(part_lengths + primer_lengths)
@@ -1406,7 +1408,7 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
         plasmid_count,
-        [obj.polymerase_cost],
+        [obj.pcr_polymerase_cost],
         ['polymerase']
     )
     pcr_risk = {

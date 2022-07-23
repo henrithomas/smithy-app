@@ -186,11 +186,11 @@ class FragmentTree:
 
         for l in lengths:
             if l <= 100:
-                seq_costs.append(l * part_costs[0])
+                seq_costs.append(l * self.part_costs[0])
             elif l > 100 and l <= 1000:
-                seq_costs.append(l * part_costs[1])
+                seq_costs.append(l * self.part_costs[1])
             else:
-                seq_costs.append(l * part_costs[2])
+                seq_costs.append(l * self.part_costs[2])
 
         for cost in seq_costs:
             total += (cost + self.pcr_polymerase_cost) / self.pcr_ps
