@@ -431,7 +431,6 @@ class PCRCreateView(SuccessMessageMixin, CreateView):
         'primer_cost',
         'part_cost',
         'gene_cost',
-        'polymerase_cost',
         'pcr_polymerase_cost',
         'pcr_polymerase_n_reacts',
         'pcr_ps',

@@ -431,8 +431,8 @@
             <div class="col">
                 <div class="row mb-2">
                     <div class="col">
-                        {{ form.parts_pref.label_tag }}
-                        <select class="form-select" name="{{ form.parts_pref.html_name }}" id="{{ form.parts_pref.id_for_label }}">
+                        {{ bundle_form.parts_pref.label_tag }}
+                        <select class="form-select" name="{{ bundle_form.parts_pref.html_name }}" id="{{ bundle_form.parts_pref.id_for_label }}">
                             <option selected value="1.0">1.0</option>
                             <option value="0.9">0.9</option>
                             <option value="0.8">0.8</option>
@@ -447,8 +447,8 @@
                         </select>
                     </div>
                     <div class="col">
-                        {{ form.cost_pref.label_tag }}
-                        <select class="form-select" name="{{ form.cost_pref.html_name }}" id="{{ form.cost_pref.id_for_label }}">
+                        {{ bundle_form.cost_pref.label_tag }}
+                        <select class="form-select" name="{{ bundle_form.cost_pref.html_name }}" id="{{ bundle_form.cost_pref.id_for_label }}">
                             <option selected value="1.0">1.0</option>
                             <option value="0.9">0.9</option>
                             <option value="0.8">0.8</option>
@@ -473,15 +473,15 @@
                 Enter values for your expected experimental probabilities of success.
             </p>
             <div class="col">
-                {{ form.pcr_ps.label_tag }}
-                <div class="input-group mt-2" id="{{ form.pcr_ps.id_for_label }}">
-                    <input type="number" name="{{ form.pcr_ps.html_name }}" class="form-control" placeholder="0.5" 
-                    id="{{ form.pcr_ps.id_for_label }}" {% if form.is_bound %} value="{{ form.pcr_ps.value }}" {% endif %}>
-                    <span class="input-group-text" id="{{ form.pcr_ps.id_for_label }}">P<sub>success</sub></span>
+                <label for="id_pcr_ps">PCR probability of success:</label>
+                <div class="input-group mt-2" id="{{ bundle_form.pcr_ps.id_for_label }}">
+                    <input type="number" name="{{ bundle_form.pcr_ps.html_name }}" class="form-control" placeholder="0.5" 
+                    id="{{ bundle_form.pcr_ps.id_for_label }}" {% if form.is_bound %} value="{{ bundle_form.pcr_ps.value }}" {% endif %}>
+                    <span class="input-group-text" id="{{ bundle_form.pcr_ps.id_for_label }}">P<sub>success</sub></span>
                 </div>
-                {% if form.pcr_ps.errors %}
+                {% if bundle_form.pcr_ps.errors %}
                 <ul class="errorList">
-                    {% for error in form.pcr_ps.errors %}
+                    {% for error in bundle_form.pcr_ps.errors %}
                         <li class="text-danger">{{ error|escape }}</li>
                     {% endfor %}
                 </ul>

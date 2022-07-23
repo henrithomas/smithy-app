@@ -1270,7 +1270,7 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
     biobricks_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
-        plasmid_count
+        plasmid_count,
         [obj.EcoRI_cost, obj.XbaI_cost, obj.SpeI_cost, obj.PstI_cost],
         ['EcoRI', 'XbaI', 'SpeI', 'PstI']
     )

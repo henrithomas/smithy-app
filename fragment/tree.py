@@ -210,7 +210,7 @@ class FragmentTree:
         return 0.0
 
     def biobricks_cost(self, n):
-        return (2 * n - 1)((self.biobricks_digest_cost / self.biobricks_digest_ps) + (self.ligase_cost / self.ligation_ps))
+        return (2 * n - 1) * ((self.biobricks_digest_cost / self.biobricks_digest_ps) + (self.ligase_cost / self.ligation_ps))
 
     def score(self, path):
         expected_assembly_cost = 0.0
@@ -410,7 +410,8 @@ class FragmentTree:
         self.max = max(self.scores)
         print(f'highest score: {self.max}')
 
-        self.solutions.sort(reverse=True)
+        # self.solutions.sort(reverse=True)
+        self.solutions.sort()
         self.complete_solutions()
 
     def dfs(self, v, path=None):
