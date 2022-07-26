@@ -996,7 +996,6 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
         ]
     }
 
-    # TODO add a foreach solution in for the assembly
     gibson_solution = GibsonSolution(
         name=f'{obj.title} Solution',
         backbone=assembler.backbone.seq,

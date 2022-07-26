@@ -468,9 +468,9 @@
         <hr/>
 
         <div class="row mb-5">
-            <h2>Experimental Probabilities</h2>
+            <h2>PCR Probability</h2>
             <p>
-                Enter values for your expected experimental probabilities of success.
+                Enter the value for your expected experimental probabilities of success for PCR amplification of parts.
             </p>
             <div class="col">
                 <label for="id_pcr_ps">PCR probability of success:</label>
@@ -514,7 +514,7 @@
                             </ul>
                         {% endif %}
                     </div>
-                    <div class="row">
+                    <div class="row mb-2">
                         <h3>Enzymes</h3>
                         <p>Which enzymes do you need to purchase?</p>
                         <div class="col-md-4">
@@ -572,6 +572,24 @@
                             {% endif %}
                         </div>
                     </div>
+                    <div class="row">
+                        <h3>Assembly Probability</h3>
+                        <div class="col">
+                            <label for="id_gib_assembly_ps"></label>
+                            <div class="input-group mt-2" id="{{ bundle_form.gib_assembly_ps.id_for_label }}">
+                                <input type="number" name="{{ bundle_form.gib_assembly_ps.html_name }}" class="form-control" placeholder="0.5" 
+                                id="{{ bundle_form.gib_assembly_ps.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_assembly_ps.value }}" {% endif %}>
+                                <span class="input-group-text" id="{{ bundle_form.gib_assembly_ps.id_for_label }}">P<sub>success</sub></span>
+                            </div>
+                            {% if bundle_form.gib_assembly_ps.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.gib_assembly_ps.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
             <hr/>
@@ -616,7 +634,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-2">
                         <h3>Enzymes</h3>
                         <p>Which enzymes do you need to purchase?</p>
                         <div class="col-md-6">
@@ -650,6 +668,24 @@
                             {% if bundle_form.gg_ligase_cost.errors %}
                             <ul class="errorList">
                                 {% for error in bundle_form.gg_ligase_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h3>Assembly Probability</h3>
+                        <div class="col">
+                            <label for="id_gg_assembly_ps"></label>
+                            <div class="input-group mt-2" id="{{ bundle_form.gg_assembly_ps.id_for_label }}">
+                                <input type="number" name="{{ bundle_form.gg_assembly_ps.html_name }}" class="form-control" placeholder="0.5" 
+                                id="{{ bundle_form.gg_assembly_ps.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gg_assembly_ps.value }}" {% endif %}>
+                                <span class="input-group-text" id="{{ bundle_form.gg_assembly_ps.id_for_label }}">P<sub>success</sub></span>
+                            </div>
+                            {% if bundle_form.gg_assembly_ps.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.gg_assembly_ps.errors %}
                                     <li class="text-danger">{{ error|escape }}</li>
                                 {% endfor %}
                             </ul>
@@ -714,7 +750,7 @@
                             </ul>
                         {% endif %}
                     </div>
-                    <div class="row">
+                    <div class="row mb-2">
                         <h3>Enzymes</h3>
                         <p>Which enzymes do you need to purchase?</p>
                         <div class="col-md-6">
@@ -748,6 +784,39 @@
                             {% if bundle_form.slic_ligase_cost.errors %}
                             <ul class="errorList">
                                 {% for error in bundle_form.slic_ligase_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h3>Assembly Probabilities</h3>
+                        <div class="col">
+                            <label for="id_slic_chewback_ps"></label>
+                            <div class="input-group mt-2" id="{{ bundle_form.slic_chewback_ps.id_for_label }}">
+                                <input type="number" name="{{ bundle_form.slic_chewback_ps.html_name }}" class="form-control" placeholder="0.5" 
+                                id="{{ bundle_form.slic_chewback_ps.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.slic_chewback_ps.value }}" {% endif %}>
+                                <span class="input-group-text" id="{{ bundle_form.slic_chewback_ps.id_for_label }}">P<sub>success</sub></span>
+                            </div>
+                            {% if bundle_form.slic_chewback_ps.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.slic_chewback_ps.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        <div class="col">
+                            <label for="id_slic_ligation_ps"></label>
+                            <div class="input-group mt-2" id="{{ bundle_form.slic_ligation_ps.id_for_label }}">
+                                <input type="number" name="{{ bundle_form.slic_ligation_ps.html_name }}" class="form-control" placeholder="0.5" 
+                                id="{{ bundle_form.slic_ligation_ps.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.slic_ligation_ps.value }}" {% endif %}>
+                                <span class="input-group-text" id="{{ bundle_form.slic_ligation_ps.id_for_label }}">P<sub>success</sub></span>
+                            </div>
+                            {% if bundle_form.slic_ligation_ps.errors %}
+                            <ul class="errorList">
+                                {% for error in bundle_form.slic_ligation_ps.errors %}
                                     <li class="text-danger">{{ error|escape }}</li>
                                 {% endfor %}
                             </ul>
