@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator, FileExtensionValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
+from pkg_resources import require
 
 
 ovhngs = (
@@ -56,21 +57,31 @@ class BundleForm(forms.Form):
     gib_overlap = forms.IntegerField(required=False)
     gib_exonuclease_cost = forms.FloatField(required=False)
     gib_ligase_cost = forms.FloatField(required=False)
+    gib_ligase_n_reacts = forms.IntegerField(required=False)
+    gib_exonuclease_n_reacts = forms.IntegerField(required=False)
     gib_polymerase_cost = forms.FloatField(required=False)
     gib_assembly_ps = forms.FloatField(required=False)
     bb_EcoRI_cost = forms.FloatField(required=False)
     bb_XbaI_cost = forms.FloatField(required=False)
     bb_SpeI_cost = forms.FloatField(required=False)
     bb_PstI_cost = forms.FloatField(required=False)
+    bb_EcoRI_n_reacts = forms.IntegerField(required=False)
+    bb_XbaI_n_reacts = forms.IntegerField(required=False)
+    bb_SpeI_n_reacts = forms.IntegerField(required=False)
+    bb_PstI_n_reacts = forms.IntegerField(required=False)
     bb_digestion_ps = forms.FloatField(required=False)
     bb_ligation_ps = forms.FloatField(required=False)
     gg_re_cost = forms.FloatField(required=False)
     gg_ligase_cost = forms.FloatField(required=False)
+    gg_re_n_reacts = forms.IntegerField(required=False)
+    gg_ligase_n_reacts = forms.IntegerField(required=False)
     gg_assembly_ps = forms.FloatField(required=False)
     pcr_overlap = forms.IntegerField(required=False)
     slic_overlap = forms.IntegerField(required=False)
     slic_exonuclease_cost = forms.FloatField(required=False)
     slic_ligase_cost = forms.FloatField(required=False)
+    slic_exonuclease_n_reacts = forms.IntegerField(required=False)
+    slic_ligase_n_reacts = forms.IntegerField(required=False)
     slic_chewback_ps = forms.FloatField(required=False)
     slic_ligation_ps = forms.FloatField(required=False)
     primer_cost = forms.FloatField(required=False)
@@ -81,4 +92,3 @@ class BundleForm(forms.Form):
     pcr_polymerase_cost = forms.FloatField(required=False)
     pcr_polymerase_n_reacts = forms.IntegerField(required=False)
     pcr_ps = forms.FloatField(required=False)
-
