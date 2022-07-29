@@ -60,6 +60,7 @@ class BundleForm(forms.Form):
     gib_ligase_n_reacts = forms.IntegerField(required=False)
     gib_exonuclease_n_reacts = forms.IntegerField(required=False)
     gib_polymerase_cost = forms.FloatField(required=False)
+    gib_polymerase_n_reacts = forms.IntegerField(required=False)
     gib_assembly_ps = forms.FloatField(required=False)
     bb_EcoRI_cost = forms.FloatField(required=False)
     bb_XbaI_cost = forms.FloatField(required=False)
