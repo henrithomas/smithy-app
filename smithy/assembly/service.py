@@ -984,7 +984,11 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
         plasmid_count,
-        [obj.exonuclease_cost, obj.ligase_cost, obj.polymerase_cost],
+        [
+            obj.exonuclease_cost / obj.exonuclease_n_reacts, 
+            obj.ligase_cost / obj.ligase_n_reacts, 
+            obj.polymerase_cost / obj.polymerase_n_reacts
+        ],
         ['exonuclease', 'ligase', 'polymerase']
     )
     gibson_risk = {
@@ -1123,7 +1127,10 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
         plasmid_count,
-        [obj.re_cost, obj.ligase_cost],
+        [
+            obj.re_cost / obj.re_n_reacts, 
+            obj.ligase_cost / obj.ligase_n_reacts
+        ],
         ['type2s RE', 'ligase']
     )
     goldengate_risk = {
@@ -1248,7 +1255,7 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
     # pcr: P_s = 0.8
     # digestion: P_s = 0.9 
     # ligation: P_s = 0.8
-
+    cost_coefficient = 2 * len(fragments) - 1
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
@@ -1270,7 +1277,12 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
         plasmid_count,
-        [obj.EcoRI_cost, obj.XbaI_cost, obj.SpeI_cost, obj.PstI_cost],
+        [
+            cost_coefficient * (obj.EcoRI_cost / obj.EcoRI_n_reacts), 
+            cost_coefficient * (obj.XbaI_cost / obj.XbaI_n_reacts), 
+            cost_coefficient * (obj.SpeI_cost / obj.SpeI_n_reacts), 
+            cost_coefficient * (obj.PstI_cost / obj.PstI_n_reacts)
+        ],
         ['EcoRI', 'XbaI', 'SpeI', 'PstI']
     )
     biobricks_risk = {
@@ -1407,7 +1419,7 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
         plasmid_count,
-        [obj.pcr_polymerase_cost],
+        [obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts],
         ['polymerase']
     )
     pcr_risk = {
@@ -1545,7 +1557,10 @@ def slic_solution_service(obj, assembler, assembly, fragments):
         [obj.primer_cost, obj.part_cost, obj.gene_cost, obj.plasmid_cost],
         part_lengths + primer_lengths,
         plasmid_count,
-        [obj.exonuclease_cost, obj.ligase_cost],
+        [
+            obj.exonuclease_cost / obj.exonuclease_n_reacts, 
+            obj.ligase_cost / obj.ligase_n_reacts
+        ],
         ['exonuclease', 'ligase']
     )
     slic_risk = {
@@ -1752,7 +1767,11 @@ def bundle_create_service(bundle_data):
             gene_cost=bundle_data['gene_cost'],
             exonuclease_cost=bundle_data['gib_exonuclease_cost'],
             ligase_cost=bundle_data['gib_ligase_cost'],
-            polymerase_cost=bundle_data['gib_polymerase_cost']
+            polymerase_cost=bundle_data['gib_polymerase_cost'],
+            exonuclease_n_reacts=bundle_data['gib_exonuclease_n_reacts'],
+            ligase_n_reacts=bundle_data['gib_ligase_n_reacts'],
+            polymerase_n_reacts=bundle_data['gib_polymerase_n_reacts'],
+            assembly_ps=bundle_data['gib_assembly_ps']
         )
         gibson_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         gibson_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
@@ -1802,7 +1821,10 @@ def bundle_create_service(bundle_data):
             part_cost=bundle_data['part_cost'],
             gene_cost=bundle_data['gene_cost'],
             re_cost=bundle_data['gg_re_cost'],
-            ligase_cost=bundle_data['gg_ligase_cost']
+            ligase_cost=bundle_data['gg_ligase_cost'],
+            re_n_reacts=bundle_data['gg_re_n_reacts'],
+            ligase_n_reacts=bundle_data['gg_ligase_n_reacts'],
+            assembly_ps=bundle_data['gg_assembly_ps']
         )
         goldengate_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         goldengate_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
@@ -1853,7 +1875,15 @@ def bundle_create_service(bundle_data):
             EcoRI_cost=bundle_data['bb_EcoRI_cost'],
             XbaI_cost=bundle_data['bb_XbaI_cost'],
             SpeI_cost=bundle_data['bb_SpeI_cost'],
-            PstI_cost=bundle_data['bb_PstI_cost']
+            PstI_cost=bundle_data['bb_PstI_cost'],
+            EcoRI_n_reacts=bundle_data['bb_EcoRI_n_reacts'],
+            XbaI_n_reacts=bundle_data['bb_XbaI_n_reacts'],
+            SpeI_n_reacts=bundle_data['bb_SpeI_n_reacts'],
+            PstI_n_reacts=bundle_data['bb_PstI_n_reacts'],
+            ligase_cost=bundle_data['bb_ligase_cost'],
+            ligase_n_reacts=bundle_data['bb_ligase_n_reacts'],
+            digestion_ps=bundle_data['bb_digestion_ps'],
+            ligation_ps=bundle_data['bb_ligation_ps']
         )
         biobricks_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         biobricks_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))        
@@ -1950,7 +1980,11 @@ def bundle_create_service(bundle_data):
             part_cost=bundle_data['part_cost'],
             gene_cost=bundle_data['gene_cost'],
             exonuclease_cost=bundle_data['slic_exonuclease_cost'],
-            ligase_cost=bundle_data['slic_ligase_cost']
+            ligase_cost=bundle_data['slic_ligase_cost'],
+            exonuclease_n_reacts=bundle_data['slic_exonuclease_n_reacts'],
+            ligase_n_reacts=bundle_data['slic_ligase_n_reacts'],
+            chewback_ps=bundle_data['slic_chewback_ps'],
+            ligation_ps=bundle_data['slic_ligation_ps']
         )
         slic_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         slic_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
