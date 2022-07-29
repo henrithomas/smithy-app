@@ -117,7 +117,7 @@ if (pcr_bool) {
 }
 
 if (biobricks_bool) {
-    let [biobricks_offset, biobricks_offset_amt] = offset_check(pcr_cost_data.total, costMax);
+    let [biobricks_offset, biobricks_offset_amt] = offset_check(biobricks_cost_data.total, costMax);
 
     biobricks_time_chart(biobricks_time_data.times, biobricks_time_data.types, biobricks_time_data.total, "biobricks-time", "biobricks-time-sum", timeMax);
     biobricks_cost_chart(biobricks_cost_data.costs, biobricks_cost_data.types, biobricks_cost_data.total, "biobricks-cost", biobricks_offset, biobricks_offset_amt);
