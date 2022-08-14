@@ -172,7 +172,7 @@
                         BLAST alignment query results are filtered according to these sizes. 
                     </p>
                     <div class="col-md-6">
-                        {{ bundle_form.min_blast.label_tag }}
+                        <label for="id_min_blast">Min BLAST seq size (nt):</label>
                         <div class="input-group mt-2" id="{{ bundle_form.min_blast.id_for_label }}">
                             <input type="number" name="{{ bundle_form.min_blast.html_name }}" min="0" placeholder="100" class="form-control" required 
                             id="{{ bundle_form.min_blast.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.min_blast.value }}" {% endif %}>
@@ -188,7 +188,7 @@
                         <ul class="errorList" hidden></ul>
                     </div>
                     <div class="col-md-6">
-                        {{ bundle_form.max_blast.label_tag }}
+                        <label for="id_max_blast">Max BLAST seq size (nt):</label>
                         <div class="input-group mt-2" id="{{ bundle_form.max_blast.id_for_label }}">
                             <input type="number" name="{{ bundle_form.max_blast.html_name }}" class="form-control" placeholder="1000" required 
                             id="{{ bundle_form.max_blast.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.max_blast.value }}" {% endif %}>
@@ -208,7 +208,7 @@
                         Enter the minimum and maximum nucleotide sequence sizes to use for synthesized assembly sequences.
                     </p>
                     <div class="col-md-6">
-                        {{ bundle_form.min_synth.label_tag }}
+                        <label for="id_min_synth">Min synthetic seq size (nt):</label>
                         <div class="input-group mt-2" id="{{ bundle_form.min_synth.id_for_label }}">
                             <input type="number" name="{{ bundle_form.min_synth.html_name }}" min="0" placeholder="100" class="form-control" required 
                             id="{{ bundle_form.min_synth.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.min_synth.value }}" {% endif %}>
@@ -224,7 +224,7 @@
                         <ul class="errorList" hidden></ul>
                     </div>
                     <div class="col-md-6">
-                        {{ bundle_form.max_synth.label_tag }}
+                        <label for="id_max_synth">Max synthetic seq size (nt):</label>
                         <div class="input-group mt-2" id="{{ bundle_form.max_synth.id_for_label }}">
                             <input type="number" name="{{ bundle_form.max_synth.html_name }}" class="form-control" placeholder="1000" required 
                             id="{{ bundle_form.max_synth.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.max_synth.value }}" {% endif %}>
@@ -252,7 +252,7 @@
             <div class="col">
                 <div class="row mb-2">
                     <div class="col-md-6">
-                        {{ bundle_form.mv_conc.label_tag }}
+                        <label for="id_mv_conc">Monovalent ion concentration (mM):</label>
                         <div class="input-group mt-2" id="{{ bundle_form.mv_conc.id_for_label }}">
                             <input type="number" name="{{ bundle_form.mv_conc.html_name }}" class="form-control" placeholder="50" required
                             id="{{ bundle_form.mv_conc.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.mv_conc.value }}" {% endif %}>
@@ -267,7 +267,7 @@
                         {% endif %}
                     </div>
                     <div class="col-md-6">
-                        {{ bundle_form.dv_conc.label_tag }}
+                        <label for="id_dv_conc">Divalent ion concentration (mM):</label>
                         <div class="input-group mt-2" id="{{ bundle_form.dv_conc.id_for_label }}">
                             <input type="number" name="{{ bundle_form.dv_conc.html_name }}" class="form-control" placeholder="1.5" required
                             id="{{ bundle_form.dv_conc.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.dv_conc.value }}" {% endif %}>
@@ -284,7 +284,7 @@
                 </div>
                 <div class="row mb-2">
                     <div class="col-md-6">
-                        {{ bundle_form.dntp_conc.label_tag }}
+                        <label for="id_dntp_conc">dNTP ion concentration (mM):</label>
                         <div class="input-group mt-2" id="{{ bundle_form.dntp_conc.id_for_label }}">
                             <input type="number" name="{{ bundle_form.dntp_conc.html_name }}" class="form-control" placeholder="0.8" required
                             id="{{ bundle_form.dntp_conc.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.dntp_conc.value }}" {% endif %}>
@@ -299,7 +299,7 @@
                         {% endif %}
                     </div>
                     <div class="col-md-6">
-                        {{ bundle_form.dna_conc.label_tag }}
+                        <label for="id_dna_conc">DNA ion concentration (nM):</label>
                         <div class="input-group mt-2" id="{{ bundle_form.dna_conc.id_for_label }}">
                             <input type="number" name="{{ bundle_form.dna_conc.html_name }}" class="form-control" placeholder="50" required
                             id="{{ bundle_form.dna_conc.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.dna_conc.value }}" {% endif %}>
@@ -316,11 +316,11 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        {{ bundle_form.tm.label_tag }}
+                        <label for="id_tm">Melting temperature (&#8451;):</label>
                         <div class="input-group mt-2" id="{{ bundle_form.tm.id_for_label }}">
                             <input type="number" name="{{ bundle_form.tm.html_name }}" class="form-control" placeholder="60" required
                             id="{{ bundle_form.tm.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.tm.value }}" {% endif %}>
-                            <span class="input-group-text" id="{{ bundle_form.tm.id_for_label }}">mM</span>
+                            <span class="input-group-text" id="{{ bundle_form.tm.id_for_label }}">&#8451;</span>
                         </div>
                         {% if bundle_form.tm.errors %}
                         <ul class="errorList">
@@ -431,7 +431,7 @@
             <div class="col">
                 <div class="row mb-2">
                     <div class="col">
-                        {{ bundle_form.parts_pref.label_tag }}
+                        <label for="id_parts_pref">Parts count preference:</label>
                         <select class="form-select" name="{{ bundle_form.parts_pref.html_name }}" id="{{ bundle_form.parts_pref.id_for_label }}">
                             <option selected value="1.0">1.0</option>
                             <option value="0.9">0.9</option>
@@ -447,7 +447,7 @@
                         </select>
                     </div>
                     <div class="col">
-                        {{ bundle_form.cost_pref.label_tag }}
+                        <label for="id_cost_pref">Cost preference:</label>
                         <select class="form-select" name="{{ bundle_form.cost_pref.html_name }}" id="{{ bundle_form.cost_pref.id_for_label }}">
                             <option selected value="1.0">1.0</option>
                             <option value="0.9">0.9</option>

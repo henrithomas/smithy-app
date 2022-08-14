@@ -312,11 +312,11 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        {{ form.tm.label_tag }}
+                        <label for="id_tm">Melting temperature (&#8451;):</label>
                         <div class="input-group mt-2" id="{{ form.tm.id_for_label }}">
                             <input type="number" name="{{ form.tm.html_name }}" class="form-control" placeholder="60" required
                             id="{{ form.tm.id_for_label }}" {% if form.is_bound %} value="{{ form.tm.value }}" {% endif %}>
-                            <span class="input-group-text" id="{{ form.tm.id_for_label }}">mM</span>
+                            <span class="input-group-text" id="{{ form.tm.id_for_label }}">&#8451;</span>
                         </div>
                         {% if form.tm.errors %}
                         <ul class="errorList">

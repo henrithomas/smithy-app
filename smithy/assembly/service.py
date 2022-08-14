@@ -43,6 +43,8 @@ import csv
 import matplotlib.pyplot as plt
 from statistics import mean
 from math import log10
+from collections import defaultdict
+from math import inf
 
 #with open('/home/hthoma/files/config.json') as config_file:
 #    config = json.load(config_file)
@@ -53,6 +55,29 @@ def part_indexes(idx, length):
     left = length - 1 if idx == 0 else idx - 1
     right = 0 if idx == length - 1 else idx + 1 
     return left, right
+
+cluster_bounds = (
+    (1, 0, 1000),
+    (2, 1000, 2000),
+    (3, 2000, 3000),
+    (4, 3000, 4000),
+    (5, 4000, 5000),
+    (6, 5000, 6000),
+    (7, 6000, 7000),
+    (8, 7000, 8000),
+    (9, 8000, 9000),
+    (10, 9000, inf),
+)
+
+def pcr_clusters(nt_lengths):
+    clusters = defaultdict(list)
+
+    for l in nt_lengths:
+        for c, lower, upper in cluster_bounds:
+            if l > lower and l <= upper:
+                clusters[c].append(l)
+
+    return clusters
 
 def lengths_and_plasmids(assembly):
     primer_lengths = []
@@ -291,13 +316,16 @@ def costs(nt_costs, nt_lengths, plasmid_count, enz_costs, enz_types):
 def pcr_time(nt_lengths):
     pcr_time = 0.0
 
-    for length in nt_lengths:
-        step = 0.5 if length < 1000 else 0.5 * int(length / 1000)
-        denature = step + 0.3
-        anneal = step + 0.3
-        polymerization = step + 0.3
+    clusters = pcr_clusters(nt_lengths)
+
+    for cluster, lengths in clusters.items():
+        max_length = max(lengths)
+        step = 0.5 * cluster
+        denature = step + 0.4
+        anneal = step + 0.4
+        polymerization = step + 0.4
         time = 1.0 + 30 * (denature + anneal + polymerization) + 10.0
-        pcr_time += time
+        pcr_total += time
 
     return round(pcr_time / 60, 2)
 
