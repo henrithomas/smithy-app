@@ -204,7 +204,7 @@ class FragmentTree:
         return (self.restenz_cost + self.ligase_cost) / self.goldengate_ps
 
     def slic_cost(self):
-        return (self.exonuclease_cost / self.slic_exo_ps) + (self.ligase_cost / self.ligation_ps)
+        return (self.exonuclease_cost / self.slic_exo_ps)
 
     def pcrsoe_cost(self):
         return 0.0

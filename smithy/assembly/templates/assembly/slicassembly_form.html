@@ -267,7 +267,7 @@
                 </div>
                 <div class="row mb-2">
                     <div class="col-md-6">
-                        {{ form.dntp_conc.label_tag }}
+                        <label for="id_dntp_conc">dNTP ion concentration (mM):</label>
                         <div class="input-group mt-2" id="{{ form.dntp_conc.id_for_label }}">
                             <input type="number" name="{{ form.dntp_conc.html_name }}" class="form-control" placeholder="0.8" 
                             id="{{ form.dntp_conc.id_for_label }}" {% if form.is_bound %} value="{{ form.dntp_conc.value }}" {% endif %}>
@@ -330,7 +330,7 @@
                         {{ form.primer_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.primer_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.primer_cost.id_for_label }}">$</span>
-                            <input type="number" name="{{ form.primer_cost.html_name }}" class="form-control" placeholder="0.01" 
+                            <input type="number" name="{{ form.primer_cost.html_name }}" class="form-control" placeholder="0.41" 
                             id="{{ form.primer_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.primer_cost.value }}" {% endif %}>
                         </div>
                         {% if form.primer_cost.errors %}
@@ -345,7 +345,7 @@
                         {{ form.part_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.part_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.part_cost.id_for_label }}">$</span>
-                            <input type="number" name="{{ form.part_cost.html_name }}" class="form-control" placeholder="0.01" 
+                            <input type="number" name="{{ form.part_cost.html_name }}" class="form-control" placeholder="0.35" 
                             id="{{ form.part_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.part_cost.value }}" {% endif %}>
                         </div>
                         {% if form.part_cost.errors %}
@@ -360,7 +360,7 @@
                         {{ form.gene_cost.label_tag }}
                         <div class="input-group mt-2" id="{{ form.gene_cost.id_for_label }}">
                             <span class="input-group-text" id="{{ form.gene_cost.id_for_label }}">$</span>
-                            <input type="number" name="{{ form.gene_cost.html_name }}" class="form-control" placeholder="0.01" 
+                            <input type="number" name="{{ form.gene_cost.html_name }}" class="form-control" placeholder="0.40" 
                             id="{{ form.gene_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.gene_cost.value }}" {% endif %}>
                         </div>
                         {% if form.gene_cost.errors %}
@@ -378,12 +378,12 @@
                     <div class="col">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="pcr_poly_check">
-                            <label class="form-check-label" for="pcr_poly_check">PCR Polymerase</label>
+                            <label class="form-check-label" for="pcr_poly_check">Polymerase</label>
                         </div>
                         <div class="input-group mt-2" id="{{ form.pcr_polymerase_cost.id_for_label }}" hidden>
                             <span class="input-group-text" id="pcr_poly_enz">$</span>
-                            <input type="number" name="{{ form.pcr_polymerase_cost.html_name }}" class="form-control" placeholder="0.00" 
-                            id="{{ form.pcr_polymerase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.pcr_polymerase_cost.value }}" {% else %} value="0.0" {% endif %}>
+                            <input type="number" name="{{ form.pcr_polymerase_cost.html_name }}" class="form-control" placeholder="1.38" 
+                            id="{{ form.pcr_polymerase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.pcr_polymerase_cost.value }}" {% else %} value="1.38" {% endif %}>
                         </div>
                         {% if form.pcr_polymerase_cost.errors %}
                         <ul class="errorList">
@@ -405,7 +405,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-6">
+                    <!-- <div class="col-md-6">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="exo_check">
                             <label class="form-check-label" for="exo_check">Exonuclease</label>
@@ -434,8 +434,8 @@
                             {% endfor %}
                         </ul>
                         {% endif %}
-                    </div>
-                    <div class="col-md-6">
+                    </div> -->
+                    <!-- <div class="col-md-6">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="ligase_check">
                             <label class="form-check-label" for="ligase_check">Ligase</label>
@@ -464,7 +464,7 @@
                             {% endfor %}
                         </ul>
                         {% endif %}
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -472,40 +472,40 @@
         <div class="row mb-5">
             <h2>Solution Ranking</h2>
             <p>
-                Enter values for how solutions are ranked based on your preferences of number of parts and assembly cost.
+                Enter values for how solutions are ranked based on your weight of considerations of number of parts and assembly cost.
             </p>
             <div class="col">
                 <div class="row mb-2">
                     <div class="col">
                         {{ form.parts_pref.label_tag }}
                         <select class="form-select" name="{{ form.parts_pref.html_name }}" id="{{ form.parts_pref.id_for_label }}">
-                            <option selected value="1.0">1.0</option>
-                            <option value="0.9">0.9</option>
-                            <option value="0.8">0.8</option>
-                            <option value="0.7">0.7</option>
-                            <option value="0.6">0.6</option>
-                            <option value="0.5">0.5</option>
-                            <option value="0.4">0.4</option>
-                            <option value="0.3">0.3</option>
-                            <option value="0.2">0.2</option>
-                            <option value="0.1">0.1</option>
-                            <option value="0.0">0.0</option>
+                            <option selected value="1.0">10</option>
+                            <option value="0.9">9</option>
+                            <option value="0.8">8</option>
+                            <option value="0.7">7</option>
+                            <option value="0.6">6</option>
+                            <option value="0.5">5</option>
+                            <option value="0.4">4</option>
+                            <option value="0.3">3</option>
+                            <option value="0.2">2</option>
+                            <option value="0.1">1</option>
+                            <option value="0.0">0</option>
                         </select>
                     </div>
                     <div class="col">
                         {{ form.cost_pref.label_tag }}
                         <select class="form-select" name="{{ form.cost_pref.html_name }}" id="{{ form.cost_pref.id_for_label }}">
-                            <option selected value="1.0">1.0</option>
-                            <option value="0.9">0.9</option>
-                            <option value="0.8">0.8</option>
-                            <option value="0.7">0.7</option>
-                            <option value="0.6">0.6</option>
-                            <option value="0.5">0.5</option>
-                            <option value="0.4">0.4</option>
-                            <option value="0.3">0.3</option>
-                            <option value="0.2">0.2</option>
-                            <option value="0.1">0.1</option>
-                            <option value="0.0">0.0</option>
+                            <option selected value="1.0">10</option>
+                            <option value="0.9">9</option>
+                            <option value="0.8">8</option>
+                            <option value="0.7">7</option>
+                            <option value="0.6">6</option>
+                            <option value="0.5">5</option>
+                            <option value="0.4">4</option>
+                            <option value="0.3">3</option>
+                            <option value="0.2">2</option>
+                            <option value="0.1">1</option>
+                            <option value="0.0">0</option>
                         </select>
                     </div>
                 </div>
@@ -522,7 +522,7 @@
                     <div class="col">
                         {{ form.pcr_ps.label_tag }}
                         <div class="input-group mt-2" id="{{ form.pcr_ps.id_for_label }}">
-                            <input type="number" name="{{ form.pcr_ps.html_name }}" class="form-control" placeholder="0.5" 
+                            <input type="number" name="{{ form.pcr_ps.html_name }}" class="form-control" placeholder="0.8" 
                             id="{{ form.pcr_ps.id_for_label }}" {% if form.is_bound %} value="{{ form.pcr_ps.value }}" {% endif %}>
                             <span class="input-group-text" id="{{ form.pcr_ps.id_for_label }}">P<sub>success</sub></span>
                         </div>
@@ -537,7 +537,7 @@
                     <div class="col">
                         {{ form.chewback_ps.label_tag }}
                         <div class="input-group mt-2" id="{{ form.chewback_ps.id_for_label }}">
-                            <input type="number" name="{{ form.chewback_ps.html_name }}" class="form-control" placeholder="0.5" 
+                            <input type="number" name="{{ form.chewback_ps.html_name }}" class="form-control" placeholder="0.75" 
                             id="{{ form.chewback_ps.id_for_label }}" {% if form.is_bound %} value="{{ form.chewback_ps.value }}" {% endif %}>
                             <span class="input-group-text" id="{{ form.chewback_ps.id_for_label }}">P<sub>success</sub></span>
                         </div>
@@ -549,7 +549,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col">
+                    <!-- <div class="col">
                         {{ form.ligation_ps.label_tag }}
                         <div class="input-group mt-2" id="{{ form.ligation_ps.id_for_label }}">
                             <input type="number" name="{{ form.ligation_ps.html_name }}" class="form-control" placeholder="0.5" 
@@ -563,7 +563,7 @@
                             {% endfor %}
                         </ul>
                         {% endif %}
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

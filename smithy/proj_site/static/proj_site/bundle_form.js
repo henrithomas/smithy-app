@@ -111,28 +111,28 @@ document.getElementById('gg_ligase_check').addEventListener('click', function() 
     }
 });
 
-// slic
-document.getElementById('slic_exo_check').addEventListener('click', function() {
-    if (this.checked) {
-        document.getElementById('id_slic_exonuclease_cost').removeAttribute('hidden');
-        document.getElementById('id_slic_exonuclease_n_reacts').removeAttribute('hidden');
-    }
-    else {
-        document.getElementById('id_slic_exonuclease_cost').setAttribute('hidden', true);
-        document.getElementById('id_slic_exonuclease_n_reacts').setAttribute('hidden', true);
-    }
-});
+// // slic
+// document.getElementById('slic_exo_check').addEventListener('click', function() {
+//     if (this.checked) {
+//         document.getElementById('id_slic_exonuclease_cost').removeAttribute('hidden');
+//         document.getElementById('id_slic_exonuclease_n_reacts').removeAttribute('hidden');
+//     }
+//     else {
+//         document.getElementById('id_slic_exonuclease_cost').setAttribute('hidden', true);
+//         document.getElementById('id_slic_exonuclease_n_reacts').setAttribute('hidden', true);
+//     }
+// });
 
-document.getElementById('slic_ligase_check').addEventListener('click', function() {
-    if (this.checked) {
-        document.getElementById('id_slic_ligase_cost').removeAttribute('hidden');
-        document.getElementById('id_slic_ligase_n_reacts').removeAttribute('hidden');
-    }
-    else {
-        document.getElementById('id_slic_ligase_cost').setAttribute('hidden', true);
-        document.getElementById('id_slic_ligase_n_reacts').setAttribute('hidden', true);
-    }
-});
+// document.getElementById('slic_ligase_check').addEventListener('click', function() {
+//     if (this.checked) {
+//         document.getElementById('id_slic_ligase_cost').removeAttribute('hidden');
+//         document.getElementById('id_slic_ligase_n_reacts').removeAttribute('hidden');
+//     }
+//     else {
+//         document.getElementById('id_slic_ligase_cost').setAttribute('hidden', true);
+//         document.getElementById('id_slic_ligase_n_reacts').setAttribute('hidden', true);
+//     }
+// });
 
 // biobricks
 document.getElementById('bb_ligase_check').addEventListener('click', function() {

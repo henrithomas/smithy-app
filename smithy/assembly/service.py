@@ -957,13 +957,11 @@ def slic_create_service(obj):
                 obj.gene_cost
             ],
             pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
-            exonuclease_cost=(obj.exonuclease_cost / obj.exonuclease_n_reacts),
-            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+            exonuclease_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
             parts_pref=obj.parts_pref,
             cost_pref=obj.cost_pref,
             pcr_ps=obj.pcr_ps,
-            slic_exo_ps=obj.chewback_ps,
-            ligation_ps=obj.ligation_ps
+            slic_exo_ps=obj.chewback_ps
         )
     else:
         results, error = assembler.query()
@@ -976,13 +974,11 @@ def slic_create_service(obj):
                 obj.gene_cost
             ],
             pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
-            exonuclease_cost=(obj.exonuclease_cost / obj.exonuclease_n_reacts),
-            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+            exonuclease_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
             parts_pref=obj.parts_pref,
             cost_pref=obj.cost_pref,
             pcr_ps=obj.pcr_ps,
-            slic_exo_ps=obj.chewback_ps,
-            ligation_ps=obj.ligation_ps
+            slic_exo_ps=obj.chewback_ps
         )
     assembly, fragments = assembler.design(solution=0)
 
@@ -2008,11 +2004,8 @@ def bundle_create_service(bundle_data):
             part_cost=bundle_data['part_cost'],
             gene_cost=bundle_data['gene_cost'],
             exonuclease_cost=bundle_data['slic_exonuclease_cost'],
-            ligase_cost=bundle_data['slic_ligase_cost'],
             exonuclease_n_reacts=bundle_data['slic_exonuclease_n_reacts'],
-            ligase_n_reacts=bundle_data['slic_ligase_n_reacts'],
-            chewback_ps=bundle_data['slic_chewback_ps'],
-            ligation_ps=bundle_data['slic_ligation_ps']
+            chewback_ps=bundle_data['slic_chewback_ps']
         )
         slic_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         slic_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))

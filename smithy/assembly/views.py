@@ -536,16 +536,13 @@ class SLICCreateView(SuccessMessageMixin, CreateView):
         'part_cost',
         'gene_cost',
         'exonuclease_cost',
-        'ligase_cost',
         'pcr_polymerase_cost',
         'pcr_polymerase_n_reacts',
         'pcr_ps',
         'cost_pref',
         'parts_pref',
         'exonuclease_n_reacts',
-        'ligase_n_reacts',
         'chewback_ps',
-        'ligation_ps'
     ]
 
     def form_valid(self, form):
