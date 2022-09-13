@@ -314,7 +314,7 @@ def costs(nt_costs, nt_lengths, plasmid_count, enz_costs, enz_types):
     return costs
 
 def pcr_time(nt_lengths):
-    pcr_time = 0.0
+    pcr_total = 0.0
 
     clusters = pcr_clusters(nt_lengths)
 
@@ -327,7 +327,7 @@ def pcr_time(nt_lengths):
         time = 1.0 + 30 * (denature + anneal + polymerization) + 10.0
         pcr_total += time
 
-    return round(pcr_time / 60, 2)
+    return round(pcr_total / 60, 2)
 
 def goldengate_times(pcr, insert_count):
     # NEB protocol
