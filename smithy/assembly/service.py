@@ -81,7 +81,8 @@ def pcr_clusters(nt_lengths):
 
 def lengths_and_plasmids(assembly):
     primer_lengths = []
-    part_lengths = []
+    part_lengths_pcr = []
+    part_lengths_synth = []
     plasmid_count = 0
 
     for part in assembly[:-1]:
@@ -91,9 +92,10 @@ def lengths_and_plasmids(assembly):
                 len(part.reverse_primer.seq)
             ]
         )
+        part_lengths_pcr.append(part.template.seq.length)
 
         if part.annotations['db'] == 'NONE':
-            part_lengths.append(part.template.seq.length)
+            part_lengths_synth.append(part.template.seq.length)
         else:
             plasmid_count += 1
 
@@ -103,7 +105,9 @@ def lengths_and_plasmids(assembly):
             len(assembly[-1].reverse_primer.seq)
         ]
     )
-    return primer_lengths, part_lengths, plasmid_count
+    part_lengths_pcr.append(assembly[-1].template.seq.length)
+
+    return primer_lengths, part_lengths_synth, part_lengths_pcr, plasmid_count
 
 def parts_csv(solution_model, parts):
     """
@@ -992,7 +996,7 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-    primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
+    primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
     enzyme_orders = []
     
     if obj.exonuclease_cost > 0.0:
@@ -1002,7 +1006,7 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     if obj.polymerase_cost > 0.0:
         enzyme_orders.append('Phusion polymerase')
 
-    pcr = pcr_time(part_lengths + primer_lengths)
+    pcr = pcr_time(part_lengths_pcr)
     gibson_time = gibson_times(pcr)
     gibson_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
@@ -1137,7 +1141,7 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length + space
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-    primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
+    primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
     enzyme_orders = []
     
     if obj.re_cost > 0.0:
@@ -1145,7 +1149,7 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     if obj.ligase_cost > 0.0:
         enzyme_orders.append('Ligase')
 
-    pcr = pcr_time(part_lengths + primer_lengths)
+    pcr = pcr_time(part_lengths_pcr)
     goldengate_time = goldengate_times(pcr, len(fragments))
     goldengate_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
@@ -1283,7 +1287,7 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-    primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
+    primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
     enzyme_orders = []
     
     if obj.EcoRI_cost > 0.0:
@@ -1295,7 +1299,7 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
     if obj.PstI_cost > 0.0:
         enzyme_orders.append('PstI')
 
-    pcr = pcr_time(part_lengths + primer_lengths)
+    pcr = pcr_time(part_lengths_pcr)
     biobricks_time = biobricks_times(pcr, len(fragments))
     biobricks_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
@@ -1431,13 +1435,13 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-    primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
+    primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
     enzyme_orders = []
     
     if obj.pcr_polymerase_cost > 0.0:
         enzyme_orders.append('Phusion polymerase')
 
-    pcr = pcr_time(part_lengths + primer_lengths)
+    pcr = pcr_time(part_lengths_pcr)
     pcr_soe_time = pcr_soe_times(part_lengths + primer_lengths)
     pcr_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
@@ -1567,7 +1571,7 @@ def slic_solution_service(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-    primer_lengths, part_lengths, plasmid_count = lengths_and_plasmids(assembly)
+    primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
     enzyme_orders = []
     
     if obj.exonuclease_cost > 0.0:
@@ -1575,7 +1579,7 @@ def slic_solution_service(obj, assembler, assembly, fragments):
     if obj.ligase_cost > 0.0:
         enzyme_orders.append('Taq ligase')
 
-    pcr = pcr_time(part_lengths + primer_lengths)
+    pcr = pcr_time(part_lengths_pcr)
     slic_time = slic_times(pcr, obj.overlap)
     slic_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost, obj.plasmid_cost],
