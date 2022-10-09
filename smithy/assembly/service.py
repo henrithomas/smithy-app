@@ -45,6 +45,10 @@ from statistics import mean
 from math import log10
 from collections import defaultdict
 from math import inf
+from django.conf import settings
+
+img_path = settings.MEDIA_IMAGES_ROOT
+csv_path = settings.MEDIA_CSV_ROOT
 
 #with open('/home/hthoma/files/config.json') as config_file:
 #    config = json.load(config_file)
@@ -128,7 +132,8 @@ def parts_csv(solution_model, parts):
     None
     """
     file_name = f'{solution_model.name.replace(" ", "-")}-{solution_model.pk}-parts.csv'
-    temp_file = f'{smithy_path}media/csv/{file_name}'
+    temp_file = os.path.join(csv_path, file_name)
+    # temp_file = f'{smithy_path}media/csv/{file_name}'
 
     fields = ['id', 'length', 'length_ext', 'seq', 'seq_ext', 'query_start', 'query_end', 'subject_start', 'subject_end']
     csv_list = [
@@ -174,7 +179,8 @@ def primers_csv(solution_model, parts):
     None
     """
     file_name = f'{solution_model.name.replace(" ", "-")}-{solution_model.pk}-primers.csv'
-    temp_file = f'{smithy_path}media/csv/{file_name}'
+    temp_file = os.path.join(csv_path, file_name)
+    # temp_file = f'{smithy_path}media/csv/{file_name}'
 
     fields = ['id', 'primer_type', 'sequence', 'footprint', 'tail', 'tm_footprint', 'tm_total', 'gc', 
               'hairpin', 'hairpin_tm', 'hairpin_dg', 'hairpin_dh', 'hairpin_ds',
@@ -235,7 +241,8 @@ def primers_csv(solution_model, parts):
 
 def order_csv(solution_model, parts, enzymes):
     file_name = f'{solution_model.name.replace(" ", "-")}-{solution_model.pk}-order.csv'
-    temp_file = f'{smithy_path}media/csv/{file_name}'
+    temp_file = os.path.join(csv_path, file_name)
+    # temp_file = f'{smithy_path}media/csv/{file_name}'
 
     fields = ['id', 'type', 'sequence']
 
@@ -511,7 +518,8 @@ def part_map(part_model, part, left, right, name, space):
     -------
     """
     part_plot_name = f'{name.replace(" ", "-")}-map.png'
-    temp_plot = f'{smithy_path}media/images/{part_plot_name}'
+    temp_plot = os.path.join(img_path, part_plot_name)
+    # temp_plot = f'{smithy_path}media/images/{part_plot_name}'
 
     display_len = int(part.template.seq.length * 0.1)
     seq_len = 2 * display_len + 2 * space + part.template.seq.length
@@ -595,7 +603,8 @@ def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
     -------
     """
     plot_name = f'{assembly_name.replace(" ", "-")}_map.png'
-    temp_plot = f'{smithy_path}media/images/{plot_name}'   
+    temp_plot = os.path.join(img_path, plot_name)
+    # temp_plot = f'{smithy_path}media/images/{plot_name}'   
     features = []
     part_start = 0
     part_end = 0
@@ -1708,7 +1717,7 @@ def slic_solution_service(obj, assembler, assembly, fragments):
 def bundle_create_service(bundle_data):
     # save backbone and insert files here
     # smithy-app/smithy/media
-    path = f'{smithy_path}media/fasta'
+    path = os.path.join(settings.MEDIA_ROOT, 'fasta')
     backbone_name, backbone_extension = os.path.splitext(bundle_data['backbone_file'].name) 
     insert_name, insert_extension = os.path.splitext(bundle_data['insert_file'].name)
     backbone_file_path = f'{path}/{backbone_name}_{datetime.now():%S%f}{backbone_extension}'
