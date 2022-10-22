@@ -12,6 +12,8 @@
         Click on <em>View Solution</em> to see the parts (purchasable DNA sequences), primer designs for each part, and more that Smithy
         has created for that unique assembly solution. 
     </p>
+    <p class="fw-lighter">The cost and time calculations exclude the cost and time of experimental steps that are common to all compared cloning methods.</p>
+    
     <div class="row mb-4">
         <div class="col">
             <a href="{{ pcr.backbone_file.url }}" class="btn btn-outline-primary">
@@ -71,7 +73,7 @@
             <div class="row">
                 <div class="col">
                     <div class="chart-container">
-                        <canvas id="pcr-time"></canvas>    
+                        <canvas id="pcr-time" style="position: relative; height:50vh; width:30vw"></canvas>    
                     </div>
                     <div class="time-sum text-center" id="pcr-time-sum"></div>
                 </div>
@@ -80,7 +82,7 @@
                 </div>
                 <div class="col">
                     <div class="chart-container">
-                        <canvas id="pcr-risk"></canvas>
+                        <canvas id="pcr-risk" style="position: relative; height:50vh; width:30vw"></canvas>
                     </div>
                 </div>
             </div>

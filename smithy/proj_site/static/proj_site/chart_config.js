@@ -109,7 +109,11 @@ function risk_config(dataset_obj) {
                 y: {
                     beginAtZero: true,
                     max: 1,
-                    min: -1
+                    min: -1,
+                    title: {
+                        display: true,
+                        text: 'Log odds of failure'
+                    }
                 },
             },
             plugins: {
@@ -123,6 +127,10 @@ function risk_config(dataset_obj) {
                 tooltip: {
                     // mode: 'point'
                     enabled: true
+                },
+                subtitle: {
+                    display: true,
+                    text: '-1: less risk, 1: more risk'
                 }
             },
         }
