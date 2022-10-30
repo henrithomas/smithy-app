@@ -343,7 +343,7 @@ def pcr_time(nt_lengths):
 def goldengate_times(pcr, insert_count):
     # NEB protocol
     times = {}
-    time_types = ['pcr', 'digestion-ligation']
+    time_types = ['pcr', 'assembly']
     time_vals = [pcr]
 
     if insert_count == 1:
@@ -364,7 +364,7 @@ def goldengate_times(pcr, insert_count):
 def gibson_times(pcr):
     # NEB protocol
     times = {}
-    times_types = ['pcr', 'chewback, ligation, repair']
+    times_types = ['pcr', 'assembly']
     time_vals = [pcr, 1.0]
 
     times.update({'total': round(sum(time_vals), 2)})
@@ -1030,7 +1030,7 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     )
     gibson_risk = {
         'total': 0.35,
-        'types': ['pcr', 'chewback, ligation, repair'],
+        'types': ['pcr', 'assembly'],
         'risks': [
             log10((0.2) / 0.8), 
             log10((0.3) / 0.7)
@@ -1172,7 +1172,7 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     )
     goldengate_risk = {
         'total': 0.35,
-        'types': ['pcr', 'digestion, ligation'],
+        'types': ['pcr', 'assembly'],
         'risks': [
             log10((0.2) / 0.8), 
             log10((0.1) / 0.9)
@@ -1461,7 +1461,7 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     )
     pcr_risk = {
         'total': 0.35,
-        'types': ['amplification-recombination'],
+        'types': ['assembly'],
         'risks': [
             log10((0.2) / 0.8)
         ]

@@ -54,7 +54,7 @@ function time_config(dataset_obj, yMax) {
             plugins: {
                 title: {
                     display: true,
-                    text: 'Time (min)'
+                    text: 'Time (hr)'
                 }
             },
             scales: {
@@ -108,8 +108,8 @@ function risk_config(dataset_obj) {
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 1,
-                    min: -1,
+                    max: 2,
+                    min: -2,
                     title: {
                         display: true,
                         text: 'Log odds of failure'
@@ -130,7 +130,7 @@ function risk_config(dataset_obj) {
                 },
                 subtitle: {
                     display: true,
-                    text: '-1: less risk, 1: more risk'
+                    text: '-2: less risk, 2: more risk'
                 }
             },
         }
