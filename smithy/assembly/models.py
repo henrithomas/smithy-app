@@ -119,6 +119,8 @@ class Assembly(models.Model):
     plasmid_cost = models.FloatField(verbose_name='plasmid cost ($)', default=0.0)
     pcr_polymerase_cost = models.FloatField(verbose_name='PCR polymerase cost ($)', default=0.0)
     pcr_polymerase_n_reacts = models.PositiveIntegerField(verbose_name='PCR polymerase number of reactions', default=1, validators=[MinValueValidator(1)])
+    mastermix_cost = models.FloatField(verbose_name='Master mix cost ($)', default=0.0)
+    mastermix_n_reacts = models.PositiveIntegerField(verbose_name='Master mix number of reactions', default=1, validators=[MinValueValidator(1)])
     pcr_ps = models.FloatField(verbose_name='PCR probability of success', default=0.0)
     cost_pref = models.FloatField(verbose_name='cost preference', default=0.0)
     parts_pref = models.FloatField(verbose_name='parts count preference', default=0.0)

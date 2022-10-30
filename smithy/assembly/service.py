@@ -361,11 +361,12 @@ def goldengate_times(pcr, insert_count):
 
     return times
 
-def gibson_times(pcr):
+def gibson_times(pcr, parts_count):
     # NEB protocol
+    assembly = 0.25 if parts_count <= 3 else 1.0
     times = {}
     times_types = ['pcr', 'assembly']
-    time_vals = [pcr, 1.0]
+    time_vals = [pcr, assembly]
 
     times.update({'total': round(sum(time_vals), 2)})
     times.update({'types': times_types})
@@ -1016,7 +1017,7 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
         enzyme_orders.append('Phusion polymerase')
 
     pcr = pcr_time(part_lengths_pcr)
-    gibson_time = gibson_times(pcr)
+    gibson_time = gibson_times(pcr, len(fragments))
     gibson_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
