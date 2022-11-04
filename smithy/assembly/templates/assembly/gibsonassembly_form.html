@@ -372,14 +372,44 @@
                         {% endif %}
                     </div>
                 </div>
-                <div class="row mb-2">
+                <div class="row mb-1">
                     <h4>Enzymes</h4>
-                    <p>Which enzymes do you need to purchase?</p>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="mmix_check">
-                        <label class="form-check-label" for="mmix_check">Master mix?</label>
+                    <div class="col">
+                        <p>Which enzymes do you need to purchase? </p>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="mmix_check">
+                            <label class="form-check-label" for="mmix_check"><strong>Master mix?</strong></label>
+                        </div>
                     </div>
-                    <div class="col-md-3" id="pcr_poly_col">
+                </div>
+                <div class="row mb-2">  
+                    <div class="col-sm-3" id="mmix_col" hidden>
+                        <div class="input-group mt-2" id="{{ form.mastermix_cost.id_for_label }}">
+                            <span class="input-group-text" id="mmix_enz">$</span>
+                            <input type="number" name="{{ form.mastermix_cost.html_name }}" class="form-control" placeholder="1.00" 
+                            id="{{ form.mastermix_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.mastermix_cost.value }}" {% else %} value="1.00" {% endif %}>
+                        </div>
+                        {% if form.mastermix_cost.errors %}
+                            <ul class="errorList">
+                                {% for error in form.mastermix_cost.errors %}
+                                    <li class="text-danger">{{ error|escape }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <div class="input-group mt-2" id="{{ form.mastermix_n_reacts.id_for_label }}">
+                            <input type="number" name="{{ form.mastermix_n_reacts.html_name }}" class="form-control" placeholder="1" 
+                            id="{{ form.mastermix_n_reacts.id_for_label }}" {% if form.is_bound %} value="{{ form.mastermix_n_reacts.value }}" {% else %} value="1" {% endif %}>
+                            <span class="input-group-text" id="mmix_n">Reactions</span>
+                        </div>
+                        {% if form.mastermix_n_reacts.errors %}
+                        <ul class="errorList">
+                            {% for error in form.mastermix_n_reacts.errors %}
+                                <li class="text-danger">{{ error|escape }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <div class="col" id="pcr_poly_col">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="pcr_poly_check">
                             <label class="form-check-label" for="pcr_poly_check">PCR Polymerase</label>
@@ -409,7 +439,7 @@
                         </ul>
                         {% endif %}
                     </div>                    
-                    <div class="col-md-3" id="exo_col">
+                    <div class="col" id="exo_col">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="exo_check">
                             <label class="form-check-label" for="exo_check">Exonuclease</label>
@@ -439,7 +469,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3" id="lig_col">
+                    <div class="col" id="lig_col">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="ligase_check">
                             <label class="form-check-label" for="ligase_check">Ligase</label>
@@ -469,7 +499,7 @@
                         </ul>
                         {% endif %}
                     </div>
-                    <div class="col-md-3" id="poly_col">
+                    <div class="col" id="poly_col">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="poly_check">
                             <label class="form-check-label" for="poly_check">Polymerase</label>
@@ -494,32 +524,6 @@
                         {% if form.polymerase_n_reacts.errors %}
                         <ul class="errorList">
                             {% for error in form.polymerase_n_reacts.errors %}
-                                <li class="text-danger">{{ error|escape }}</li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-3" id="mmix_col" hidden>
-                        <div class="input-group mt-2" id="{{ form.mastermix_cost.id_for_label }}" hidden>
-                            <span class="input-group-text" id="mmix_enz">$</span>
-                            <input type="number" name="{{ form.mastermix_cost.html_name }}" class="form-control" placeholder="1.00" 
-                            id="{{ form.mastermix_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.mastermix_cost.value }}" {% else %} value="1.00" {% endif %}>
-                        </div>
-                        {% if form.mastermix_cost.errors %}
-                            <ul class="errorList">
-                                {% for error in form.mastermix_cost.errors %}
-                                    <li class="text-danger">{{ error|escape }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                        <div class="input-group mt-2" id="{{ form.mastermix_n_reacts.id_for_label }}" hidden>
-                            <input type="number" name="{{ form.mastermix_n_reacts.html_name }}" class="form-control" placeholder="1" 
-                            id="{{ form.mastermix_n_reacts.id_for_label }}" {% if form.is_bound %} value="{{ form.mastermix_n_reacts.value }}" {% else %} value="1" {% endif %}>
-                            <span class="input-group-text" id="mmix_n">Reactions</span>
-                        </div>
-                        {% if form.mastermix_n_reacts.errors %}
-                        <ul class="errorList">
-                            {% for error in form.mastermix_n_reacts.errors %}
                                 <li class="text-danger">{{ error|escape }}</li>
                             {% endfor %}
                         </ul>

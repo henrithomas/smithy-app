@@ -1009,12 +1009,26 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
     enzyme_orders = []
     
-    if obj.exonuclease_cost > 0.0:
-        enzyme_orders.append('T5 exonuclease')
-    if obj.ligase_cost > 0.0:
-        enzyme_orders.append('Taq ligase')
-    if obj.polymerase_cost > 0.0:
-        enzyme_orders.append('Phusion polymerase')
+    if obj.mastermix_cost > 0.0:
+        enzyme_orders.append('Mastermix enzyme')
+    else:
+        if obj.exonuclease_cost > 0.0:
+            enzyme_orders.append('T5 exonuclease')
+        if obj.ligase_cost > 0.0:
+            enzyme_orders.append('Taq ligase')
+        if obj.polymerase_cost > 0.0:
+            enzyme_orders.append('Phusion polymerase')
+
+    if obj.mastermix_cost > 0.0:
+        gib_enz_costs = [ obj.mastermix_cost/obj.mastermix_n_reacts ]
+        gib_enz_types = ['mastermix']
+    else:
+        gib_enz_costs = [
+            obj.exonuclease_cost / obj.exonuclease_n_reacts, 
+            obj.ligase_cost / obj.ligase_n_reacts, 
+            obj.polymerase_cost / obj.polymerase_n_reacts
+        ]
+        gib_enz_types = ['exonuclease', 'ligase', 'polymerase']
 
     pcr = pcr_time(part_lengths_pcr)
     gibson_time = gibson_times(pcr, len(fragments))
@@ -1022,12 +1036,8 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
         plasmid_count,
-        [
-            obj.exonuclease_cost / obj.exonuclease_n_reacts, 
-            obj.ligase_cost / obj.ligase_n_reacts, 
-            obj.polymerase_cost / obj.polymerase_n_reacts
-        ],
-        ['exonuclease', 'ligase', 'polymerase']
+        gib_enz_costs,
+        gib_enz_types
     )
     gibson_risk = {
         'total': 0.35,
@@ -1809,7 +1819,9 @@ def bundle_create_service(bundle_data):
             exonuclease_n_reacts=bundle_data['gib_exonuclease_n_reacts'],
             ligase_n_reacts=bundle_data['gib_ligase_n_reacts'],
             polymerase_n_reacts=bundle_data['gib_polymerase_n_reacts'],
-            assembly_ps=bundle_data['gib_assembly_ps']
+            assembly_ps=bundle_data['gib_assembly_ps'],
+            mastermix_cost=bundle_data['gib_mmix_cost'],
+            mastermix_n_reacts=bundle_data['gib_mmix_n_reacts']
         )
         gibson_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         gibson_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
@@ -1862,7 +1874,9 @@ def bundle_create_service(bundle_data):
             ligase_cost=bundle_data['gg_ligase_cost'],
             re_n_reacts=bundle_data['gg_re_n_reacts'],
             ligase_n_reacts=bundle_data['gg_ligase_n_reacts'],
-            assembly_ps=bundle_data['gg_assembly_ps']
+            assembly_ps=bundle_data['gg_assembly_ps'],
+            mastermix_cost=bundle_data['gg_mmix_cost'],
+            mastermix_n_reacts=bundle_data['gg_mmix_n_reacts']
         )
         goldengate_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         goldengate_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
@@ -1969,7 +1983,9 @@ def bundle_create_service(bundle_data):
             part_cost=bundle_data['part_cost'],
             gene_cost=bundle_data['gene_cost'],
             pcr_polymerase_cost=bundle_data['pcr_polymerase_cost'],
-            pcr_polymerase_n_reacts=bundle_data['pcr_polymerase_n_reacts']
+            pcr_polymerase_n_reacts=bundle_data['pcr_polymerase_n_reacts'],
+            mastermix_cost=bundle_data['pcr_mmix_cost'],
+            mastermix_n_reacts=bundle_data['pcr_mmix_n_reacts']
         )
         pcr_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         pcr_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
