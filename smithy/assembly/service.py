@@ -1011,6 +1011,8 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     
     if obj.mastermix_cost > 0.0:
         enzyme_orders.append('Mastermix enzyme')
+        gib_enz_costs = [ obj.mastermix_cost / obj.mastermix_n_reacts ]
+        gib_enz_types = ['Mastermix']
     else:
         if obj.exonuclease_cost > 0.0:
             enzyme_orders.append('T5 exonuclease')
@@ -1018,17 +1020,12 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
             enzyme_orders.append('Taq ligase')
         if obj.polymerase_cost > 0.0:
             enzyme_orders.append('Phusion polymerase')
-
-    if obj.mastermix_cost > 0.0:
-        gib_enz_costs = [ obj.mastermix_cost/obj.mastermix_n_reacts ]
-        gib_enz_types = ['mastermix']
-    else:
         gib_enz_costs = [
             obj.exonuclease_cost / obj.exonuclease_n_reacts, 
             obj.ligase_cost / obj.ligase_n_reacts, 
             obj.polymerase_cost / obj.polymerase_n_reacts
         ]
-        gib_enz_types = ['exonuclease', 'ligase', 'polymerase']
+        gib_enz_types = ['Exonuclease', 'Ligase', 'Polymerase']
 
     pcr = pcr_time(part_lengths_pcr)
     gibson_time = gibson_times(pcr, len(fragments))
@@ -1041,7 +1038,7 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     )
     gibson_risk = {
         'total': 0.35,
-        'types': ['pcr', 'assembly'],
+        'types': ['PCR', 'Assembly'],
         'risks': [
             log10((0.2) / 0.8), 
             log10((0.3) / 0.7)
@@ -1166,22 +1163,19 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
 
     if obj.mastermix_cost > 0.0:
         enzyme_orders.append('Mastermix enzyme')
+        gg_enz_costs = [ obj.mastermix_cost / obj.mastermix_n_reacts ]
+        gg_enz_types = ['Mastermix']
     else:
         if obj.re_cost > 0.0:
             enzyme_orders.append('Type2S')
         if obj.ligase_cost > 0.0:
             enzyme_orders.append('Ligase')
-
-    if obj.mastermix_cost > 0.0:
-        gg_enz_costs = [ obj.mastermix_cost/obj.mastermix_n_reacts ]
-        gg_enz_types = ['mastermix']
-    else:
         gg_enz_costs = [
             obj.re_cost / obj.re_n_reacts, 
             obj.ligase_cost / obj.ligase_n_reacts
         ]
-        gg_enz_types = ['type2s RE', 'ligase']
-
+        gg_enz_types = ['Type2s RE', 'Ligase']
+        
     pcr = pcr_time(part_lengths_pcr)
     goldengate_time = goldengate_times(pcr, len(fragments))
     goldengate_cost = costs(
@@ -1193,7 +1187,7 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     )
     goldengate_risk = {
         'total': 0.35,
-        'types': ['pcr', 'assembly'],
+        'types': ['PCR', 'Assembly'],
         'risks': [
             log10((0.2) / 0.8), 
             log10((0.1) / 0.9)
@@ -1345,7 +1339,7 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
     )
     biobricks_risk = {
         'total': 0.35,
-        'types': ['pcr', 'digestion', 'ligation'],
+        'types': ['PCR', 'Digestion', 'Ligation'],
         'risks': [
             log10((0.2) / 0.8), 
             log10((0.1) / 0.9), 
@@ -1470,17 +1464,14 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     
     if obj.mastermix_cost > 0.0:
         enzyme_orders.append('Mastermix enzyme')
+        pcr_enz_costs = [ obj.mastermix_cost / obj.mastermix_n_reacts ]
+        pcr_enz_types = ['Mastermix']
     else:
         if obj.pcr_polymerase_cost > 0.0:
             enzyme_orders.append('Phusion polymerase')
-
-    if obj.mastermix_cost > 0.0:
-        pcr_enz_costs = [ obj.mastermix_cost/obj.mastermix_n_reacts ]
-        pcr_enz_types = ['mastermix']
-    else:
         pcr_enz_costs = [obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts]
-        pcr_enz_types = ['polymerase']
-
+        pcr_enz_types = ['Polymerase']
+        
     pcr_soe_time = pcr_soe_times(part_lengths_pcr)
     pcr_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
@@ -1491,7 +1482,7 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     )
     pcr_risk = {
         'total': 0.35,
-        'types': ['assembly'],
+        'types': ['Assembly'],
         'risks': [
             log10((0.2) / 0.8)
         ]
@@ -1628,11 +1619,11 @@ def slic_solution_service(obj, assembler, assembly, fragments):
             obj.exonuclease_cost / obj.exonuclease_n_reacts, 
             obj.ligase_cost / obj.ligase_n_reacts
         ],
-        ['exonuclease', 'ligase']
+        ['Exonuclease', 'Ligase']
     )
     slic_risk = {
         'total': 0.35,
-        'types': ['pcr', 'chewback', 'ligation'],
+        'types': ['PCR', 'Chewback', 'Ligation'],
         'risks': [
             log10((0.2) / 0.8), 
             log10((0.2) / 0.8), 
