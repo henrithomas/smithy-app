@@ -526,26 +526,26 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-sm-3" id="gib_mmix_col" hidden>
-                            <div class="input-group mt-2" id="{{ form.gib_mmix_cost.id_for_label }}">
+                            <div class="input-group mt-2" id="{{ bundle_form.gib_mmix_cost.id_for_label }}">
                                 <span class="input-group-text" id="gib_mmix_enz">$</span>
-                                <input type="number" name="{{ form.gib_mmix_cost.html_name }}" class="form-control" placeholder="1.00" 
-                                id="{{ form.gib_mmix_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.gib_mmix_cost.value }}" {% else %} value="1.00" {% endif %}>
+                                <input type="number" name="{{ bundle_form.gib_mmix_cost.html_name }}" class="form-control" placeholder="1.00" 
+                                id="{{ bundle_form.gib_mmix_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_mmix_cost.value }}" {% else %} value="1.00" {% endif %}>
                             </div>
-                            {% if form.gib_mmix_cost.errors %}
+                            {% if bundle_form.gib_mmix_cost.errors %}
                                 <ul class="errorList">
-                                    {% for error in form.gib_mmix_cost.errors %}
+                                    {% for error in bundle_form.gib_mmix_cost.errors %}
                                         <li class="text-danger">{{ error|escape }}</li>
                                     {% endfor %}
                                 </ul>
                             {% endif %}
-                            <div class="input-group mt-2" id="{{ form.gib_mmix_n_reacts.id_for_label }}">
-                                <input type="number" name="{{ form.gib_mmix_n_reacts.html_name }}" class="form-control" placeholder="1" 
-                                id="{{ form.gib_mmix_n_reacts.id_for_label }}" {% if form.is_bound %} value="{{ form.gib_mmix_n_reacts.value }}" {% else %} value="1" {% endif %}>
+                            <div class="input-group mt-2" id="{{ bundle_form.gib_mmix_n_reacts.id_for_label }}">
+                                <input type="number" name="{{ bundle_form.gib_mmix_n_reacts.html_name }}" class="form-control" placeholder="1" 
+                                id="{{ bundle_form.gib_mmix_n_reacts.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_mmix_n_reacts.value }}" {% else %} value="1" {% endif %}>
                                 <span class="input-group-text" id="gib_mmix_n">Reactions</span>
                             </div>
-                            {% if form.gib_mmix_n_reacts.errors %}
+                            {% if bundle_form.gib_mmix_n_reacts.errors %}
                             <ul class="errorList">
-                                {% for error in form.gib_mmix_n_reacts.errors %}
+                                {% for error in bundle_form.gib_mmix_n_reacts.errors %}
                                     <li class="text-danger">{{ error|escape }}</li>
                                 {% endfor %}
                             </ul>
@@ -716,26 +716,26 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-sm-3" id="gg_mmix_col" hidden>
-                            <div class="input-group mt-2" id="{{ form.gg_mmix_cost.id_for_label }}">
+                            <div class="input-group mt-2" id="{{ bundle_form.gg_mmix_cost.id_for_label }}">
                                 <span class="input-group-text" id="gg_mmix_enz">$</span>
-                                <input type="number" name="{{ form.gg_mmix_cost.html_name }}" class="form-control" placeholder="1.00" 
-                                id="{{ form.gg_mmix_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.gg_mmix_cost.value }}" {% else %} value="1.00" {% endif %}>
+                                <input type="number" name="{{ bundle_form.gg_mmix_cost.html_name }}" class="form-control" placeholder="1.00" 
+                                id="{{ bundle_form.gg_mmix_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gg_mmix_cost.value }}" {% else %} value="1.00" {% endif %}>
                             </div>
-                            {% if form.gg_mmix_cost.errors %}
+                            {% if bundle_form.gg_mmix_cost.errors %}
                                 <ul class="errorList">
-                                    {% for error in form.gg_mmix_cost.errors %}
+                                    {% for error in bundle_form.gg_mmix_cost.errors %}
                                         <li class="text-danger">{{ error|escape }}</li>
                                     {% endfor %}
                                 </ul>
                             {% endif %}
-                            <div class="input-group mt-2" id="{{ form.gg_mmix_n_reacts.id_for_label }}">
-                                <input type="number" name="{{ form.gg_mmix_n_reacts.html_name }}" class="form-control" placeholder="1" 
-                                id="{{ form.gg_mmix_n_reacts.id_for_label }}" {% if form.is_bound %} value="{{ form.gg_mmix_n_reacts.value }}" {% else %} value="1" {% endif %}>
+                            <div class="input-group mt-2" id="{{ bundle_form.gg_mmix_n_reacts.id_for_label }}">
+                                <input type="number" name="{{ bundle_form.gg_mmix_n_reacts.html_name }}" class="form-control" placeholder="1" 
+                                id="{{ bundle_form.gg_mmix_n_reacts.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gg_mmix_n_reacts.value }}" {% else %} value="1" {% endif %}>
                                 <span class="input-group-text" id="gg_mmix_n">Reactions</span>
                             </div>
-                            {% if form.gg_mmix_n_reacts.errors %}
+                            {% if bundle_form.gg_mmix_n_reacts.errors %}
                             <ul class="errorList">
-                                {% for error in form.gg_mmix_n_reacts.errors %}
+                                {% for error in bundle_form.gg_mmix_n_reacts.errors %}
                                     <li class="text-danger">{{ error|escape }}</li>
                                 {% endfor %}
                             </ul>
@@ -861,26 +861,26 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-sm-3" id="pcr_mmix_col" hidden>
-                            <div class="input-group mt-2" id="{{ form.pcr_mmix_cost.id_for_label }}" >
+                            <div class="input-group mt-2" id="{{ bundle_form.pcr_mmix_cost.id_for_label }}" >
                                 <span class="input-group-text" id="pcr_mmix_enz">$</span>
-                                <input type="number" name="{{ form.pcr_mmix_cost.html_name }}" class="form-control" placeholder="1.00" 
-                                id="{{ form.pcr_mmix_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.pcr_mmix_cost.value }}" {% else %} value="1.00" {% endif %}>
+                                <input type="number" name="{{ bundle_form.pcr_mmix_cost.html_name }}" class="form-control" placeholder="1.00" 
+                                id="{{ bundle_form.pcr_mmix_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.pcr_mmix_cost.value }}" {% else %} value="1.00" {% endif %}>
                             </div>
-                            {% if form.pcr_mmix_cost.errors %}
+                            {% if bundle_form.pcr_mmix_cost.errors %}
                                 <ul class="errorList">
-                                    {% for error in form.pcr_mmix_cost.errors %}
+                                    {% for error in bundle_form.pcr_mmix_cost.errors %}
                                         <li class="text-danger">{{ error|escape }}</li>
                                     {% endfor %}
                                 </ul>
                             {% endif %}
-                            <div class="input-group mt-2" id="{{ form.pcr_mmix_n_reacts.id_for_label }}" >
-                                <input type="number" name="{{ form.pcr_mmix_n_reacts.html_name }}" class="form-control" placeholder="1" 
-                                id="{{ form.pcr_mmix_n_reacts.id_for_label }}" {% if form.is_bound %} value="{{ form.pcr_mmix_n_reacts.value }}" {% else %} value="1" {% endif %}>
+                            <div class="input-group mt-2" id="{{ bundle_form.pcr_mmix_n_reacts.id_for_label }}" >
+                                <input type="number" name="{{ bundle_form.pcr_mmix_n_reacts.html_name }}" class="form-control" placeholder="1" 
+                                id="{{ bundle_form.pcr_mmix_n_reacts.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.pcr_mmix_n_reacts.value }}" {% else %} value="1" {% endif %}>
                                 <span class="input-group-text" id="pcr_mmix_n">Reactions</span>
                             </div>
-                            {% if form.pcr_mmix_n_reacts.errors %}
+                            {% if bundle_form.pcr_mmix_n_reacts.errors %}
                             <ul class="errorList">
-                                {% for error in form.pcr_mmix_n_reacts.errors %}
+                                {% for error in bundle_form.pcr_mmix_n_reacts.errors %}
                                     <li class="text-danger">{{ error|escape }}</li>
                                 {% endfor %}
                             </ul>

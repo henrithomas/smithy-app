@@ -1163,11 +1163,24 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
     primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
     enzyme_orders = []
-    
-    if obj.re_cost > 0.0:
-        enzyme_orders.append('Type2S')
-    if obj.ligase_cost > 0.0:
-        enzyme_orders.append('Ligase')
+
+    if obj.mastermix_cost > 0.0:
+        enzyme_orders.append('Mastermix enzyme')
+    else:
+        if obj.re_cost > 0.0:
+            enzyme_orders.append('Type2S')
+        if obj.ligase_cost > 0.0:
+            enzyme_orders.append('Ligase')
+
+    if obj.mastermix_cost > 0.0:
+        gg_enz_costs = [ obj.mastermix_cost/obj.mastermix_n_reacts ]
+        gg_enz_types = ['mastermix']
+    else:
+        gg_enz_costs = [
+            obj.re_cost / obj.re_n_reacts, 
+            obj.ligase_cost / obj.ligase_n_reacts
+        ]
+        gg_enz_types = ['type2s RE', 'ligase']
 
     pcr = pcr_time(part_lengths_pcr)
     goldengate_time = goldengate_times(pcr, len(fragments))
@@ -1175,11 +1188,8 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
         plasmid_count,
-        [
-            obj.re_cost / obj.re_n_reacts, 
-            obj.ligase_cost / obj.ligase_n_reacts
-        ],
-        ['type2s RE', 'ligase']
+        gg_enz_costs,
+        gg_enz_types
     )
     goldengate_risk = {
         'total': 0.35,
@@ -1458,17 +1468,26 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
     enzyme_orders = []
     
-    if obj.pcr_polymerase_cost > 0.0:
-        enzyme_orders.append('Phusion polymerase')
+    if obj.mastermix_cost > 0.0:
+        enzyme_orders.append('Mastermix enzyme')
+    else:
+        if obj.pcr_polymerase_cost > 0.0:
+            enzyme_orders.append('Phusion polymerase')
 
-    pcr = pcr_time(part_lengths_pcr)
-    pcr_soe_time = pcr_soe_times(part_lengths + primer_lengths)
+    if obj.mastermix_cost > 0.0:
+        pcr_enz_costs = [ obj.mastermix_cost/obj.mastermix_n_reacts ]
+        pcr_enz_types = ['mastermix']
+    else:
+        pcr_enz_costs = [obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts]
+        pcr_enz_types = ['polymerase']
+
+    pcr_soe_time = pcr_soe_times(part_lengths_pcr)
     pcr_cost = costs(
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
         plasmid_count,
-        [obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts],
-        ['polymerase']
+        pcr_enz_costs,
+        pcr_enz_types
     )
     pcr_risk = {
         'total': 0.35,

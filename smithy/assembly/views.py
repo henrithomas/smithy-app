@@ -100,7 +100,9 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
         'ligase_n_reacts',
         'exonuclease_n_reacts',
         'polymerase_n_reacts',
-        'assembly_ps'
+        'assembly_ps',
+        'mastermix_cost',
+        'mastermix_n_reacts'
     ]
 
     def form_valid(self, form):
@@ -212,7 +214,9 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
         'parts_pref',
         're_n_reacts',
         'ligase_n_reacts',
-        'assembly_ps'
+        'assembly_ps',
+        'mastermix_cost',
+        'mastermix_n_reacts'
     ]
 
     def form_valid(self, form):
@@ -435,7 +439,9 @@ class PCRCreateView(SuccessMessageMixin, CreateView):
         'pcr_polymerase_n_reacts',
         'pcr_ps',
         'cost_pref',
-        'parts_pref'
+        'parts_pref',
+        'mastermix_cost',
+        'mastermix_n_reacts'
     ]
 
     def form_valid(self, form):

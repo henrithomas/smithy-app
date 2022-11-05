@@ -7,6 +7,9 @@ from pydna.amplify import Anneal
 from importlib import import_module
 from primers.analysis import assembly_thermo
 import json
+from django.conf import settings
+from pathlib import Path
+import os
 
 # TODO citation
 class GoldenGateAssembler(TraditionalREAssembler):
@@ -56,12 +59,14 @@ class GoldenGateAssembler(TraditionalREAssembler):
     """
     
     cloning_type = 'Golden Gate'
+
     # potapov et al 2018
+    overhangs_path = os.path.join(Path(__file__).resolve().parent, 'overhangs', 'goldengate')
     overhang_files = [
-        '/home/dkoch/smithy-app/assemblies/overhangs/goldengate/oh1.json',
-        '/home/dkoch/smithy-app/assemblies/overhangs/goldengate/oh2.json',
-        '/home/dkoch/smithy-app/assemblies/overhangs/goldengate/oh3.json',
-	'/home/dkoch/smithy-app/assemblies/overhangs/goldengate/oh4.json'
+        os.path.join(overhangs_path, 'oh1.json'),
+        os.path.join(overhangs_path, 'oh2.json'),
+        os.path.join(overhangs_path, 'oh3.json'),
+	    os.path.join(overhangs_path, 'oh4.json')
     ]
 
     def __init__(self, *args, ovhngs=0, re='BsaI', ligase='T4-DNA', scarless=True, **kwargs):
