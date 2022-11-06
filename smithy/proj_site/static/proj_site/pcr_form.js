@@ -2,14 +2,14 @@ document.getElementById('mmix_check').addEventListener('click', function()
 {
     if(this.checked)
     {
-        document.getElementById('mmix_col').removeAttribute('hidden');
-        document.getElementById('pcr_poly_col').setAttribute('hidden', true);
+        document.getElementById('id_mastermix_cost').removeAttribute('hidden');
+        document.getElementById('id_mastermix_n_reacts').removeAttribute('hidden');
 
     }
     else
     {
-        document.getElementById('mmix_col').setAttribute('hidden', true);
-        document.getElementById('pcr_poly_col').removeAttribute('hidden');
+        document.getElementById('id_mastermix_cost').setAttribute('hidden', true);
+        document.getElementById('id_mastermix_n_reacts').setAttribute('hidden', true);
     }
 });
 

@@ -61,7 +61,7 @@ function gibson_risk_chart(data, labels, chart_elem) {
     const gibson_risk = {
         labels: labels,
         datasets: [{
-            label: 'risk',
+            label: 'assembly',
             data: data,
             backgroundColor: risk_colors,
             borderColor: risk_border_colors,

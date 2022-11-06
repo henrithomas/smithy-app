@@ -58,7 +58,7 @@ function pcr_risk_chart(data, labels, chart_elem) {
     const pcr_risk = {
         labels: labels,
         datasets: [{
-            label: 'dataset test',
+            label: 'assembly',
             data: data,
             backgroundColor: risk_colors,
             borderColor: risk_border_colors,

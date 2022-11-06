@@ -3,7 +3,6 @@ document.getElementById('mmix_check').addEventListener('click', function()
     if(this.checked)
     {
         document.getElementById('mmix_col').removeAttribute('hidden');
-        document.getElementById('pcr_poly_col').setAttribute('hidden', true);
         document.getElementById('re_col').setAttribute('hidden', true);
         document.getElementById('lig_col').setAttribute('hidden', true);
 
@@ -11,7 +10,6 @@ document.getElementById('mmix_check').addEventListener('click', function()
     else
     {
         document.getElementById('mmix_col').setAttribute('hidden', true);
-        document.getElementById('pcr_poly_col').removeAttribute('hidden');
         document.getElementById('re_col').removeAttribute('hidden');
         document.getElementById('lig_col').removeAttribute('hidden');
     }

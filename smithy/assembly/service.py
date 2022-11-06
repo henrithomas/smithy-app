@@ -1010,9 +1010,9 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     enzyme_orders = []
     
     if obj.mastermix_cost > 0.0:
-        enzyme_orders.append('Mastermix enzyme')
+        enzyme_orders.append('Master mix enzyme')
         gib_enz_costs = [ obj.mastermix_cost / obj.mastermix_n_reacts ]
-        gib_enz_types = ['Mastermix']
+        gib_enz_types = ['Master mix']
     else:
         if obj.exonuclease_cost > 0.0:
             enzyme_orders.append('T5 exonuclease')
@@ -1026,6 +1026,11 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
             obj.polymerase_cost / obj.polymerase_n_reacts
         ]
         gib_enz_types = ['Exonuclease', 'Ligase', 'Polymerase']
+
+    if obj.pcr_polymerase_cost > 0.0:
+        enzyme_orders.append('PCR polymerase')
+        gib_enz_costs.append(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts)
+        gib_enz_types.append('PCR polymerase')
 
     pcr = pcr_time(part_lengths_pcr)
     gibson_time = gibson_times(pcr, len(fragments))
@@ -1162,9 +1167,9 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     enzyme_orders = []
 
     if obj.mastermix_cost > 0.0:
-        enzyme_orders.append('Mastermix enzyme')
+        enzyme_orders.append('Master mix enzyme')
         gg_enz_costs = [ obj.mastermix_cost / obj.mastermix_n_reacts ]
-        gg_enz_types = ['Mastermix']
+        gg_enz_types = ['Master mix']
     else:
         if obj.re_cost > 0.0:
             enzyme_orders.append('Type2S')
@@ -1176,6 +1181,11 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
         ]
         gg_enz_types = ['Type2s RE', 'Ligase']
         
+    if obj.pcr_polymerase_cost > 0.0:
+        enzyme_orders.append('PCR polymerase')
+        gg_enz_costs.append(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts)
+        gg_enz_types.append('PCR polymerase')
+
     pcr = pcr_time(part_lengths_pcr)
     goldengate_time = goldengate_times(pcr, len(fragments))
     goldengate_cost = costs(
@@ -1322,6 +1332,17 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         enzyme_orders.append('SpeI')
     if obj.PstI_cost > 0.0:
         enzyme_orders.append('PstI')
+    if obj.pcr_polymerase_cost > 0.0:
+        enzyme_orders.append('PCR polymerase')
+
+    bbricks_enz_costs = [
+        cost_coefficient * (obj.EcoRI_cost / obj.EcoRI_n_reacts), 
+        cost_coefficient * (obj.XbaI_cost / obj.XbaI_n_reacts), 
+        cost_coefficient * (obj.SpeI_cost / obj.SpeI_n_reacts), 
+        cost_coefficient * (obj.PstI_cost / obj.PstI_n_reacts),
+        obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts
+    ]
+    bbricks_enz_types = ['EcoRI', 'XbaI', 'SpeI', 'PstI', 'PCR polymerase']
 
     pcr = pcr_time(part_lengths_pcr)
     biobricks_time = biobricks_times(pcr, len(fragments))
@@ -1329,13 +1350,8 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         [obj.primer_cost, obj.part_cost, obj.gene_cost],
         part_lengths + primer_lengths,
         plasmid_count,
-        [
-            cost_coefficient * (obj.EcoRI_cost / obj.EcoRI_n_reacts), 
-            cost_coefficient * (obj.XbaI_cost / obj.XbaI_n_reacts), 
-            cost_coefficient * (obj.SpeI_cost / obj.SpeI_n_reacts), 
-            cost_coefficient * (obj.PstI_cost / obj.PstI_n_reacts)
-        ],
-        ['EcoRI', 'XbaI', 'SpeI', 'PstI']
+        bbricks_enz_costs,
+        bbricks_enz_types
     )
     biobricks_risk = {
         'total': 0.35,
@@ -1463,14 +1479,15 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     enzyme_orders = []
     
     if obj.mastermix_cost > 0.0:
-        enzyme_orders.append('Mastermix enzyme')
-        pcr_enz_costs = [ obj.mastermix_cost / obj.mastermix_n_reacts ]
-        pcr_enz_types = ['Mastermix']
-    else:
-        if obj.pcr_polymerase_cost > 0.0:
-            enzyme_orders.append('Phusion polymerase')
-        pcr_enz_costs = [obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts]
-        pcr_enz_types = ['Polymerase']
+        enzyme_orders.append('Master mix enzyme') 
+    if obj.pcr_polymerase_cost > 0.0:
+        enzyme_orders.append('Phusion polymerase')
+    
+    pcr_enz_costs = [ 
+        obj.mastermix_cost / obj.mastermix_n_reacts,
+        obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts
+    ]
+    pcr_enz_types = ['Master mix', 'Polymerase']
         
     pcr_soe_time = pcr_soe_times(part_lengths_pcr)
     pcr_cost = costs(
@@ -1608,6 +1625,15 @@ def slic_solution_service(obj, assembler, assembly, fragments):
         enzyme_orders.append('T5 exonuclease')
     if obj.ligase_cost > 0.0:
         enzyme_orders.append('Taq ligase')
+    if obj.pcr_polymerase_cost > 0.0:
+        enzyme_orders.append('PCR polymerase')
+
+    slic_enz_costs = [
+        obj.exonuclease_cost / obj.exonuclease_n_reacts, 
+        obj.ligase_cost / obj.ligase_n_reacts,
+        obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts
+    ]
+    slic_enz_types = ['Exonuclease', 'Ligase', 'PCR polymerase']
 
     pcr = pcr_time(part_lengths_pcr)
     slic_time = slic_times(pcr, obj.overlap)
@@ -1615,11 +1641,8 @@ def slic_solution_service(obj, assembler, assembly, fragments):
         [obj.primer_cost, obj.part_cost, obj.gene_cost, obj.plasmid_cost],
         part_lengths + primer_lengths,
         plasmid_count,
-        [
-            obj.exonuclease_cost / obj.exonuclease_n_reacts, 
-            obj.ligase_cost / obj.ligase_n_reacts
-        ],
-        ['Exonuclease', 'Ligase']
+        slic_enz_costs,
+        slic_enz_types
     )
     slic_risk = {
         'total': 0.35,
@@ -1829,6 +1852,8 @@ def bundle_create_service(bundle_data):
             exonuclease_n_reacts=bundle_data['gib_exonuclease_n_reacts'],
             ligase_n_reacts=bundle_data['gib_ligase_n_reacts'],
             polymerase_n_reacts=bundle_data['gib_polymerase_n_reacts'],
+            pcr_polymerase_cost=bundle_data['pcr_polymerase_cost'],
+            pcr_polymerase_n_reacts=bundle_data['pcr_polymerase_n_reacts'],
             assembly_ps=bundle_data['gib_assembly_ps'],
             mastermix_cost=bundle_data['gib_mmix_cost'],
             mastermix_n_reacts=bundle_data['gib_mmix_n_reacts']
@@ -1884,6 +1909,8 @@ def bundle_create_service(bundle_data):
             ligase_cost=bundle_data['gg_ligase_cost'],
             re_n_reacts=bundle_data['gg_re_n_reacts'],
             ligase_n_reacts=bundle_data['gg_ligase_n_reacts'],
+            pcr_polymerase_cost=bundle_data['pcr_polymerase_cost'],
+            pcr_polymerase_n_reacts=bundle_data['pcr_polymerase_n_reacts'],
             assembly_ps=bundle_data['gg_assembly_ps'],
             mastermix_cost=bundle_data['gg_mmix_cost'],
             mastermix_n_reacts=bundle_data['gg_mmix_n_reacts']
@@ -1944,6 +1971,8 @@ def bundle_create_service(bundle_data):
             PstI_n_reacts=bundle_data['bb_PstI_n_reacts'],
             ligase_cost=bundle_data['bb_ligase_cost'],
             ligase_n_reacts=bundle_data['bb_ligase_n_reacts'],
+            pcr_polymerase_cost=bundle_data['pcr_polymerase_cost'],
+            pcr_polymerase_n_reacts=bundle_data['pcr_polymerase_n_reacts'],
             digestion_ps=bundle_data['bb_digestion_ps'],
             ligation_ps=bundle_data['bb_ligation_ps']
         )
