@@ -580,11 +580,12 @@ def part_map(part_model, part, left, right, name, space):
     ] 
 
     record = GraphicRecord(sequence_length=seq_len, features=features)
-    ax, _ = record.plot(figure_width=10)
-    ax.set_xticklabels([])
-    ax.set_xticks([])
-    ax.figure.savefig(temp_plot)
-    plt.close(ax.get_figure())
+    with plt.ioff():
+        ax, _ = record.plot(figure_width=10)
+        ax.set_xticklabels([])
+        ax.set_xticks([])
+        ax.figure.savefig(temp_plot)
+        plt.close(ax.get_figure())
 
     part_model.part_map.save(part_plot_name, File(open(temp_plot, 'rb')))
     part_model.save()
@@ -641,9 +642,10 @@ def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
     )
 
     record = CircularGraphicRecord(sequence_length=total_len, features=features)
-    ax, _ = record.plot(figure_width=10)
-    ax.figure.savefig(temp_plot)
-    plt.close(ax.get_figure())
+    with plt.ioff():
+        ax, _ = record.plot(figure_width=10)
+        ax.figure.savefig(temp_plot)
+        plt.close(ax.get_figure())
 
     solution_model.plasmid_map.save(plot_name, File(open(temp_plot, 'rb')))
     solution_model.save()
