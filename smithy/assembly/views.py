@@ -533,7 +533,6 @@ class SLICCreateView(SuccessMessageMixin, CreateView):
         'mv_conc',
         'dv_conc',
         'dntp_conc',
-        'dntp_conc',
         'dna_conc', 
         'tm',
         'overlap',
@@ -541,13 +540,11 @@ class SLICCreateView(SuccessMessageMixin, CreateView):
         'primer_cost',
         'part_cost',
         'gene_cost',
-        'exonuclease_cost',
         'pcr_polymerase_cost',
         'pcr_polymerase_n_reacts',
         'pcr_ps',
         'cost_pref',
         'parts_pref',
-        'exonuclease_n_reacts',
         'chewback_ps',
     ]
 

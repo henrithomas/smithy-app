@@ -43,8 +43,8 @@
                         30 overhangs - 91.7% fidelity
                     {% endif %}
                 </li>
-                <li class="list-group-item"><strong>RE cost:</strong> ${{ goldengate.re_cost }}</li>
-                <li class="list-group-item"><strong>Ligase cost:</strong> ${{ goldengate.ligase_cost }}</li>
+                <!-- <li class="list-group-item"><strong>RE cost:</strong> ${{ goldengate.re_cost }}</li>
+                <li class="list-group-item"><strong>Ligase cost:</strong> ${{ goldengate.ligase_cost }}</li> -->
             </ul>
         </div>
         <div class="col">
@@ -86,7 +86,7 @@
             </h2>
             <div class="row">
                 <div class="col">
-                    <div class="chart-container" style="position: relative; height:75vh; width:30vw">
+                    <div class="chart-container" style="position: relative; height:65vh; width:30vw">
                         <canvas id="goldengate-time"></canvas>    
                     </div>
                     <div class="time-sum text-center" id="goldengate-time-sum"></div>
@@ -95,7 +95,7 @@
                     <canvas id="goldengate-cost"></canvas>
                 </div>
                 <div class="col">
-                    <div class="chart-container" style="position: relative; height:75vh; width:30vw">
+                    <div class="chart-container" style="position: relative; height:65vh; width:30vw">
                         <canvas id="goldengate-risk"></canvas>
                     </div>
                 </div>
@@ -121,12 +121,15 @@
                                     <span class="badge rounded-pill bg-primary">
                                         {{ solution.primers_count }} Primers
                                     </span>
+                                    <!-- <span class="badge rounded-pill bg-primary">
+                                        Master mix - ${{ goldengate.mastermix_cost }}
+                                    </span>
                                     <span class="badge rounded-pill bg-primary">
                                         RE - ${{ goldengate.re_cost }}
                                     </span>
                                     <span class="badge rounded-pill bg-primary">
                                         Ligase - ${{ goldengate.ligase_cost }}
-                                    </span>
+                                    </span> -->
                                 </li>
                                 <li class="list-group-item">
                                     <span class="badge rounded-pill bg-secondary">

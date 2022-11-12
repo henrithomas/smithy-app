@@ -34,10 +34,10 @@
                 <li class="list-group-item"><strong>Prefix Sequence:</strong> gaattcgcggccgcttctagag</li>
                 <li class="list-group-item"><strong>CDS Prefix Sequence:</strong> gaattcgcggccgcttctag</li>
                 <li class="list-group-item"><strong>Suffix Sequence:</strong> tactagtagcggccgctgcag</li>
-                <li class="list-group-item"><strong>EcoRI cost:</strong> ${{ biobrick.EcoRI_cost }}</li>
+                <!-- <li class="list-group-item"><strong>EcoRI cost:</strong> ${{ biobrick.EcoRI_cost }}</li>
                 <li class="list-group-item"><strong>XbaI cost:</strong> ${{ biobrick.XbaI_cost }}</li>
                 <li class="list-group-item"><strong>SpeI cost:</strong> ${{ biobrick.SpeI_cost }}</li>
-                <li class="list-group-item"><strong>PstI cost:</strong> ${{ biobrick.PstI_cost }}</li>
+                <li class="list-group-item"><strong>PstI cost:</strong> ${{ biobrick.PstI_cost }}</li> -->
             </ul>
         </div>
         <div class="col">
@@ -79,7 +79,7 @@
             </h2>
             <div class="row">
                 <div class="col">
-                    <div class="chart-container" style="position: relative; height:75vh; width:30vw">
+                    <div class="chart-container" style="position: relative; height:65vh; width:30vw">
                         <canvas id="biobricks-time"></canvas>    
                     </div>
                     <div class="time-sum text-center" id="biobricks-time-sum"></div>
@@ -88,7 +88,7 @@
                     <canvas id="biobricks-cost"></canvas>
                 </div>
                 <div class="col">
-                    <div class="chart-container" style="position: relative; height:75vh; width:30vw">
+                    <div class="chart-container" style="position: relative; height:65vh; width:30vw">
                         <canvas id="biobricks-risk"></canvas>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
                                         <span class="badge rounded-pill bg-primary">
                                             {{ solution.primers_count }} Primers
                                         </span>
-                                        <span class="badge rounded-pill bg-primary">
+                                        <!-- <span class="badge rounded-pill bg-primary">
                                             EcoRI - ${{ biobrick.EcoRI_cost }}
                                         </span>
                                         <span class="badge rounded-pill bg-primary">
@@ -124,7 +124,7 @@
                                         </span>
                                         <span class="badge rounded-pill bg-primary">
                                             PstI - ${{ biobrick.PstI_cost }}
-                                        </span>
+                                        </span> -->
                                     </li>
                                     <li class="list-group-item">
                                         <span class="badge rounded-pill bg-secondary">

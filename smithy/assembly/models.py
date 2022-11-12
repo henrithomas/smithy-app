@@ -119,8 +119,8 @@ class Assembly(models.Model):
     plasmid_cost = models.FloatField(verbose_name='plasmid cost ($)', default=0.0)
     pcr_polymerase_cost = models.FloatField(verbose_name='PCR polymerase cost ($)', default=0.0)
     pcr_polymerase_n_reacts = models.PositiveIntegerField(verbose_name='PCR polymerase number of reactions', default=1, validators=[MinValueValidator(1)])
-    mastermix_cost = models.FloatField(verbose_name='Master mix cost ($)', default=0.0)
-    mastermix_n_reacts = models.PositiveIntegerField(verbose_name='Master mix number of reactions', default=1, validators=[MinValueValidator(1)])
+    mastermix_cost = models.FloatField(verbose_name='Master mix cost ($)', default=0.0, blank=True)
+    mastermix_n_reacts = models.PositiveIntegerField(verbose_name='Master mix number of reactions', default=1, blank=True, validators=[MinValueValidator(1)])
     pcr_ps = models.FloatField(verbose_name='PCR probability of success', default=0.0)
     cost_pref = models.FloatField(verbose_name='cost preference', default=0.0)
     parts_pref = models.FloatField(verbose_name='parts count preference', default=0.0)
@@ -222,10 +222,10 @@ class AssemblySolution(models.Model):
 class GoldenGateAssembly(Assembly):
     overhangs = models.IntegerField(verbose_name='overhang count', choices=ovhngs)
     scarless = models.BooleanField(default=False)
-    re_cost = models.FloatField(verbose_name='Type2s RE cost ($)', default=0.0)
-    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
-    re_n_reacts = models.PositiveIntegerField(verbose_name='Type2s RE number of reactions', default=1, validators=[MinValueValidator(1)])
-    ligase_n_reacts = models.PositiveIntegerField(verbose_name='ligase number of reactions', default=1, validators=[MinValueValidator(1)])
+    re_cost = models.FloatField(verbose_name='Type2s RE cost ($)', default=0.0, blank=True)
+    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0, blank=True)
+    re_n_reacts = models.PositiveIntegerField(verbose_name='Type2s RE number of reactions', default=1, blank=True, validators=[MinValueValidator(1)])
+    ligase_n_reacts = models.PositiveIntegerField(verbose_name='ligase number of reactions', default=1, blank=True, validators=[MinValueValidator(1)])
     assembly_ps = models.FloatField(verbose_name='one-pot digestion-ligation probability of success', default=0.0)
 
     def get_absolute_url(self):
@@ -234,12 +234,12 @@ class GoldenGateAssembly(Assembly):
 
 class GibsonAssembly(Assembly):
     overlap = models.PositiveIntegerField()
-    exonuclease_cost = models.FloatField(verbose_name='exonuclease cost ($)', default=0.0)
-    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0)
-    polymerase_cost = models.FloatField(verbose_name='polymerase cost ($)', default=0.0)
-    exonuclease_n_reacts = models.PositiveIntegerField(verbose_name='exonuclease number of reactions', default=1, validators=[MinValueValidator(1)])
-    ligase_n_reacts = models.PositiveIntegerField(verbose_name='ligase number of reactions', default=1, validators=[MinValueValidator(1)])
-    polymerase_n_reacts = models.PositiveIntegerField(verbose_name='polymerase number of reactions', default=1, validators=[MinValueValidator(1)])
+    exonuclease_cost = models.FloatField(verbose_name='exonuclease cost ($)', default=0.0, blank=True)
+    ligase_cost = models.FloatField(verbose_name='ligase cost ($)', default=0.0, blank=True)
+    polymerase_cost = models.FloatField(verbose_name='polymerase cost ($)', default=0.0, blank=True)
+    exonuclease_n_reacts = models.PositiveIntegerField(verbose_name='exonuclease number of reactions', default=1, blank=True, validators=[MinValueValidator(1)])
+    ligase_n_reacts = models.PositiveIntegerField(verbose_name='ligase number of reactions', default=1, blank=True, validators=[MinValueValidator(1)])
+    polymerase_n_reacts = models.PositiveIntegerField(verbose_name='polymerase number of reactions', default=1, blank=True, validators=[MinValueValidator(1)])
     assembly_ps = models.FloatField(verbose_name='gibson assembly probability of success', default=0.0)
 
     def get_absolute_url(self):

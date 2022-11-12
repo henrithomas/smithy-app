@@ -1047,8 +1047,8 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
         'total': 0.35,
         'types': ['PCR', 'Assembly'],
         'risks': [
-            log10((0.2) / 0.8), 
-            log10((0.3) / 0.7)
+            log10((1 - obj.pcr_ps) / obj.pcr_ps), 
+            log10((1 - obj.assembly_ps) / obj.assembly_ps)
         ]
     }
 
@@ -1201,8 +1201,8 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
         'total': 0.35,
         'types': ['PCR', 'Assembly'],
         'risks': [
-            log10((0.2) / 0.8), 
-            log10((0.1) / 0.9)
+            log10((1 - obj.pcr_ps) / obj.pcr_ps), 
+            log10((1 - obj.assembly_ps) / obj.assembly_ps)
         ]
     }
 
@@ -1342,9 +1342,10 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         cost_coefficient * (obj.XbaI_cost / obj.XbaI_n_reacts), 
         cost_coefficient * (obj.SpeI_cost / obj.SpeI_n_reacts), 
         cost_coefficient * (obj.PstI_cost / obj.PstI_n_reacts),
-        obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts
+        obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts,
+        obj.ligase_cost / obj.ligase_n_reacts
     ]
-    bbricks_enz_types = ['EcoRI', 'XbaI', 'SpeI', 'PstI', 'PCR polymerase']
+    bbricks_enz_types = ['EcoRI', 'XbaI', 'SpeI', 'PstI', 'PCR polymerase', 'Ligase']
 
     pcr = pcr_time(part_lengths_pcr)
     biobricks_time = biobricks_times(pcr, len(fragments))
@@ -1359,9 +1360,9 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         'total': 0.35,
         'types': ['PCR', 'Digestion', 'Ligation'],
         'risks': [
-            log10((0.2) / 0.8), 
-            log10((0.1) / 0.9), 
-            log10((0.2) / 0.8)
+            log10((1 - obj.pcr_ps) / obj.pcr_ps), 
+            log10((1 - obj.digestion_ps) / obj.digestion_ps), 
+            log10((1 - obj.ligation_ps) / obj.ligation_ps)
         ]
     }
 
@@ -1503,7 +1504,7 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
         'total': 0.35,
         'types': ['Assembly'],
         'risks': [
-            log10((0.2) / 0.8)
+            log10((1 - obj.pcr_ps) / obj.pcr_ps)
         ]
     }
 
@@ -1623,19 +1624,13 @@ def slic_solution_service(obj, assembler, assembly, fragments):
     primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
     enzyme_orders = []
     
-    if obj.exonuclease_cost > 0.0:
-        enzyme_orders.append('T5 exonuclease')
-    if obj.ligase_cost > 0.0:
-        enzyme_orders.append('Taq ligase')
     if obj.pcr_polymerase_cost > 0.0:
         enzyme_orders.append('PCR polymerase')
 
     slic_enz_costs = [
-        obj.exonuclease_cost / obj.exonuclease_n_reacts, 
-        obj.ligase_cost / obj.ligase_n_reacts,
         obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts
     ]
-    slic_enz_types = ['Exonuclease', 'Ligase', 'PCR polymerase']
+    slic_enz_types = ['PCR polymerase']
 
     pcr = pcr_time(part_lengths_pcr)
     slic_time = slic_times(pcr, obj.overlap)
@@ -1648,11 +1643,10 @@ def slic_solution_service(obj, assembler, assembly, fragments):
     )
     slic_risk = {
         'total': 0.35,
-        'types': ['PCR', 'Chewback', 'Ligation'],
+        'types': ['PCR', 'Chewback'],
         'risks': [
-            log10((0.2) / 0.8), 
-            log10((0.2) / 0.8), 
-            log10((0.2) / 0.8)
+            log10((1 - obj.pcr_ps) / obj.pcr_ps), 
+            log10((1 - obj.chewback_ps) / obj.chewback_ps)
         ]
     }
 
@@ -1858,7 +1852,8 @@ def bundle_create_service(bundle_data):
             pcr_polymerase_n_reacts=bundle_data['pcr_polymerase_n_reacts'],
             assembly_ps=bundle_data['gib_assembly_ps'],
             mastermix_cost=bundle_data['gib_mmix_cost'],
-            mastermix_n_reacts=bundle_data['gib_mmix_n_reacts']
+            mastermix_n_reacts=bundle_data['gib_mmix_n_reacts'],
+            pcr_ps=bundle_data['pcr_ps']
         )
         gibson_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         gibson_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
@@ -1915,7 +1910,8 @@ def bundle_create_service(bundle_data):
             pcr_polymerase_n_reacts=bundle_data['pcr_polymerase_n_reacts'],
             assembly_ps=bundle_data['gg_assembly_ps'],
             mastermix_cost=bundle_data['gg_mmix_cost'],
-            mastermix_n_reacts=bundle_data['gg_mmix_n_reacts']
+            mastermix_n_reacts=bundle_data['gg_mmix_n_reacts'],
+            pcr_ps=bundle_data['pcr_ps']
         )
         goldengate_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         goldengate_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
@@ -1976,7 +1972,8 @@ def bundle_create_service(bundle_data):
             pcr_polymerase_cost=bundle_data['pcr_polymerase_cost'],
             pcr_polymerase_n_reacts=bundle_data['pcr_polymerase_n_reacts'],
             digestion_ps=bundle_data['bb_digestion_ps'],
-            ligation_ps=bundle_data['bb_ligation_ps']
+            ligation_ps=bundle_data['bb_ligation_ps'],
+            pcr_ps=bundle_data['pcr_ps']
         )
         biobricks_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         biobricks_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))        
@@ -2026,7 +2023,8 @@ def bundle_create_service(bundle_data):
             pcr_polymerase_cost=bundle_data['pcr_polymerase_cost'],
             pcr_polymerase_n_reacts=bundle_data['pcr_polymerase_n_reacts'],
             mastermix_cost=bundle_data['pcr_mmix_cost'],
-            mastermix_n_reacts=bundle_data['pcr_mmix_n_reacts']
+            mastermix_n_reacts=bundle_data['pcr_mmix_n_reacts'],
+            pcr_ps=bundle_data['pcr_ps']
         )
         pcr_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         pcr_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))
@@ -2076,7 +2074,8 @@ def bundle_create_service(bundle_data):
             gene_cost=bundle_data['gene_cost'],
             exonuclease_cost=bundle_data['slic_exonuclease_cost'],
             exonuclease_n_reacts=bundle_data['slic_exonuclease_n_reacts'],
-            chewback_ps=bundle_data['slic_chewback_ps']
+            chewback_ps=bundle_data['slic_chewback_ps'],
+            pcr_ps=bundle_data['pcr_ps']
         )
         slic_obj.backbone_file.save(bundle_data['backbone_file'].name, File(open(backbone_file_path, 'rb')))
         slic_obj.insert_file.save(bundle_data['insert_file'].name, File(open(insert_file_path, 'rb')))

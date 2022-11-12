@@ -401,8 +401,8 @@
                         <div id="mmix_col" hidden>
                             <div class="input-group mt-2" id="{{ form.mastermix_cost.id_for_label }}">
                                 <span class="input-group-text" id="mmix_enz">$</span>
-                                <input type="number" name="{{ form.mastermix_cost.html_name }}" class="form-control" placeholder="1.00" 
-                                id="{{ form.mastermix_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.mastermix_cost.value }}" {% else %} value="1.00" {% endif %}>
+                                <input type="number" name="{{ form.mastermix_cost.html_name }}" class="form-control" placeholder="7.85" 
+                                id="{{ form.mastermix_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.mastermix_cost.value }}" {% else %} value="0.0" {% endif %}>
                             </div>
                             {% if form.mastermix_cost.errors %}
                                 <ul class="errorList">
@@ -463,7 +463,7 @@
                         <div class="input-group mt-2" id="{{ form.re_cost.id_for_label }}" hidden>
                             <span class="input-group-text" id="re_enz">$</span>
                             <input type="number" name="{{ form.re_cost.html_name }}" class="form-control" placeholder="1.44" 
-                            id="{{ form.re_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.re_cost.value }}" {% else %} value="1.44" {% endif %}>
+                            id="{{ form.re_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.re_cost.value }}" {% else %} value="0.0" {% endif %}>
                         </div>
                         {% if form.re_cost.errors %}
                         <ul class="errorList">
@@ -493,7 +493,7 @@
                         <div class="input-group mt-2" id="{{ form.ligase_cost.id_for_label }}" hidden>
                             <span class="input-group-text" id="ligase_enz">$</span>
                             <input type="number" name="{{ form.ligase_cost.html_name }}" class="form-control" placeholder="1.30" 
-                            id="{{ form.ligase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.ligase_cost.value }}" {% else %} value="1.30" {% endif %}>
+                            id="{{ form.ligase_cost.id_for_label }}" {% if form.is_bound %} value="{{ form.ligase_cost.value }}" {% else %} value="0.0" {% endif %}>
                         </div>
                         {% if form.ligase_cost.errors %}
                         <ul class="errorList">

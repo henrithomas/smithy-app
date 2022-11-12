@@ -30,7 +30,7 @@
             <h2>General Info</h2>
             <ul class="list-group">
                 <li class="list-group-item"><strong>Polymerase:</strong> Taq</li>
-                <li class="list-group-item"><strong>Polymerase cost:</strong> ${{ pcr.polymerase_cost }}</li>
+                <!-- <li class="list-group-item"><strong>Polymerase cost:</strong> ${{ pcr.polymerase_cost }}</li> -->
             </ul>
         </div>
         <div class="col">
@@ -72,7 +72,7 @@
             </h2>
             <div class="row">
                 <div class="col">
-                    <div class="chart-container" style="position: relative; height:75vh; width:30vw">
+                    <div class="chart-container" style="position: relative; height:65vh; width:30vw">
                         <canvas id="pcr-time"></canvas>    
                     </div>
                     <div class="time-sum text-center" id="pcr-time-sum"></div>
@@ -81,7 +81,7 @@
                     <canvas id="pcr-cost"></canvas>
                 </div>
                 <div class="col">
-                    <div class="chart-container" style="position: relative; height:75vh; width:30vw">
+                    <div class="chart-container" style="position: relative; height:65vh; width:30vw">
                         <canvas id="pcr-risk"></canvas>
                     </div>
                 </div>
@@ -106,9 +106,9 @@
                                         <span class="badge rounded-pill bg-primary">
                                             {{ solution.primers_count }} Primers
                                         </span>
-                                        <span class="badge rounded-pill bg-primary">
+                                        <!-- <span class="badge rounded-pill bg-primary">
                                             Polymerase - ${{ pcr.polymerase_cost }}
-                                        </span>
+                                        </span> -->
                                     </li>
                                     <li class="list-group-item">
                                         <span class="badge rounded-pill bg-secondary">

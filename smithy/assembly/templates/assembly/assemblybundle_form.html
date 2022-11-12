@@ -529,7 +529,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.gib_mmix_cost.id_for_label }}">
                                 <span class="input-group-text" id="gib_mmix_enz">$</span>
                                 <input type="number" name="{{ bundle_form.gib_mmix_cost.html_name }}" class="form-control" placeholder="1.00" 
-                                id="{{ bundle_form.gib_mmix_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_mmix_cost.value }}" {% else %} value="1.00" {% endif %}>
+                                id="{{ bundle_form.gib_mmix_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_mmix_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.gib_mmix_cost.errors %}
                                 <ul class="errorList">
@@ -559,7 +559,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.gib_exonuclease_cost.id_for_label }}" hidden>
                                 <span class="input-group-text" id="gib_exo_enz">$</span>
                                 <input type="number" name="{{ bundle_form.gib_exonuclease_cost.html_name }}" class="form-control" placeholder="1.00" 
-                                id="{{ bundle_form.gib_exonuclease_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_exonuclease_cost.value }}" {% else %} value="1.00" {% endif %}>
+                                id="{{ bundle_form.gib_exonuclease_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_exonuclease_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.gib_exonuclease_cost.errors %}
                                 <ul class="errorList">
@@ -589,7 +589,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.gib_ligase_cost.id_for_label }}" hidden>
                                 <span class="input-group-text" id="gib_ligase_enz">$</span>
                                 <input type="number" name="{{ bundle_form.gib_ligase_cost.html_name }}" class="form-control" placeholder="1.30" 
-                                id="{{ bundle_form.gib_ligase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_ligase_cost.value }}" {% else %} value="1.30" {% endif %}>
+                                id="{{ bundle_form.gib_ligase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_ligase_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.gib_ligase_cost.errors %}
                             <ul class="errorList">
@@ -619,7 +619,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.gib_polymerase_cost.id_for_label }}" hidden>
                                 <span class="input-group-text" id="gib_poly_enz">$</span>
                                 <input type="number" name="{{ bundle_form.gib_polymerase_cost.html_name }}" class="form-control" placeholder="1.00" 
-                                id="{{ bundle_form.gib_polymerase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_polymerase_cost.value }}" {% else %} value="1.00" {% endif %}>
+                                id="{{ bundle_form.gib_polymerase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gib_polymerase_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.gib_polymerase_cost.errors %}
                             <ul class="errorList">
@@ -719,7 +719,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.gg_mmix_cost.id_for_label }}">
                                 <span class="input-group-text" id="gg_mmix_enz">$</span>
                                 <input type="number" name="{{ bundle_form.gg_mmix_cost.html_name }}" class="form-control" placeholder="1.00" 
-                                id="{{ bundle_form.gg_mmix_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gg_mmix_cost.value }}" {% else %} value="1.00" {% endif %}>
+                                id="{{ bundle_form.gg_mmix_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gg_mmix_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.gg_mmix_cost.errors %}
                                 <ul class="errorList">
@@ -749,7 +749,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.gg_re_cost.id_for_label }}" hidden>
                                 <span class="input-group-text" id="gg_re_enz">$</span>
                                 <input type="number" name="{{ bundle_form.gg_re_cost.html_name }}" class="form-control" placeholder="1.44" 
-                                id="{{ bundle_form.gg_re_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gg_re_cost.value }}" {% else %} value="1.44" {% endif %}>
+                                id="{{ bundle_form.gg_re_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gg_re_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.gg_re_cost.errors %}
                             <ul class="errorList">
@@ -779,7 +779,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.gg_ligase_cost.id_for_label }}" hidden>
                                 <span class="input-group-text" id="gg_ligase_enz">$</span>
                                 <input type="number" name="{{ bundle_form.gg_ligase_cost.html_name }}" class="form-control" placeholder="1.30" 
-                                id="{{ bundle_form.gg_ligase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gg_ligase_cost.value }}" {% else %} value="1.30" {% endif %}>
+                                id="{{ bundle_form.gg_ligase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.gg_ligase_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.gg_ligase_cost.errors %}
                             <ul class="errorList">
@@ -864,7 +864,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.pcr_mmix_cost.id_for_label }}" >
                                 <span class="input-group-text" id="pcr_mmix_enz">$</span>
                                 <input type="number" name="{{ bundle_form.pcr_mmix_cost.html_name }}" class="form-control" placeholder="1.00" 
-                                id="{{ bundle_form.pcr_mmix_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.pcr_mmix_cost.value }}" {% else %} value="1.00" {% endif %}>
+                                id="{{ bundle_form.pcr_mmix_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.pcr_mmix_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.pcr_mmix_cost.errors %}
                                 <ul class="errorList">
@@ -916,70 +916,6 @@
                             </ul>
                         {% endif %}
                     </div>
-                    <!-- <div class="row mb-2">
-                        <h3>Enzymes</h3>
-                        <p>Which enzymes do you need to purchase?</p>
-                        <div class="col-md-6">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="slic_exo_check">
-                                <label class="form-check-label" for="slic_exo_check">Exonuclease</label>
-                            </div>
-                            <div class="input-group mt-2" id="{{ bundle_form.slic_exonuclease_cost.id_for_label }}" hidden>
-                                <span class="input-group-text" id="slic_exo_enz">$</span>
-                                <input type="number" name="{{ bundle_form.slic_exonuclease_cost.html_name }}" class="form-control" placeholder="100.00" 
-                                id="{{ bundle_form.slic_exonuclease_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.slic_exonuclease_cost.value }}" {% else %} value="0.0" {% endif %}>
-                            </div>
-                            {% if bundle_form.slic_exonuclease_cost.errors %}
-                            <ul class="errorList">
-                                {% for error in bundle_form.slic_exonuclease_cost.errors %}
-                                    <li class="text-danger">{{ error|escape }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                            <div class="input-group mt-2" id="{{ bundle_form.slic_exonuclease_n_reacts.id_for_label }}" hidden>
-                                <input type="number" name="{{ bundle_form.slic_exonuclease_n_reacts.html_name }}" class="form-control" placeholder="1" 
-                                id="{{ bundle_form.slic_exonuclease_n_reacts.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.slic_exonuclease_n_reacts.value }}" {% else %} value="1" {% endif %}>
-                                <span class="input-group-text" id="slic_exo_n">Reactions</span>
-                            </div>
-                            {% if bundle_form.slic_exonuclease_n_reacts.errors %}
-                            <ul class="errorList">
-                                {% for error in bundle_form.slic_exonuclease_n_reacts.errors %}
-                                    <li class="text-danger">{{ error|escape }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="slic_ligase_check">
-                                <label class="form-check-label" for="slic_ligase_check">Ligase</label>
-                            </div>
-                            <div class="input-group mt-2" id="{{ bundle_form.slic_ligase_cost.id_for_label }}" hidden>
-                                <span class="input-group-text" id="slic_ligase_enz">$</span>
-                                <input type="number" name="{{ bundle_form.slic_ligase_cost.html_name }}" class="form-control" placeholder="100.00" 
-                                id="{{ bundle_form.slic_ligase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.slic_ligase_cost.value }}" {% else %} value="0.0" {% endif %}>
-                            </div>
-                            {% if bundle_form.slic_ligase_cost.errors %}
-                            <ul class="errorList">
-                                {% for error in bundle_form.slic_ligase_cost.errors %}
-                                    <li class="text-danger">{{ error|escape }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                            <div class="input-group mt-2" id="{{ bundle_form.slic_ligase_n_reacts.id_for_label }}" hidden>
-                                <input type="number" name="{{ bundle_form.slic_ligase_n_reacts.html_name }}" class="form-control" placeholder="1" 
-                                id="{{ bundle_form.slic_ligase_n_reacts.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.slic_ligase_n_reacts.value }}" {% else %} value="1" {% endif %}>
-                                <span class="input-group-text" id="slic_ligase_n">Reactions</span>
-                            </div>
-                            {% if bundle_form.slic_ligase_n_reacts.errors %}
-                            <ul class="errorList">
-                                {% for error in bundle_form.slic_ligase_n_reacts.errors %}
-                                    <li class="text-danger">{{ error|escape }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                        </div>
-                    </div> -->
                     <div class="row">
                         <h3>Assembly Probabilities</h3>
                         <div class="col">
@@ -997,21 +933,6 @@
                             </ul>
                             {% endif %}
                         </div>
-                        <!-- <div class="col">
-                            <label for="id_slic_ligation_ps">Ligation:</label>
-                            <div class="input-group mt-2" id="{{ bundle_form.slic_ligation_ps.id_for_label }}">
-                                <input type="number" name="{{ bundle_form.slic_ligation_ps.html_name }}" class="form-control" placeholder="0.5" 
-                                id="{{ bundle_form.slic_ligation_ps.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.slic_ligation_ps.value }}" {% endif %}>
-                                <span class="input-group-text" id="{{ bundle_form.slic_ligation_ps.id_for_label }}">P<sub>success</sub></span>
-                            </div>
-                            {% if bundle_form.slic_ligation_ps.errors %}
-                            <ul class="errorList">
-                                {% for error in bundle_form.slic_ligation_ps.errors %}
-                                    <li class="text-danger">{{ error|escape }}</li>
-                                {% endfor %}
-                            </ul>
-                            {% endif %}
-                        </div> -->
                     </div>
                 </div>
             </div>
@@ -1035,7 +956,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.bb_ligase_cost.id_for_label }}" hidden>
                                 <span class="input-group-text" id="bb_ligase_enz">$</span>
                                 <input type="number" name="{{ bundle_form.bb_ligase_cost.html_name }}" class="form-control" placeholder="1.30" 
-                                id="{{ bundle_form.bb_ligase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_ligase_cost.value }}" {% else %} value="1.30" {% endif %}>
+                                id="{{ bundle_form.bb_ligase_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_ligase_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.bb_ligase_cost.errors %}
                             <ul class="errorList">
@@ -1065,7 +986,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.bb_EcoRI_cost.id_for_label }}" hidden>
                                 <span class="input-group-text" id="bb_ecori_enz">$</span>
                                 <input type="number" name="{{ bundle_form.bb_EcoRI_cost.html_name }}" class="form-control" placeholder="0.13" 
-                                id="{{ bundle_form.bb_EcoRI_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_EcoRI_cost.value }}" {% else %} value="0.13" {% endif %}>
+                                id="{{ bundle_form.bb_EcoRI_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_EcoRI_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.bb_EcoRI_cost.errors %}
                             <ul class="errorList">
@@ -1095,7 +1016,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.bb_XbaI_cost.id_for_label }}" hidden>
                                 <span class="input-group-text" id="bb_xbai_enz">$</span>
                                 <input type="number" name="{{ bundle_form.bb_XbaI_cost.html_name }}" class="form-control" placeholder="0.49" 
-                                id="{{ bundle_form.bb_XbaI_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_XbaI_cost.value }}" {% else %} value="0.49" {% endif %}>
+                                id="{{ bundle_form.bb_XbaI_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_XbaI_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.bb_XbaI_cost.errors %}
                             <ul class="errorList">
@@ -1125,7 +1046,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.bb_SpeI_cost.id_for_label }}" hidden>
                                 <span class="input-group-text" id="bb_spei_enz">$</span>
                                 <input type="number" name="{{ bundle_form.bb_SpeI_cost.html_name }}" class="form-control" placeholder="2.88" 
-                                id="{{ bundle_form.bb_SpeI_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_SpeI_cost.value }}" {% else %} value="2.88" {% endif %}>
+                                id="{{ bundle_form.bb_SpeI_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_SpeI_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.bb_SpeI_cost.errors %}
                             <ul class="errorList">
@@ -1155,7 +1076,7 @@
                             <div class="input-group mt-2" id="{{ bundle_form.bb_PstI_cost.id_for_label }}" hidden>
                                 <span class="input-group-text" id="bb_psti_enz">$</span>
                                 <input type="number" name="{{ bundle_form.bb_PstI_cost.html_name }}" class="form-control" placeholder="1.00" 
-                                id="{{ bundle_form.bb_PstI_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_PstI_cost.value }}" {% else %} value="1.00" {% endif %}>
+                                id="{{ bundle_form.bb_PstI_cost.id_for_label }}" {% if bundle_form.is_bound %} value="{{ bundle_form.bb_PstI_cost.value }}" {% else %} value="0.00" {% endif %}>
                             </div>
                             {% if bundle_form.bb_PstI_cost.errors %}
                             <ul class="errorList">
