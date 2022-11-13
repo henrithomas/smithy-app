@@ -5,15 +5,15 @@ register = template.Library()
 @register.simple_tag
 def assembly_obj_url(assembly):
     if assembly.__class__.__name__ == 'GibsonAssembly':
-        return f'https://smithy.fungalgenomics.ca/assembly/gibson/{assembly.pk}/'
+        return f'/assembly/gibson/{assembly.pk}/'
     elif assembly.__class__.__name__ == 'GoldenGateAssembly':
-        return f'https://smithy.fungalgenomics.ca/assembly/goldengate/{assembly.pk}/'
+        return f'/assembly/goldengate/{assembly.pk}/'
     elif assembly.__class__.__name__ == 'BioBricksAssembly':
-        return f'https://smithy.fungalgenomics.ca/assembly/biobricks/{assembly.pk}/'
+        return f'/assembly/biobricks/{assembly.pk}/'
     elif assembly.__class__.__name__ == 'PCRAssembly':
-        return f'https://smithy.fungalgenomics.ca/assembly/pcr/{assembly.pk}/'
+        return f'/assembly/pcr/{assembly.pk}/'
     else:
-        return f'https://smithy.fungalgenomics.ca/assembly/slic/{assembly.pk}/'
+        return f'/assembly/slic/{assembly.pk}/'
 
 @register.simple_tag
 def assembly_type(assembly):

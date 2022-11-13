@@ -33,14 +33,11 @@ SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '10.10.11.135', 
-    '10.10.11.*',
-    'smithy.fungalgenomics.ca', 
-    'fungalgenomics.ca', 
-    'i.fungalgenomics.ca', 
     'rs-loy-smithy.concordia.ca',
     '127.0.0.1',
     'localhost'
+    '10.10.11.135', 
+    '10.10.11.*'
 ]
 
 
