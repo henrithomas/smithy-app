@@ -1338,10 +1338,10 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         enzyme_orders.append('PCR polymerase')
 
     bbricks_enz_costs = [
-        cost_coefficient * (obj.EcoRI_cost / obj.EcoRI_n_reacts), 
-        cost_coefficient * (obj.XbaI_cost / obj.XbaI_n_reacts), 
-        cost_coefficient * (obj.SpeI_cost / obj.SpeI_n_reacts), 
-        cost_coefficient * (obj.PstI_cost / obj.PstI_n_reacts),
+        obj.EcoRI_cost / obj.EcoRI_n_reacts, 
+        obj.XbaI_cost / obj.XbaI_n_reacts, 
+        obj.SpeI_cost / obj.SpeI_n_reacts, 
+        obj.PstI_cost / obj.PstI_n_reacts,
         obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts,
         obj.ligase_cost / obj.ligase_n_reacts
     ]
@@ -2072,8 +2072,6 @@ def bundle_create_service(bundle_data):
             primer_cost=bundle_data['primer_cost'],
             part_cost=bundle_data['part_cost'],
             gene_cost=bundle_data['gene_cost'],
-            exonuclease_cost=bundle_data['slic_exonuclease_cost'],
-            exonuclease_n_reacts=bundle_data['slic_exonuclease_n_reacts'],
             chewback_ps=bundle_data['slic_chewback_ps'],
             pcr_ps=bundle_data['pcr_ps']
         )
