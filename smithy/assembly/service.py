@@ -1031,7 +1031,7 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
 
     if obj.pcr_polymerase_cost > 0.0:
         enzyme_orders.append('PCR polymerase')
-        gib_enz_costs.append(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts)
+        gib_enz_costs.append((len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts))
         gib_enz_types.append('PCR polymerase')
 
     pcr = pcr_time(part_lengths_pcr)
@@ -1185,7 +1185,7 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
         
     if obj.pcr_polymerase_cost > 0.0:
         enzyme_orders.append('PCR polymerase')
-        gg_enz_costs.append(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts)
+        gg_enz_costs.append((len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts))
         gg_enz_types.append('PCR polymerase')
 
     pcr = pcr_time(part_lengths_pcr)
@@ -1342,7 +1342,7 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         obj.XbaI_cost / obj.XbaI_n_reacts, 
         obj.SpeI_cost / obj.SpeI_n_reacts, 
         obj.PstI_cost / obj.PstI_n_reacts,
-        obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts,
+        (len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
         obj.ligase_cost / obj.ligase_n_reacts
     ]
     bbricks_enz_types = ['EcoRI', 'XbaI', 'SpeI', 'PstI', 'PCR polymerase', 'Ligase']
@@ -1488,7 +1488,7 @@ def pcr_solution_service(obj, assembler, assembly, fragments):
     
     pcr_enz_costs = [ 
         obj.mastermix_cost / obj.mastermix_n_reacts,
-        obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts
+        (len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts)
     ]
     pcr_enz_types = ['Master mix', 'Polymerase']
         
@@ -1628,7 +1628,7 @@ def slic_solution_service(obj, assembler, assembly, fragments):
         enzyme_orders.append('PCR polymerase')
 
     slic_enz_costs = [
-        obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts
+        (len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts)
     ]
     slic_enz_types = ['PCR polymerase']
 

@@ -29,14 +29,8 @@
         <div class="col">
             <h2>General Info</h2>
             <ul class="list-group">
-                <li class="list-group-item"><strong>Exonuclease:</strong> T5</li>
-                <li class="list-group-item"><strong>Ligase:</strong> Taq</li>
-                <li class="list-group-item"><strong>Polymerase:</strong> Phusion</li>
+                <li class="list-group-item"><strong>Method:</strong> Gibson</li>
                 <li class="list-group-item"><strong>Overlap:</strong> {{ gibson.overlap }}nt</li>
-                <!-- <li class="list-group-item"><strong>Master mix cost:</strong> {{ gibson.mastermix_cost }}nt</li>
-                <li class="list-group-item"><strong>Exonuclease cost:</strong> ${{ gibson.exonuclease_cost }}</li>
-                <li class="list-group-item"><strong>Ligase cost:</strong> ${{ gibson.ligase_cost }}</li>
-                <li class="list-group-item"><strong>Polymerase cost:</strong> ${{ gibson.polymerase_cost }}</li> -->
             </ul>
         </div>
         <div class="col">
@@ -112,18 +106,6 @@
                                         <span class="badge rounded-pill bg-primary">
                                             {{ solution.primers_count }} Primers
                                         </span>
-                                        <!-- <span class="badge rounded-pill bg-primary">
-                                            Master mix - ${{ gibson.mastermix_cost }} / {{gibson.mastermix_n_reacts}} reaction(s)
-                                        </span>
-                                        <span class="badge rounded-pill bg-primary">
-                                            Exonuclease - ${{ gibson.exonuclease_cost }} / {{gibson.exonuclease_n_reacts}} reaction(s)
-                                        </span>
-                                        <span class="badge rounded-pill bg-primary">
-                                            Ligase - ${{ gibson.ligase_cost }} / {{gibson.ligase_n_reacts}} reaction(s)
-                                        </span>
-                                        <span class="badge rounded-pill bg-primary">
-                                            Polymerase - ${{ gibson.polymerase_cost }} / {{gibson.polymerase_n_reacts}} reaction(s)
-                                        </span> -->
                                     </li>
                                     <li class="list-group-item">
                                         <span class="badge rounded-pill bg-secondary">

@@ -28,11 +28,8 @@
         <div class="col">
             <h2>General Info</h2>
             <ul class="list-group">
-                <li class="list-group-item"><strong>Exonuclease:</strong> T4-DNA</li>
-                <li class="list-group-item"><strong>Recombination Enzyme:</strong> RecA</li>
-                <li class="list-group-item"><strong>Polymerase:</strong> T4-DNA</li>
-                <!-- <li class="list-group-item"><strong>Exonuclease cost:</strong> ${{ slic.exonuclease_cost }}</li>
-                <li class="list-group-item"><strong>Ligase cost:</strong> ${{ slic.ligase_cost }}</li> -->
+                <li class="list-group-item"><strong>Method:</strong> SLIC</li>
+                <li class="list-group-item"><strong>Overlap:</strong> {{ slic.overlap }}nt</li>
             </ul>
         </div>
         <div class="col">
@@ -108,12 +105,6 @@
                                         <span class="badge rounded-pill bg-primary">
                                             {{ solution.primers_count }} Primers
                                         </span>
-                                        <!-- <span class="badge rounded-pill bg-primary">
-                                            Exonuclease - ${{ slic.exonuclease_cost }}
-                                        </span>
-                                        <span class="badge rounded-pill bg-primary">
-                                            Ligase - ${{ slic.ligase_cost }}
-                                        </span> -->
                                     </li>
                                     <li class="list-group-item">
                                         <span class="badge rounded-pill bg-secondary">
