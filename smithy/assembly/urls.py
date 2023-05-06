@@ -1,47 +1,17 @@
-from collections import namedtuple
-from os import name
 from django.urls import path
-from . import views
-from .views import (
-    GibsonDetailView,
-    GibsonCreateView,
-    GibsonSolutionDetailView,
-    GibsonPartDetailView,
-    GibsonPrimerDetailView,
-    GibsonListView,
-    GoldenGateDetailView,
-    GoldenGateCreateView,
-    GoldenGateSolutionDetailView,    
-    GoldenGatePartDetailView,
-    GoldenGatePrimerDetailView,
-    GoldenGateListView,
-    BioBricksDetailView, 
-    BioBricksCreateView, 
-    BioBricksSolutionDetailView,
-    BioBricksPartDetailView,
-    BioBricksPrimerDetailView,
-    BioBricksListView,
-    PCRDetailView, 
-    PCRCreateView, 
-    PCRSolutionDetailView,
-    PCRPartDetailView,
-    PCRPrimerDetailView,
-    PCRListView,
-    SLICDetailView, 
-    SLICCreateView, 
-    SLICSolutionDetailView,
-    SLICPartDetailView,
-    SLICPrimerDetailView,
-    SLICListView,
-    AssemblyBundleDetailView,
-    AssemblyBundleListView
-)
+from .views.base import *
+from .views.gibson import *
+from .views.goldengate import *
+from .views.pcr import *
+from .views.slic import *
+from .views.biobricks import *
+from .views.bundle import *
 
 urlpatterns = [
-    path('', views.home, name='assembly-home'),
-    path('all/', views.assemblies_list, name='assemblies-list'),
-    path('about/', views.about, name='assembly-about'),
-    path('bundle/', views.assembly_bundle, name='assembly-bundle'),
+    path('', home, name='assembly-home'),
+    path('all/', assemblies_list, name='assemblies-list'),
+    path('about/', about, name='assembly-about'),
+    path('bundle/', assembly_bundle, name='assembly-bundle'),
     path('bundle/<int:pk>/', AssemblyBundleDetailView.as_view(), name='bundle-detail'),
     path('bundle/list/', AssemblyBundleListView.as_view(), name='bundle-list'),
     path('gibson/<int:pk>/', GibsonDetailView.as_view(), name='gibson-detail'),

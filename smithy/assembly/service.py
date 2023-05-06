@@ -2104,7 +2104,3 @@ def bundle_create_service(bundle_data):
     os.remove(insert_file_path)
     print('bundle - complete')
     return bundle.pk
-
-
-
-
