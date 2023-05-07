@@ -5,7 +5,7 @@ from django.views.generic import (
 )
 from django.shortcuts import render, redirect
 from ..forms import BundleForm
-
+from ..services.bundle import bundle_create_service
 
 class AssemblyBundleDetailView(DetailView):
     model = AssemblyBundle

@@ -1,4 +1,4 @@
-from ..services.gibson import gibson_create_service
+from ..services.gibson import run_gibson
 from ..models import (
     GibsonAssembly, 
     GibsonPart,
@@ -67,7 +67,7 @@ class GibsonCreateView(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        gibson_create_service(self.object)
+        run_gibson(self.object)
         return super().form_valid(form)  
 
     def get_context_data(self, **kwargs):

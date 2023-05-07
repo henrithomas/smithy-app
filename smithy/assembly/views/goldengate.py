@@ -1,4 +1,4 @@
-from ..services.goldengate import *
+from ..services.goldengate import run_goldengate
 from ..models import (
     GoldenGateAssembly,
     GoldenGatePart,
@@ -65,7 +65,7 @@ class GoldenGateCreateView(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        goldengate_create_service(self.object)
+        run_goldengate(self.object)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

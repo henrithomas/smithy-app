@@ -1,10 +1,149 @@
-from .utility import *
+from .util import *
 from ..models import GoldenGatePart, GoldenGatePrimer, GoldenGateSolution
 from assemblies.goldengate import GoldenGateAssembler
 import json
 from math import log10
 
-def goldengate_create_service(obj):
+def calculate_time(len_fragments, part_lengths):
+    pcr = pcr_time(part_lengths)
+    time = assembly_times(pcr, len_fragments)
+    pass
+
+def assembly_times(pcr, parts_count):
+    # NEB protocol
+    times = {}
+    time_types = ['pcr', 'assembly']
+    time_vals = [pcr]
+
+    if parts_count == 1:
+        time_vals.append(0.1)
+    elif parts_count >= 2 and parts_count < 5:
+        time_vals.append(1.1)
+    elif parts_count >= 5 and parts_count < 11:
+        time_vals.append(1.1)
+    elif parts_count >= 11:
+        time_vals.append(5.01)
+
+    times.update({'total': round(sum(time_vals), 2)})
+    times.update({'types': time_types})
+    times.update({'times': time_vals})
+
+    return times
+
+def enzymes_data(obj, len_fragments):
+    orders = []
+    costs = []
+    types = []
+
+    if obj.mastermix_cost > 0.0:
+        orders.append('Master mix enzyme')
+        costs = [ obj.mastermix_cost / obj.mastermix_n_reacts ]
+        types = ['Master mix']
+    else:
+        if obj.re_cost > 0.0:
+            orders.append('Type2S')
+
+        if obj.ligase_cost > 0.0:
+            orders.append('Ligase')
+
+        costs.extend([
+            obj.re_cost / obj.re_n_reacts, 
+            obj.ligase_cost / obj.ligase_n_reacts
+        ])
+
+        types.extend(['Type2s RE', 'Ligase'])
+        
+    if obj.pcr_polymerase_cost > 0.0:
+        pcr_poly_cost = (len_fragments + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts)
+        orders.append('PCR polymerase')
+        costs.append(pcr_poly_cost)
+        types.append('PCR polymerase')
+
+    return orders, costs, types
+
+def assembly_risk(pcr_ps, assembly_ps):
+    return {
+        'total': 0.35,
+        'types': ['PCR', 'Assembly'],
+        'risks': [
+            log10((1 - pcr_ps) / pcr_ps), 
+            log10((1 - assembly_ps) / assembly_ps)
+        ]
+    }
+
+def save_parts_and_primers(assembly, space, solution):
+    for i, part in enumerate(assembly):
+        db_part = GoldenGatePart(
+            name=part.name,
+            database=part.annotations['db'],
+            length=part.template.seq.length, 
+            length_extended=part.seq.length,
+            seq=part.template.seq,
+            seq_extended=part.seq,
+            position=i,
+            solution=solution,
+            query_start = part.annotations['query_start'],
+            query_end = part.annotations['query_end'],
+            subject_start = part.annotations['subject_start'],
+            subject_end = part.annotations['subject_end'],
+            cuts=part.annotations['cuts'],
+            cut_locations=json.dumps(part.annotations['cut_locations'])           
+        )
+        db_part.save()
+
+        name = f'{part.name}-{i}'
+        left_index, right_index = part_indexes(i, len(assembly))
+
+        part_map(db_part, part, assembly[left_index], assembly[right_index], name, space)
+
+        forward_primer = GoldenGatePrimer(
+            name= f'{db_part.name} forward primer',
+            primer_type='fwd',
+            sequence=part.forward_primer.seq,
+            footprint=part.forward_primer.footprint,
+            tail=part.forward_primer.tail,
+            tm_total=part.annotations['forward_primer']['tm_total'],
+            tm_footprint=part.annotations['forward_primer']['tm_footprint'],
+            gc=part.annotations['forward_primer']['gc'],
+            hairpin=part.annotations['forward_primer']['hairpin'],
+            hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
+            hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
+            hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
+            hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
+            homodimer=part.annotations['forward_primer']['homodimer'],
+            homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
+            homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
+            homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
+            homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
+            part=db_part
+        )
+        forward_primer.save()
+
+        reverse_primer = GoldenGatePrimer(
+            name= f'{db_part.name} reverse primer ',
+            primer_type='rvs',
+            sequence=part.reverse_primer.seq,
+            footprint=part.reverse_primer.footprint,
+            tail=part.reverse_primer.tail,
+            tm_total=part.annotations['reverse_primer']['tm_total'],
+            tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
+            gc=part.annotations['reverse_primer']['gc'],
+            hairpin=part.annotations['reverse_primer']['hairpin'],
+            hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
+            hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
+            hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
+            hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
+            homodimer=part.annotations['reverse_primer']['homodimer'],
+            homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
+            homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
+            homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
+            homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
+            part=db_part 
+        )
+        reverse_primer.save()
+
+
+def run_goldengate(obj):
     """
     
 
@@ -73,9 +212,9 @@ def goldengate_create_service(obj):
         )
     assembly, fragments = assembler.design(solution=0)
 
-    goldengate_solution_service(obj, assembler, assembly, fragments)
+    make_goldengate_solution(obj, assembler, assembly, fragments)
 
-def goldengate_solution_service(obj, assembler, assembly, fragments):
+def make_goldengate_solution(obj, assembler, assembly, fragments):
     # Log based odds of success: risk = log((1 - P_s) / P_s)
     # pcr: P_s = 0.8
     # digestion, ligation: P_s = 0.9
@@ -85,45 +224,14 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
     primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
+    enzyme_orders, enzyme_costs, enzyme_types = enzymes_data(obj, len(fragments))
+    nt_costs = [obj.primer_cost, obj.part_cost, obj.gene_cost]
+    nt_lengths = part_lengths + primer_lengths
     enzyme_orders = []
 
-    if obj.mastermix_cost > 0.0:
-        enzyme_orders.append('Master mix enzyme')
-        gg_enz_costs = [ obj.mastermix_cost / obj.mastermix_n_reacts ]
-        gg_enz_types = ['Master mix']
-    else:
-        if obj.re_cost > 0.0:
-            enzyme_orders.append('Type2S')
-        if obj.ligase_cost > 0.0:
-            enzyme_orders.append('Ligase')
-        gg_enz_costs = [
-            obj.re_cost / obj.re_n_reacts, 
-            obj.ligase_cost / obj.ligase_n_reacts
-        ]
-        gg_enz_types = ['Type2s RE', 'Ligase']
-        
-    if obj.pcr_polymerase_cost > 0.0:
-        enzyme_orders.append('PCR polymerase')
-        gg_enz_costs.append((len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts))
-        gg_enz_types.append('PCR polymerase')
-
-    pcr = pcr_time(part_lengths_pcr)
-    goldengate_time = goldengate_times(pcr, len(fragments))
-    goldengate_cost = assembly_costs(
-        [obj.primer_cost, obj.part_cost, obj.gene_cost],
-        part_lengths + primer_lengths,
-        plasmid_count,
-        gg_enz_costs,
-        gg_enz_types
-    )
-    goldengate_risk = {
-        'total': 0.35,
-        'types': ['PCR', 'Assembly'],
-        'risks': [
-            log10((1 - obj.pcr_ps) / obj.pcr_ps), 
-            log10((1 - obj.assembly_ps) / obj.assembly_ps)
-        ]
-    }
+    cost = assembly_costs(nt_costs, nt_lengths, plasmid_count, enzyme_costs, enzyme_types)
+    time = calculate_time(len(fragments), part_lengths_pcr)
+    risk = assembly_risk(obj.pcr_ps, obj.assembly_ps)
 
     # TODO update to have a match % and BLAST solution sequence
     # TODO add a foreach solution in for the assembly
@@ -146,9 +254,9 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
         synth_parts=analysis[8],
         solution_length=assembler.query_record.seq.length,
         assembly=obj,
-        time_summary=json.dumps(goldengate_time),
-        cost_summary=json.dumps(goldengate_cost),
-        risk_summary=json.dumps(goldengate_risk)
+        time_summary=json.dumps(time),
+        cost_summary=json.dumps(cost),
+        risk_summary=json.dumps(risk)
     )
     goldengate_solution.save()
 
@@ -157,78 +265,4 @@ def goldengate_solution_service(obj, assembler, assembly, fragments):
     primers_csv(goldengate_solution, assembly)
     order_csv(goldengate_solution, assembly, enzyme_orders)
 
-    for i, part in enumerate(assembly):
-        goldengate_part_entry = GoldenGatePart(
-            name=part.name,
-            database=part.annotations['db'],
-            length=part.template.seq.length, 
-            length_extended=part.seq.length,
-            seq=part.template.seq,
-            seq_extended=part.seq,
-            position=i,
-            solution=goldengate_solution,
-            query_start = part.annotations['query_start'],
-            query_end = part.annotations['query_end'],
-            subject_start = part.annotations['subject_start'],
-            subject_end = part.annotations['subject_end'],
-            cuts=part.annotations['cuts'],
-            cut_locations=json.dumps(part.annotations['cut_locations'])           
-        )
-        goldengate_part_entry.save()
-
-        left_index, right_index = part_indexes(i, len(assembly))
-
-        part_map(
-            goldengate_part_entry, 
-            part, 
-            assembly[left_index], 
-            assembly[right_index], 
-            f'{part.name}-{i}', 
-            space
-        )
-
-        forward_primer = GoldenGatePrimer(
-            name= f'{goldengate_part_entry.name} forward primer',
-            primer_type='fwd',
-            sequence=part.forward_primer.seq,
-            footprint=part.forward_primer.footprint,
-            tail=part.forward_primer.tail,
-            tm_total=part.annotations['forward_primer']['tm_total'],
-            tm_footprint=part.annotations['forward_primer']['tm_footprint'],
-            gc=part.annotations['forward_primer']['gc'],
-            hairpin=part.annotations['forward_primer']['hairpin'],
-            hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
-            hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
-            hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
-            hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
-            homodimer=part.annotations['forward_primer']['homodimer'],
-            homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
-            homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
-            homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
-            homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
-            part=goldengate_part_entry
-        )
-        forward_primer.save()
-
-        reverse_primer = GoldenGatePrimer(
-            name= f'{goldengate_part_entry.name} reverse primer ',
-            primer_type='rvs',
-            sequence=part.reverse_primer.seq,
-            footprint=part.reverse_primer.footprint,
-            tail=part.reverse_primer.tail,
-            tm_total=part.annotations['reverse_primer']['tm_total'],
-            tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
-            gc=part.annotations['reverse_primer']['gc'],
-            hairpin=part.annotations['reverse_primer']['hairpin'],
-            hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
-            hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
-            hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
-            hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
-            homodimer=part.annotations['reverse_primer']['homodimer'],
-            homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
-            homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
-            homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
-            homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
-            part=goldengate_part_entry 
-        )
-        reverse_primer.save()
+    save_parts_and_primers(assembly, space, goldengate_solution)

@@ -1,4 +1,4 @@
-from ..service import slic_create_service
+from ..services.slic import slic_create_service
 from ..models import (
     SLICAssembly,
     SLICSolution,

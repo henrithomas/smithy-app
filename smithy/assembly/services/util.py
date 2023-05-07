@@ -307,28 +307,6 @@ def pcr_time(nt_lengths):
 
     return round(pcr_total / 60, 2)
 
-def goldengate_times(pcr, insert_count):
-    # NEB protocol
-    times = {}
-    time_types = ['pcr', 'assembly']
-    time_vals = [pcr]
-
-    if insert_count == 1:
-        time_vals.append(0.1)
-    elif insert_count >= 2 and insert_count < 5:
-        time_vals.append(1.1)
-    elif insert_count >= 5 and insert_count < 11:
-        time_vals.append(1.1)
-    elif insert_count >= 11:
-        time_vals.append(5.01)
-
-    times.update({'total': round(sum(time_vals), 2)})
-    times.update({'types': time_types})
-    times.update({'times': time_vals})
-
-    return times
-
-
 def slic_times(pcr, overlap):
     # slic methods article
     times = {}
@@ -358,18 +336,6 @@ def biobricks_times(pcr, insert_count):
     
     times.update({'total': round(sum(time_vals), 2)})
     times.update({'types': times_types})
-    times.update({'times': time_vals})
-
-    return times
-
-def pcr_soe_times(nt_lengths):
-    # TODO: needs more detail 
-    times = {}
-    time_types = ['pcr']
-    time_vals = [pcr_time(nt_lengths)]
-
-    times.update({'total': round(sum(time_vals), 2)})
-    times.update({'types': time_types})
     times.update({'times': time_vals})
 
     return times

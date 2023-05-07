@@ -1,4 +1,4 @@
-from ..services.pcr import *
+from ..services.pcr import run_pcr
 from ..models import (
     PCRAssembly,
     PCRSolution,
@@ -59,7 +59,7 @@ class PCRCreateView(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        pcr_create_service(self.object)
+        run_pcr(self.object)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

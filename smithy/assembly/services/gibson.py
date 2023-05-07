@@ -1,12 +1,12 @@
-from .utility import *
+from .util import *
 from ..models import GibsonPart, GibsonSolution, GibsonPrimer
 from assemblies.gibson import GibsonAssembler
 import json
 from math import log10
 
-def calculate_time(fragments, part_lengths_pcr):
-    pcr = pcr_time(part_lengths_pcr)
-    time = assembly_times(pcr, len(fragments))
+def calculate_time(len_fragments, part_lengths):
+    pcr = pcr_time(part_lengths)
+    time = assembly_times(pcr, len_fragments)
     return time
 
 def assembly_times(pcr, parts_count):
@@ -22,79 +22,43 @@ def assembly_times(pcr, parts_count):
 
     return times
 
-def mastermix_data(obj):
-    """
-    Formats enzyme mastermix data for the assembly.
-
-    Parameters
-    ----------
-    mastermix_cost : float
-
-    mastermix_n_reacts : int
-
-    Returns
-    -------
-    Lists of enzyme orders, costs, and types data.
-    """
-    orders = ['Master mix enzyme']
-    costs = [obj.mastermix_cost / obj.mastermix_n_reacts]
-    types = ['Master mix'] 
-
-    return orders, costs, types
-
-def enzyme_data(obj):
-    """
-    Formats enzyme data for the assembly.
-    
-    Parameters
-    ----------
-    obj : GibsonAssembly
-
-    Returns
-    -------
-    Lists of enzyme orders, costs, and types data.
-    """
+def enzymes_data(obj, len_fragments):
     orders = []
     costs = []
-    types = ['Exonuclease', 'Ligase', 'Polymerase']
-    
-    if obj.exonuclease_cost > 0.0:
-        orders.append('T5 exonuclease')
-    if obj.ligase_cost > 0.0:
-        orders.append('Taq ligase')
-    if obj.polymerase_cost > 0.0:
-        orders.append('Phusion polymerase')
-    costs = [
-        obj.exonuclease_cost / obj.exonuclease_n_reacts, 
-        obj.ligase_cost / obj.ligase_n_reacts, 
-        obj.polymerase_cost / obj.polymerase_n_reacts
-    ]
-
-    return orders, costs, types
-
-def pcr_polymerase_data(enzyme_orders, enzyme_costs, enzyme_types, pcr_poly_cost):
-    enzyme_orders.append('PCR polymerase')
-    enzyme_costs.append(pcr_poly_cost)
-    enzyme_types.append('PCR polymerase')
-
-def assembly_enzymes(obj, fragments):
-    enzyme_orders = []
-    enzyme_costs = []
-    enzyme_types = []
+    types = []
     
     if obj.mastermix_cost > 0.0:
-        enzyme_orders, enzyme_costs, enzyme_types = mastermix_data(obj)
+        orders.append('Master mix enzyme')
+        costs.append(obj.mastermix_cost / obj.mastermix_n_reacts)
+        types.append('Master mix') 
     else:
-        enzyme_orders, enzyme_costs, enzyme_types = enzyme_data(obj)
+        if obj.exonuclease_cost > 0.0:
+            orders.append('T5 exonuclease')
+
+        if obj.ligase_cost > 0.0:
+            orders.append('Taq ligase')
+
+        if obj.polymerase_cost > 0.0:
+            orders.append('Phusion polymerase')
+
+        costs.extend([
+            obj.exonuclease_cost / obj.exonuclease_n_reacts, 
+            obj.ligase_cost / obj.ligase_n_reacts, 
+            obj.polymerase_cost / obj.polymerase_n_reacts
+        ])
+
+        types.extend(['T5 exonuclease', 'Taq ligase', 'Phusion polymerase'])
 
     if obj.pcr_polymerase_cost > 0.0:
-        pcr_poly_cost = (len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts)
-        pcr_polymerase_data(enzyme_orders, enzyme_costs, enzyme_types, pcr_poly_cost)
+        pcr_poly_cost = (len_fragments + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts)
+        orders.append('PCR polymerase')
+        costs.append(pcr_poly_cost)
+        types.append('PCR polymerase')
         
-    return enzyme_orders, enzyme_costs, enzyme_types
+    return orders, costs, types
 
 def assembly_risk(pcr_ps, assembly_ps):
-    risk = {
+    return {
         'total': 0.35,
         'types': ['PCR', 'Assembly'],
         'risks': [
@@ -102,8 +66,6 @@ def assembly_risk(pcr_ps, assembly_ps):
             log10((1 - assembly_ps) / assembly_ps)
         ]
     }
-    
-    return risk
 
 def save_parts_and_primers(assembly, solution):
     for i, part in enumerate(assembly):
@@ -174,7 +136,7 @@ def save_parts_and_primers(assembly, solution):
         )
         reverse_primer.save()
 
-def gibson_create_service(obj):
+def run_gibson(obj):
     """
     
 
@@ -244,18 +206,18 @@ def gibson_create_service(obj):
         )
     assembly, fragments = assembler.design(solution=0)
 
-    gibson_solution_service(obj, assembler, assembly, fragments)
+    make_gibson_solution(obj, assembler, assembly, fragments)
 
-def gibson_solution_service(obj, assembler, assembly, fragments):
+def make_gibson_solution(obj, assembler, assembly, fragments):
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
     primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
-    enzyme_orders, enzyme_costs, enzyme_types = assembly_enzymes(obj, fragments)
+    enzyme_orders, enzyme_costs, enzyme_types = enzymes_data(obj, len(fragments))
     nt_costs = [obj.primer_cost, obj.part_cost, obj.gene_cost]
     nt_lengths = part_lengths + primer_lengths
 
     cost = assembly_costs(nt_costs, nt_lengths, plasmid_count, enzyme_costs, enzyme_types)
-    time = calculate_time(fragments, part_lengths_pcr)
+    time = calculate_time(len(fragments), part_lengths_pcr)
     risk = assembly_risk(obj.pcr_ps, obj.assembly_ps)
 
     solution = GibsonSolution(
@@ -289,4 +251,3 @@ def gibson_solution_service(obj, assembler, assembly, fragments):
     order_csv(solution, assembly, enzyme_orders)
 
     save_parts_and_primers(assembly, solution)
-
