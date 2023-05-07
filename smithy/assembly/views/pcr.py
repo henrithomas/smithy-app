@@ -1,4 +1,4 @@
-from ..service import pcr_create_service
+from ..services.pcr import *
 from ..models import (
     PCRAssembly,
     PCRSolution,

@@ -55,744 +55,740 @@ csv_path = settings.MEDIA_CSV_ROOT
 
 smithy_path = '/home/dkoch/smithy-app/smithy/' 
 
-def part_indexes(idx, length):
-    left = length - 1 if idx == 0 else idx - 1
-    right = 0 if idx == length - 1 else idx + 1 
-    return left, right
+# def part_indexes(idx, length):
+#     left = length - 1 if idx == 0 else idx - 1
+#     right = 0 if idx == length - 1 else idx + 1 
+#     return left, right
 
-cluster_bounds = (
-    (1, 0, 1000),
-    (2, 1000, 2000),
-    (3, 2000, 3000),
-    (4, 3000, 4000),
-    (5, 4000, 5000),
-    (6, 5000, 6000),
-    (7, 6000, 7000),
-    (8, 7000, 8000),
-    (9, 8000, 9000),
-    (10, 9000, inf),
-)
+# cluster_bounds = (
+#     (1, 0, 1000),
+#     (2, 1000, 2000),
+#     (3, 2000, 3000),
+#     (4, 3000, 4000),
+#     (5, 4000, 5000),
+#     (6, 5000, 6000),
+#     (7, 6000, 7000),
+#     (8, 7000, 8000),
+#     (9, 8000, 9000),
+#     (10, 9000, inf),
+# )
 
-def pcr_clusters(nt_lengths):
-    clusters = defaultdict(list)
+# def pcr_clusters(nt_lengths):
+#     clusters = defaultdict(list)
 
-    for l in nt_lengths:
-        for c, lower, upper in cluster_bounds:
-            if l > lower and l <= upper:
-                clusters[c].append(l)
+#     for l in nt_lengths:
+#         for c, lower, upper in cluster_bounds:
+#             if l > lower and l <= upper:
+#                 clusters[c].append(l)
 
-    return clusters
+#     return clusters
 
-def lengths_and_plasmids(assembly):
-    primer_lengths = []
-    part_lengths_pcr = []
-    part_lengths_synth = []
-    plasmid_count = 0
+# def lengths_and_plasmids(assembly):
+#     primer_lengths = []
+#     part_lengths_pcr = []
+#     part_lengths_synth = []
+#     plasmid_count = 0
 
-    for part in assembly[:-1]:
-        primer_lengths.extend(
-            [
-                len(part.forward_primer.seq),
-                len(part.reverse_primer.seq)
-            ]
-        )
-        part_lengths_pcr.append(part.template.seq.length)
+#     for part in assembly[:-1]:
+#         primer_lengths.extend(
+#             [
+#                 len(part.forward_primer.seq),
+#                 len(part.reverse_primer.seq)
+#             ]
+#         )
+#         part_lengths_pcr.append(part.template.seq.length)
 
-        if part.annotations['db'] == 'NONE':
-            part_lengths_synth.append(part.template.seq.length)
-        else:
-            plasmid_count += 1
+#         if part.annotations['db'] == 'NONE':
+#             part_lengths_synth.append(part.template.seq.length)
+#         else:
+#             plasmid_count += 1
 
-    primer_lengths.extend(
-        [
-            len(assembly[-1].forward_primer.seq),
-            len(assembly[-1].reverse_primer.seq)
-        ]
-    )
-    part_lengths_pcr.append(assembly[-1].template.seq.length)
+#     primer_lengths.extend(
+#         [
+#             len(assembly[-1].forward_primer.seq),
+#             len(assembly[-1].reverse_primer.seq)
+#         ]
+#     )
+#     part_lengths_pcr.append(assembly[-1].template.seq.length)
 
-    return primer_lengths, part_lengths_synth, part_lengths_pcr, plasmid_count
+#     return primer_lengths, part_lengths_synth, part_lengths_pcr, plasmid_count
 
-def parts_csv(solution_model, parts):
-    """
-    Exports the assembly parts data to the chosen file in csv format.
+# def parts_csv(solution_model, parts):
+#     """
+#     Exports the assembly parts data to the chosen file in csv format.
 
 
-    Parameters
-    ----------
-    solution_model : AssemblySolution
+#     Parameters
+#     ----------
+#     solution_model : AssemblySolution
 
-    parts : list
-        List of Amplicon objects of the assembly
+#     parts : list
+#         List of Amplicon objects of the assembly
         
 
 
-    Returns
-    -------
-    None
-    """
-    file_name = f'{solution_model.name.replace(" ", "-")}-{solution_model.pk}-parts.csv'
-    temp_file = os.path.join(csv_path, file_name)
-    # temp_file = f'{smithy_path}media/csv/{file_name}'
+#     Returns
+#     -------
+#     None
+#     """
+#     file_name = f'{solution_model.name.replace(" ", "-")}-{solution_model.pk}-parts.csv'
+#     temp_file = os.path.join(csv_path, file_name)
+#     # temp_file = f'{smithy_path}media/csv/{file_name}'
 
-    fields = ['id', 'length', 'length_ext', 'seq', 'seq_ext', 'query_start', 'query_end', 'subject_start', 'subject_end']
-    csv_list = [
-        {
-            'id': part.name, 
-            'length': part.template.seq.length, 
-            'length_ext': part.seq.length, 
-            'seq': part.template.seq.watson, 
-            'seq_ext': part.seq.watson,
-            'query_start': part.annotations['query_start'],
-            'query_end': part.annotations['query_end'],
-            'subject_start': part.annotations['subject_start'],
-            'subject_end': part.annotations['subject_end']
-        }
-        for part in parts
-    ]
+#     fields = ['id', 'length', 'length_ext', 'seq', 'seq_ext', 'query_start', 'query_end', 'subject_start', 'subject_end']
+#     csv_list = [
+#         {
+#             'id': part.name, 
+#             'length': part.template.seq.length, 
+#             'length_ext': part.seq.length, 
+#             'seq': part.template.seq.watson, 
+#             'seq_ext': part.seq.watson,
+#             'query_start': part.annotations['query_start'],
+#             'query_end': part.annotations['query_end'],
+#             'subject_start': part.annotations['subject_start'],
+#             'subject_end': part.annotations['subject_end']
+#         }
+#         for part in parts
+#     ]
     
-    with open(temp_file, 'w', newline='') as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=fields, restval='NONE')
-        writer.writeheader()
-        writer.writerows(csv_list)
+#     with open(temp_file, 'w', newline='') as csv_file:
+#         writer = csv.DictWriter(csv_file, fieldnames=fields, restval='NONE')
+#         writer.writeheader()
+#         writer.writerows(csv_list)
 
-    solution_model.parts_file.save(file_name, File(open(temp_file, newline='')))
-    solution_model.save()
-    os.remove(temp_file)
+#     solution_model.parts_file.save(file_name, File(open(temp_file, newline='')))
+#     solution_model.save()
+#     os.remove(temp_file)
 
-def primers_csv(solution_model, parts):
-    """
-    Exports the assembly primers to the chosen file in csv format.
+# def primers_csv(solution_model, parts):
+#     """
+#     Exports the assembly primers to the chosen file in csv format.
 
 
-    Parameters
-    ----------
-    solution_model : AssemblySolution
+#     Parameters
+#     ----------
+#     solution_model : AssemblySolution
     
-    parts : list
-        List of Amplicon objects of the assembly
+#     parts : list
+#         List of Amplicon objects of the assembly
 
 
 
-    Returns
-    -------        
-    None
-    """
-    file_name = f'{solution_model.name.replace(" ", "-")}-{solution_model.pk}-primers.csv'
-    temp_file = os.path.join(csv_path, file_name)
-    # temp_file = f'{smithy_path}media/csv/{file_name}'
+#     Returns
+#     -------        
+#     None
+#     """
+#     file_name = f'{solution_model.name.replace(" ", "-")}-{solution_model.pk}-primers.csv'
+#     temp_file = os.path.join(csv_path, file_name)
+#     # temp_file = f'{smithy_path}media/csv/{file_name}'
 
-    fields = ['id', 'primer_type', 'sequence', 'footprint', 'tail', 'tm_footprint', 'tm_total', 'gc', 
-              'hairpin', 'hairpin_tm', 'hairpin_dg', 'hairpin_dh', 'hairpin_ds',
-              'homodimer', 'homodimer_tm', 'homodimer_dg', 'homodimer_dh', 'homodimer_ds'
-    ]
-    csv_list = []
+#     fields = ['id', 'primer_type', 'sequence', 'footprint', 'tail', 'tm_footprint', 'tm_total', 'gc', 
+#               'hairpin', 'hairpin_tm', 'hairpin_dg', 'hairpin_dh', 'hairpin_ds',
+#               'homodimer', 'homodimer_tm', 'homodimer_dg', 'homodimer_dh', 'homodimer_ds'
+#     ]
+#     csv_list = []
 
-    for part in parts:
-        csv_list.extend([{
-                'id': f'{part.name}-fwd',
-                'primer_type': 'fwd',
-                'sequence': part.forward_primer.seq,
-                'footprint': part.forward_primer.footprint,
-                'tail': part.forward_primer.tail,
-                'tm_footprint': part.annotations['forward_primer']['tm_footprint'], 
-                'tm_total': part.annotations['forward_primer']['tm_total'], 
-                'gc': part.annotations['forward_primer']['gc'], 
-                'hairpin': part.annotations['forward_primer']['hairpin'], 
-                'hairpin_tm': part.annotations['forward_primer']['hairpin_tm'], 
-                'hairpin_dg': part.annotations['forward_primer']['hairpin_dg'], 
-                'hairpin_dh': part.annotations['forward_primer']['hairpin_dh'], 
-                'hairpin_ds': part.annotations['forward_primer']['hairpin_ds'],
-                'homodimer': part.annotations['forward_primer']['homodimer'], 
-                'homodimer_tm': part.annotations['forward_primer']['homodimer_tm'], 
-                'homodimer_dg': part.annotations['forward_primer']['homodimer_dg'], 
-                'homodimer_dh': part.annotations['forward_primer']['homodimer_dh'], 
-                'homodimer_ds': part.annotations['forward_primer']['homodimer_ds'],
-            },
-            {
-                'id': f'{part.name}-rvs',
-                'primer_type': 'rvs',
-                'sequence': part.reverse_primer.seq,
-                'footprint': part.reverse_primer.footprint,
-                'tail': part.reverse_primer.tail,
-                'tm_footprint': part.annotations['reverse_primer']['tm_footprint'], 
-                'tm_total': part.annotations['reverse_primer']['tm_total'], 
-                'gc': part.annotations['reverse_primer']['gc'], 
-                'hairpin': part.annotations['reverse_primer']['hairpin'], 
-                'hairpin_tm': part.annotations['reverse_primer']['hairpin_tm'], 
-                'hairpin_dg': part.annotations['reverse_primer']['hairpin_dg'], 
-                'hairpin_dh': part.annotations['reverse_primer']['hairpin_dh'], 
-                'hairpin_ds': part.annotations['reverse_primer']['hairpin_ds'],
-                'homodimer': part.annotations['reverse_primer']['homodimer'], 
-                'homodimer_tm': part.annotations['reverse_primer']['homodimer_tm'], 
-                'homodimer_dg': part.annotations['reverse_primer']['homodimer_dg'], 
-                'homodimer_dh': part.annotations['reverse_primer']['homodimer_dh'], 
-                'homodimer_ds': part.annotations['reverse_primer']['homodimer_ds'],
-            }])
+#     for part in parts:
+#         csv_list.extend([{
+#                 'id': f'{part.name}-fwd',
+#                 'primer_type': 'fwd',
+#                 'sequence': part.forward_primer.seq,
+#                 'footprint': part.forward_primer.footprint,
+#                 'tail': part.forward_primer.tail,
+#                 'tm_footprint': part.annotations['forward_primer']['tm_footprint'], 
+#                 'tm_total': part.annotations['forward_primer']['tm_total'], 
+#                 'gc': part.annotations['forward_primer']['gc'], 
+#                 'hairpin': part.annotations['forward_primer']['hairpin'], 
+#                 'hairpin_tm': part.annotations['forward_primer']['hairpin_tm'], 
+#                 'hairpin_dg': part.annotations['forward_primer']['hairpin_dg'], 
+#                 'hairpin_dh': part.annotations['forward_primer']['hairpin_dh'], 
+#                 'hairpin_ds': part.annotations['forward_primer']['hairpin_ds'],
+#                 'homodimer': part.annotations['forward_primer']['homodimer'], 
+#                 'homodimer_tm': part.annotations['forward_primer']['homodimer_tm'], 
+#                 'homodimer_dg': part.annotations['forward_primer']['homodimer_dg'], 
+#                 'homodimer_dh': part.annotations['forward_primer']['homodimer_dh'], 
+#                 'homodimer_ds': part.annotations['forward_primer']['homodimer_ds'],
+#             },
+#             {
+#                 'id': f'{part.name}-rvs',
+#                 'primer_type': 'rvs',
+#                 'sequence': part.reverse_primer.seq,
+#                 'footprint': part.reverse_primer.footprint,
+#                 'tail': part.reverse_primer.tail,
+#                 'tm_footprint': part.annotations['reverse_primer']['tm_footprint'], 
+#                 'tm_total': part.annotations['reverse_primer']['tm_total'], 
+#                 'gc': part.annotations['reverse_primer']['gc'], 
+#                 'hairpin': part.annotations['reverse_primer']['hairpin'], 
+#                 'hairpin_tm': part.annotations['reverse_primer']['hairpin_tm'], 
+#                 'hairpin_dg': part.annotations['reverse_primer']['hairpin_dg'], 
+#                 'hairpin_dh': part.annotations['reverse_primer']['hairpin_dh'], 
+#                 'hairpin_ds': part.annotations['reverse_primer']['hairpin_ds'],
+#                 'homodimer': part.annotations['reverse_primer']['homodimer'], 
+#                 'homodimer_tm': part.annotations['reverse_primer']['homodimer_tm'], 
+#                 'homodimer_dg': part.annotations['reverse_primer']['homodimer_dg'], 
+#                 'homodimer_dh': part.annotations['reverse_primer']['homodimer_dh'], 
+#                 'homodimer_ds': part.annotations['reverse_primer']['homodimer_ds'],
+#             }])
 
-    with open(temp_file, 'w', newline='') as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=fields, restval='NONE')
-        writer.writeheader()
-        writer.writerows(csv_list)
+#     with open(temp_file, 'w', newline='') as csv_file:
+#         writer = csv.DictWriter(csv_file, fieldnames=fields, restval='NONE')
+#         writer.writeheader()
+#         writer.writerows(csv_list)
 
-    solution_model.primers_file.save(file_name, File(open(temp_file, newline='')))
-    solution_model.save()
-    os.remove(temp_file)
+#     solution_model.primers_file.save(file_name, File(open(temp_file, newline='')))
+#     solution_model.save()
+#     os.remove(temp_file)
 
-def order_csv(solution_model, parts, enzymes):
-    file_name = f'{solution_model.name.replace(" ", "-")}-{solution_model.pk}-order.csv'
-    temp_file = os.path.join(csv_path, file_name)
-    # temp_file = f'{smithy_path}media/csv/{file_name}'
+# def order_csv(solution_model, parts, enzymes):
+#     file_name = f'{solution_model.name.replace(" ", "-")}-{solution_model.pk}-order.csv'
+#     temp_file = os.path.join(csv_path, file_name)
+#     # temp_file = f'{smithy_path}media/csv/{file_name}'
 
-    fields = ['id', 'type', 'sequence']
+#     fields = ['id', 'type', 'sequence']
 
-    part_list = []
-    primer_list = []
-    enzyme_list = []
+#     part_list = []
+#     primer_list = []
+#     enzyme_list = []
 
-    for part in parts: 
-        part_list.append(
-            {
-                'id': part.name,
-                'type': 'part',
-                'sequence': part.template.seq.watson
-            }
-        )
-        primer_list.extend([
-            {
-                'id': f'{part.name}-fwd',
-                'type': 'primer',
-                'sequence': part.forward_primer.seq
-            },
-            {
-                'id': f'{part.name}-rvs',
-                'type': 'primer',
-                'sequence': part.reverse_primer.seq
-            }
-        ])
+#     for part in parts: 
+#         part_list.append(
+#             {
+#                 'id': part.name,
+#                 'type': 'part',
+#                 'sequence': part.template.seq.watson
+#             }
+#         )
+#         primer_list.extend([
+#             {
+#                 'id': f'{part.name}-fwd',
+#                 'type': 'primer',
+#                 'sequence': part.forward_primer.seq
+#             },
+#             {
+#                 'id': f'{part.name}-rvs',
+#                 'type': 'primer',
+#                 'sequence': part.reverse_primer.seq
+#             }
+#         ])
 
-    for enzyme in enzymes:
-        enzyme_list.append(
-            {
-                'id': enzyme,
-                'type': 'enzyme',
-                'sequence': 'none'
-            }
-        )
+#     for enzyme in enzymes:
+#         enzyme_list.append(
+#             {
+#                 'id': enzyme,
+#                 'type': 'enzyme',
+#                 'sequence': 'none'
+#             }
+#         )
 
-    with open(temp_file, 'w', newline='') as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=fields, restval='NONE')
-        writer.writeheader()
-        writer.writerows(part_list)
-        writer.writerows(primer_list)
-        writer.writerows(enzyme_list)
+#     with open(temp_file, 'w', newline='') as csv_file:
+#         writer = csv.DictWriter(csv_file, fieldnames=fields, restval='NONE')
+#         writer.writeheader()
+#         writer.writerows(part_list)
+#         writer.writerows(primer_list)
+#         writer.writerows(enzyme_list)
 
-    solution_model.order_file.save(file_name, File(open(temp_file, newline='')))
-    solution_model.save()
-    os.remove(temp_file)
+#     solution_model.order_file.save(file_name, File(open(temp_file, newline='')))
+#     solution_model.save()
+#     os.remove(temp_file)
 
-def costs(nt_costs, nt_lengths, plasmid_count, enz_costs, enz_types):
-    nt_types = ['oligos', 'blocks', 'genes', 'plasmids']
-    nt_totals = [0.0, 0.0, 0.0, 0.0]
-    costs = {}
-    total_cost = 0
+# def costs(nt_costs, nt_lengths, plasmid_count, enz_costs, enz_types):
+#     nt_types = ['oligos', 'blocks', 'genes', 'plasmids']
+#     nt_totals = [0.0, 0.0, 0.0, 0.0]
+#     costs = {}
+#     total_cost = 0
 
-    # TODO: change categories to : oligo, block, gene only for non-db parts
-    # TODO: add plasmid flat costs for db parts
-    for length in nt_lengths: 
-        if length <= 100:
-            # cost of primer
-            nt_totals[0] += length * nt_costs[0]
-        elif length > 100 and length <= 1000:
-            # cost of part
-            nt_totals[1] += length * nt_costs[1]
-        elif length > 1000:
-            # cost of gene
-            nt_totals[2] += length * nt_costs[2]
+#     # TODO: change categories to : oligo, block, gene only for non-db parts
+#     # TODO: add plasmid flat costs for db parts
+#     for length in nt_lengths: 
+#         if length <= 100:
+#             # cost of primer
+#             nt_totals[0] += length * nt_costs[0]
+#         elif length > 100 and length <= 1000:
+#             # cost of part
+#             nt_totals[1] += length * nt_costs[1]
+#         elif length > 1000:
+#             # cost of gene
+#             nt_totals[2] += length * nt_costs[2]
         
-    # cost of plasmid
-    nt_totals[3] = plasmid_count * 75.0
+#     # cost of plasmid
+#     nt_totals[3] = plasmid_count * 75.0
     
-    total_cost = sum(nt_totals) + sum(enz_costs)
+#     total_cost = sum(nt_totals) + sum(enz_costs)
 
-    cost_types = nt_types + enz_types
-    cost_indv = nt_totals + enz_costs
+#     cost_types = nt_types + enz_types
+#     cost_indv = nt_totals + enz_costs
 
-    costs.update({'total': round(total_cost, 2)})
-    costs.update({'types': cost_types})
-    costs.update({'costs': cost_indv})
+#     costs.update({'total': round(total_cost, 2)})
+#     costs.update({'types': cost_types})
+#     costs.update({'costs': cost_indv})
 
-    return costs
+#     return costs
 
-def pcr_time(nt_lengths):
-    pcr_total = 0.0
+# def pcr_time(nt_lengths):
+#     pcr_total = 0.0
 
-    clusters = pcr_clusters(nt_lengths)
+#     clusters = pcr_clusters(nt_lengths)
 
-    for cluster, lengths in clusters.items():
-        max_length = max(lengths)
-        step = 0.5 * cluster
-        denature = step + 0.4
-        anneal = step + 0.4
-        polymerization = step + 0.4
-        time = 1.0 + 30 * (denature + anneal + polymerization) + 10.0
-        pcr_total += time
+#     for cluster, lengths in clusters.items():
+#         max_length = max(lengths)
+#         step = 0.5 * cluster
+#         denature = step + 0.4
+#         anneal = step + 0.4
+#         polymerization = step + 0.4
+#         time = 1.0 + 30 * (denature + anneal + polymerization) + 10.0
+#         pcr_total += time
 
-    return round(pcr_total / 60, 2)
+#     return round(pcr_total / 60, 2)
 
-def goldengate_times(pcr, insert_count):
-    # NEB protocol
-    times = {}
-    time_types = ['pcr', 'assembly']
-    time_vals = [pcr]
+# def goldengate_times(pcr, insert_count):
+#     # NEB protocol
+#     times = {}
+#     time_types = ['pcr', 'assembly']
+#     time_vals = [pcr]
 
-    if insert_count == 1:
-        time_vals.append(0.1)
-    elif insert_count >= 2 and insert_count < 5:
-        time_vals.append(1.1)
-    elif insert_count >= 5 and insert_count < 11:
-        time_vals.append(1.1)
-    elif insert_count >= 11:
-        time_vals.append(5.01)
+#     if insert_count == 1:
+#         time_vals.append(0.1)
+#     elif insert_count >= 2 and insert_count < 5:
+#         time_vals.append(1.1)
+#     elif insert_count >= 5 and insert_count < 11:
+#         time_vals.append(1.1)
+#     elif insert_count >= 11:
+#         time_vals.append(5.01)
 
-    times.update({'total': round(sum(time_vals), 2)})
-    times.update({'types': time_types})
-    times.update({'times': time_vals})
+#     times.update({'total': round(sum(time_vals), 2)})
+#     times.update({'types': time_types})
+#     times.update({'times': time_vals})
 
-    return times
+#     return times
 
-def gibson_times(pcr, parts_count):
-    # NEB protocol
-    assembly = 0.25 if parts_count <= 3 else 1.0
-    times = {}
-    times_types = ['pcr', 'assembly']
-    time_vals = [pcr, assembly]
+# def gibson_times(pcr, parts_count):
+#     # NEB protocol
+#     assembly = 0.25 if parts_count <= 3 else 1.0
+#     times = {}
+#     times_types = ['pcr', 'assembly']
+#     time_vals = [pcr, assembly]
 
-    times.update({'total': round(sum(time_vals), 2)})
-    times.update({'types': times_types})
-    times.update({'times': time_vals})
+#     times.update({'total': round(sum(time_vals), 2)})
+#     times.update({'types': times_types})
+#     times.update({'times': time_vals})
 
-    return times
+#     return times
 
-def slic_times(pcr, overlap):
-    # slic methods article
-    times = {}
-    times_types = ['pcr', 'chewback', 'ligation']
-    chewback = 0
-    cooling = 0.1
-    ligation = 0.5 + cooling
+# def slic_times(pcr, overlap):
+#     # slic methods article
+#     times = {}
+#     times_types = ['pcr', 'chewback', 'ligation']
+#     chewback = 0
+#     cooling = 0.1
+#     ligation = 0.5 + cooling
 
-    if overlap < 40: 
-        chewback = 0.8
-    else:
-        chewback = 1.35
+#     if overlap < 40: 
+#         chewback = 0.8
+#     else:
+#         chewback = 1.35
 
-    time_vals = [pcr, chewback, ligation]
+#     time_vals = [pcr, chewback, ligation]
 
-    times.update({'total': round(sum(time_vals), 2)})
-    times.update({'types': times_types})
-    times.update({'times': time_vals})
+#     times.update({'total': round(sum(time_vals), 2)})
+#     times.update({'types': times_types})
+#     times.update({'times': time_vals})
 
-    return times
+#     return times
 
-def biobricks_times(pcr, insert_count):
-    # iGEM and Ginko Bioworks protocol 
-    times = {}
-    times_types = ['pcr', 'digestion', 'ligation']
-    time_vals = [pcr, 0.8, 0.5]
+# def biobricks_times(pcr, insert_count):
+#     # iGEM and Ginko Bioworks protocol 
+#     times = {}
+#     times_types = ['pcr', 'digestion', 'ligation']
+#     time_vals = [pcr, 0.8, 0.5]
     
-    times.update({'total': round(sum(time_vals), 2)})
-    times.update({'types': times_types})
-    times.update({'times': time_vals})
+#     times.update({'total': round(sum(time_vals), 2)})
+#     times.update({'types': times_types})
+#     times.update({'times': time_vals})
 
-    return times
+#     return times
 
-def pcr_soe_times(nt_lengths):
-    # TODO: needs more detail 
-    times = {}
-    time_types = ['pcr']
-    time_vals = [pcr_time(nt_lengths)]
+# def pcr_soe_times(nt_lengths):
+#     # TODO: needs more detail 
+#     times = {}
+#     time_types = ['pcr']
+#     time_vals = [pcr_time(nt_lengths)]
 
-    times.update({'total': round(sum(time_vals), 2)})
-    times.update({'types': time_types})
-    times.update({'times': time_vals})
+#     times.update({'total': round(sum(time_vals), 2)})
+#     times.update({'types': time_types})
+#     times.update({'times': time_vals})
 
-    return times
+#     return times
 
-def goldengate_risk(insert_count):
-    pcr_pots = insert_count
-    assembly_pots = 1
-    pass
+# def goldengate_risk(insert_count):
+#     pcr_pots = insert_count
+#     assembly_pots = 1
+#     pass
 
-def gibson_risk():
-    pots = 1
-    pass
+# def slic_risk(insert_count):
+#     pots = insert_count + 1
+#     pass
 
-def slic_risk(insert_count):
-    pots = insert_count + 1
-    pass
+# def biobricks_risk(insert_count):
+#     pots = (insert_count - 1) * 4
+#     pass
 
-def biobricks_risk(insert_count):
-    pots = (insert_count - 1) * 4
-    pass
+# def pcr_risk(insert_count):
+#     pots = insert_count
+#     pass
 
-def pcr_risk(insert_count):
-    pots = insert_count
-    pass
+# def solution_analysis(assembly, fragments, query_length):
+#     primer_lengths = []
+#     primer_tms = []
+#     part_lengths = [
+#         part.template.seq.length
+#         for part in assembly[:-1]
+#     ]
+#     for part in assembly: 
+#         primer_lengths.extend(
+#             [
+#                 len(part.forward_primer.seq),
+#                 len(part.reverse_primer.seq)
+#             ]
+#         )
+#         primer_tms.extend(
+#             [
+#                 part.annotations['forward_primer']['tm_footprint'],
+#                 part.annotations['reverse_primer']['tm_footprint']
+#             ]
+#         )
+#     score_sum = sum([fragment.score for fragment in fragments])
+#     match_p = round(
+#         score_sum / query_length,
+#         2
+#     ) * 100
+#     synth_p = round(100.00 - match_p, 2)
+#     part_ave = int(mean(part_lengths))
+#     primer_ave = int(mean(primer_lengths))
+#     primer_tm_ave = round(mean(primer_tms), 2)
+#     part_max = max(part_lengths)
+#     part_min = min(part_lengths)
+#     db_parts = sum(not f.synth for f in fragments)
+#     synth_parts = sum(f.synth for f in fragments) 
+#     return match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts    
 
-def solution_analysis(assembly, fragments, query_length):
-    primer_lengths = []
-    primer_tms = []
-    part_lengths = [
-        part.template.seq.length
-        for part in assembly[:-1]
-    ]
-    for part in assembly: 
-        primer_lengths.extend(
-            [
-                len(part.forward_primer.seq),
-                len(part.reverse_primer.seq)
-            ]
-        )
-        primer_tms.extend(
-            [
-                part.annotations['forward_primer']['tm_footprint'],
-                part.annotations['reverse_primer']['tm_footprint']
-            ]
-        )
-    score_sum = sum([fragment.score for fragment in fragments])
-    match_p = round(
-        score_sum / query_length,
-        2
-    ) * 100
-    synth_p = round(100.00 - match_p, 2)
-    part_ave = int(mean(part_lengths))
-    primer_ave = int(mean(primer_lengths))
-    primer_tm_ave = round(mean(primer_tms), 2)
-    part_max = max(part_lengths)
-    part_min = min(part_lengths)
-    db_parts = sum(not f.synth for f in fragments)
-    synth_parts = sum(f.synth for f in fragments) 
-    return match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts    
+# def write_uploaded_file(f, fname):
+#     with open(fname, 'wb+') as destination:
+#         for chunk in f.chunks():
+#             destination.write(chunk)
 
-def write_uploaded_file(f, fname):
-    with open(fname, 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
-
-def db_list(addgene, igem, dnasu):
-    """
+# def db_list(addgene, igem, dnasu):
+#     """
     
 
 
-    Parameters
-    ----------
+#     Parameters
+#     ----------
 
 
 
-    Returns
-    -------
-    """
-    l = []
-    if addgene:
-        l.append('addgene')
-    if igem: 
-        l.append('igem')
-    if dnasu:
-        l.append('dnasu')
-    return l
+#     Returns
+#     -------
+#     """
+#     l = []
+#     if addgene:
+#         l.append('addgene')
+#     if igem: 
+#         l.append('igem')
+#     if dnasu:
+#         l.append('dnasu')
+#     return l
 
-def primer_map():
-    pass
+# def primer_map():
+#     pass
 
-def part_map(part_model, part, left, right, name, space):
-    """
+# def part_map(part_model, part, left, right, name, space):
+#     """
     
 
 
-    Parameters
-    ----------
+#     Parameters
+#     ----------
 
 
 
-    Returns
-    -------
-    """
-    part_plot_name = f'{name.replace(" ", "-")}-map.png'
-    temp_plot = os.path.join(img_path, part_plot_name)
-    # temp_plot = f'{smithy_path}media/images/{part_plot_name}'
+#     Returns
+#     -------
+#     """
+#     part_plot_name = f'{name.replace(" ", "-")}-map.png'
+#     temp_plot = os.path.join(img_path, part_plot_name)
+#     # temp_plot = f'{smithy_path}media/images/{part_plot_name}'
 
-    display_len = int(part.template.seq.length * 0.1)
-    seq_len = 2 * display_len + 2 * space + part.template.seq.length
+#     display_len = int(part.template.seq.length * 0.1)
+#     seq_len = 2 * display_len + 2 * space + part.template.seq.length
     
-    part_start = display_len + space
-    part_end = part_start + part.template.seq.length
+#     part_start = display_len + space
+#     part_end = part_start + part.template.seq.length
 
-    right_start = part_end + space
-    right_end = right_start + display_len
+#     right_start = part_end + space
+#     right_end = right_start + display_len
 
-    fwd_start = part_start - len(part.forward_primer.tail)
-    fwd_end = part_start + len(part.forward_primer.footprint)
+#     fwd_start = part_start - len(part.forward_primer.tail)
+#     fwd_end = part_start + len(part.forward_primer.footprint)
 
-    rvs_start = part_end - len(part.reverse_primer.tail)
-    rvs_end = part_end + len(part.reverse_primer.tail)
+#     rvs_start = part_end - len(part.reverse_primer.tail)
+#     rvs_end = part_end + len(part.reverse_primer.tail)
 
-    features = [
-        GraphicFeature(
-            start=0,
-            end=display_len, 
-            strand=+1, 
-            open_left=True, 
-            label=f'{left.name}: ({left.annotations["query_start"]}, {left.annotations["query_end"]})',
-            color='lightslategrey'
-        ),
-        GraphicFeature(
-            start=part_start, 
-            end=part_end, 
-            strand=+1,  
-            label=f'{part.name}: ({part.annotations["query_start"]}, {part.annotations["query_end"]})',
-            color='darkseagreen'
-        ),
-        GraphicFeature(
-            start=right_start, 
-            end=right_end, 
-            strand=+1,  
-            label=f'{right.name}: ({right.annotations["query_start"]}, {right.annotations["query_end"]})',
-            open_right=True,
-            color='lightslategrey'
-        ),
-        GraphicFeature(
-            thickness=10, 
-            start= fwd_start,
-            end=fwd_end,
-            strand=+1,
-            color="#ccccff",
-            label=f'{part.name} fwd'
-        ),
-        GraphicFeature(
-            thickness=10, 
-            start= rvs_start,
-            end=rvs_end,
-            strand=-1,
-            color="#ccccff",
-            label=f'{part.name} rvs'
-        )
-    ] 
+#     features = [
+#         GraphicFeature(
+#             start=0,
+#             end=display_len, 
+#             strand=+1, 
+#             open_left=True, 
+#             label=f'{left.name}: ({left.annotations["query_start"]}, {left.annotations["query_end"]})',
+#             color='lightslategrey'
+#         ),
+#         GraphicFeature(
+#             start=part_start, 
+#             end=part_end, 
+#             strand=+1,  
+#             label=f'{part.name}: ({part.annotations["query_start"]}, {part.annotations["query_end"]})',
+#             color='darkseagreen'
+#         ),
+#         GraphicFeature(
+#             start=right_start, 
+#             end=right_end, 
+#             strand=+1,  
+#             label=f'{right.name}: ({right.annotations["query_start"]}, {right.annotations["query_end"]})',
+#             open_right=True,
+#             color='lightslategrey'
+#         ),
+#         GraphicFeature(
+#             thickness=10, 
+#             start= fwd_start,
+#             end=fwd_end,
+#             strand=+1,
+#             color="#ccccff",
+#             label=f'{part.name} fwd'
+#         ),
+#         GraphicFeature(
+#             thickness=10, 
+#             start= rvs_start,
+#             end=rvs_end,
+#             strand=-1,
+#             color="#ccccff",
+#             label=f'{part.name} rvs'
+#         )
+#     ] 
 
-    record = GraphicRecord(sequence_length=seq_len, features=features)
-    with plt.ioff():
-        ax, _ = record.plot(figure_width=10)
-        ax.set_xticklabels([])
-        ax.set_xticks([])
-        ax.figure.savefig(temp_plot)
-        plt.close(ax.get_figure())
+#     record = GraphicRecord(sequence_length=seq_len, features=features)
+#     with plt.ioff():
+#         ax, _ = record.plot(figure_width=10)
+#         ax.set_xticklabels([])
+#         ax.set_xticks([])
+#         ax.figure.savefig(temp_plot)
+#         plt.close(ax.get_figure())
 
-    part_model.part_map.save(part_plot_name, File(open(temp_plot, 'rb')))
-    part_model.save()
-    os.remove(temp_plot)
+#     part_model.part_map.save(part_plot_name, File(open(temp_plot, 'rb')))
+#     part_model.save()
+#     os.remove(temp_plot)
 
-def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
-    """
-    
-
-
-    Parameters
-    ----------
-
-
-
-    Returns
-    -------
-    """
-    plot_name = f'{assembly_name.replace(" ", "-")}_map.png'
-    temp_plot = os.path.join(img_path, plot_name)
-    # temp_plot = f'{smithy_path}media/images/{plot_name}'   
-    features = []
-    part_start = 0
-    part_end = 0
-
-    # set features and colorings for the insert
-    for i, part in enumerate(assembly[:-1]):
-        part_end = part_start + part.template.seq.length
-        if i % 2 == 0:
-            part_color = 'darkseagreen'
-        else:
-            part_color = 'lightslategrey'
-        features.append(
-            GraphicFeature(
-                start=part_start,
-                end=part_end,
-                strand=+1,
-                label=part.name,
-                color=part_color
-            )
-        )
-        part_start = part_end + space
-
-    # set the feature and coloring for the backbone
-    part_end = part_start + assembly[-1].template.seq.length
-    features.append(
-        GraphicFeature(
-            start=part_start,
-            end=part_end,
-            strand=+1,
-            label=assembly[-1].name,
-            color='lightblue'
-        )
-    )
-
-    record = CircularGraphicRecord(sequence_length=total_len, features=features)
-    with plt.ioff():
-        ax, _ = record.plot(figure_width=10)
-        ax.figure.savefig(temp_plot)
-        plt.close(ax.get_figure())
-
-    solution_model.plasmid_map.save(plot_name, File(open(temp_plot, 'rb')))
-    solution_model.save()
-    os.remove(temp_plot)
-
-def gibson_create_service(obj):
-    """
+# def plasmid_map(solution_model, assembly, assembly_name, space, total_len):
+#     """
     
 
 
-    Parameters
-    ----------
+#     Parameters
+#     ----------
 
 
 
-    Returns
-    -------
-    """
-    assembler = GibsonAssembler(
-        obj.mv_conc, 
-        obj.dv_conc, 
-        obj.dna_conc,
-        obj.dntp_conc, 
-        obj.tm, 
-        obj.backbone_file.path, 
-        obj.insert_file.path, 
-        db_list(obj.addgene, obj.igem, obj.dnasu), 
-        min_frag=obj.min_blast, 
-        max_frag=obj.max_blast, 
-        min_synth=obj.min_synth, 
-        max_synth=obj.max_synth,
-        overlap=obj.overlap,
-        multi_query=obj.multi_query
-    )
+#     Returns
+#     -------
+#     """
+#     plot_name = f'{assembly_name.replace(" ", "-")}_map.png'
+#     temp_plot = os.path.join(img_path, plot_name)
+#     # temp_plot = f'{smithy_path}media/images/{plot_name}'   
+#     features = []
+#     part_start = 0
+#     part_end = 0
 
-    if obj.multi_query:
-        results, error = assembler.run_multi_query()
-        assembler.multi_query_solution_building(
-            results,
-            assembly_type='gibson',
-            part_costs=[
-                obj.primer_cost,
-                obj.part_cost,
-                obj.gene_cost
-            ],
-            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
-            polymerase_cost=(obj.polymerase_cost / obj.polymerase_n_reacts),
-            exonuclease_cost=(obj.exonuclease_cost / obj.exonuclease_n_reacts),
-            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
-            parts_pref=obj.parts_pref,
-            cost_pref=obj.cost_pref,
-            pcr_ps=obj.pcr_ps,
-            gibson_ps=obj.assembly_ps
-        )
-    else:
-        results, error = assembler.query()
-        assembler.solution_building(
-            results,
-            assembly_type='gibson',
-            part_costs=[
-                obj.primer_cost,
-                obj.part_cost,
-                obj.gene_cost
-            ],
-            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
-            polymerase_cost=(obj.polymerase_cost / obj.polymerase_n_reacts),
-            exonuclease_cost=(obj.exonuclease_cost / obj.exonuclease_n_reacts),
-            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
-            parts_pref=obj.parts_pref,
-            cost_pref=obj.cost_pref,
-            pcr_ps=obj.pcr_ps,
-            gibson_ps=obj.assembly_ps
-        )
-    assembly, fragments = assembler.design(solution=0)
+#     # set features and colorings for the insert
+#     for i, part in enumerate(assembly[:-1]):
+#         part_end = part_start + part.template.seq.length
+#         if i % 2 == 0:
+#             part_color = 'darkseagreen'
+#         else:
+#             part_color = 'lightslategrey'
+#         features.append(
+#             GraphicFeature(
+#                 start=part_start,
+#                 end=part_end,
+#                 strand=+1,
+#                 label=part.name,
+#                 color=part_color
+#             )
+#         )
+#         part_start = part_end + space
 
-    gibson_solution_service(obj, assembler, assembly, fragments)
+#     # set the feature and coloring for the backbone
+#     part_end = part_start + assembly[-1].template.seq.length
+#     features.append(
+#         GraphicFeature(
+#             start=part_start,
+#             end=part_end,
+#             strand=+1,
+#             label=assembly[-1].name,
+#             color='lightblue'
+#         )
+#     )
 
-def goldengate_create_service(obj):
-    """
+#     record = CircularGraphicRecord(sequence_length=total_len, features=features)
+#     with plt.ioff():
+#         ax, _ = record.plot(figure_width=10)
+#         ax.figure.savefig(temp_plot)
+#         plt.close(ax.get_figure())
+
+#     solution_model.plasmid_map.save(plot_name, File(open(temp_plot, 'rb')))
+#     solution_model.save()
+#     os.remove(temp_plot)
+
+# def gibson_create_service(obj):
+#     """
     
 
 
-    Parameters
-    ----------
+#     Parameters
+#     ----------
 
 
 
-    Returns
-    -------
-    """
-    assembler = GoldenGateAssembler(
-        obj.mv_conc, 
-        obj.dv_conc, 
-        obj.dna_conc,
-        obj.dntp_conc, 
-        obj.tm, 
-        obj.backbone_file.path, 
-        obj.insert_file.path, 
-        db_list(obj.addgene,obj.igem, obj.dnasu), 
-        min_frag=obj.min_blast, 
-        max_frag=obj.max_blast, 
-        min_synth=obj.min_synth, 
-        max_synth=obj.max_synth,
-        ovhngs=obj.overhangs,
-        multi_query=obj.multi_query,
-        scarless=obj.scarless
-    )
+#     Returns
+#     -------
+#     """
+#     assembler = GibsonAssembler(
+#         obj.mv_conc, 
+#         obj.dv_conc, 
+#         obj.dna_conc,
+#         obj.dntp_conc, 
+#         obj.tm, 
+#         obj.backbone_file.path, 
+#         obj.insert_file.path, 
+#         db_list(obj.addgene, obj.igem, obj.dnasu), 
+#         min_frag=obj.min_blast, 
+#         max_frag=obj.max_blast, 
+#         min_synth=obj.min_synth, 
+#         max_synth=obj.max_synth,
+#         overlap=obj.overlap,
+#         multi_query=obj.multi_query
+#     )
 
-    if obj.multi_query:
-        results, error = assembler.run_multi_query()
-        assembler.multi_query_solution_building(
-            results,
-            assembly_type='goldengate',
-            part_costs=[
-                obj.primer_cost,
-                obj.part_cost,
-                obj.gene_cost
-            ],
-            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
-            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
-            restenz_cost=(obj.re_cost / obj.re_n_reacts),
-            parts_pref=obj.parts_pref,
-            cost_pref=obj.cost_pref,
-            pcr_ps=obj.pcr_ps,
-            goldengate_ps=obj.assembly_ps
-        )
-    else:
-        results, error = assembler.query()
-        assembler.solution_building(
-            results,
-            assembly_type='goldengate',
-            part_costs=[
-                obj.primer_cost,
-                obj.part_cost,
-                obj.gene_cost
-            ],
-            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
-            ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
-            restenz_cost=(obj.re_cost / obj.re_n_reacts),
-            parts_pref=obj.parts_pref,
-            cost_pref=obj.cost_pref,
-            pcr_ps=obj.pcr_ps,
-            goldengate_ps=obj.assembly_ps
-        )
-    assembly, fragments = assembler.design(solution=0)
+#     if obj.multi_query:
+#         results, error = assembler.run_multi_query()
+#         assembler.multi_query_solution_building(
+#             results,
+#             assembly_type='gibson',
+#             part_costs=[
+#                 obj.primer_cost,
+#                 obj.part_cost,
+#                 obj.gene_cost
+#             ],
+#             pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+#             polymerase_cost=(obj.polymerase_cost / obj.polymerase_n_reacts),
+#             exonuclease_cost=(obj.exonuclease_cost / obj.exonuclease_n_reacts),
+#             ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+#             parts_pref=obj.parts_pref,
+#             cost_pref=obj.cost_pref,
+#             pcr_ps=obj.pcr_ps,
+#             gibson_ps=obj.assembly_ps
+#         )
+#     else:
+#         results, error = assembler.query()
+#         assembler.solution_building(
+#             results,
+#             assembly_type='gibson',
+#             part_costs=[
+#                 obj.primer_cost,
+#                 obj.part_cost,
+#                 obj.gene_cost
+#             ],
+#             pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+#             polymerase_cost=(obj.polymerase_cost / obj.polymerase_n_reacts),
+#             exonuclease_cost=(obj.exonuclease_cost / obj.exonuclease_n_reacts),
+#             ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+#             parts_pref=obj.parts_pref,
+#             cost_pref=obj.cost_pref,
+#             pcr_ps=obj.pcr_ps,
+#             gibson_ps=obj.assembly_ps
+#         )
+#     assembly, fragments = assembler.design(solution=0)
 
-    goldengate_solution_service(obj, assembler, assembly, fragments)
+#     gibson_solution_service(obj, assembler, assembly, fragments)
+
+# def goldengate_create_service(obj):
+#     """
+    
+
+
+#     Parameters
+#     ----------
+
+
+
+#     Returns
+#     -------
+#     """
+#     assembler = GoldenGateAssembler(
+#         obj.mv_conc, 
+#         obj.dv_conc, 
+#         obj.dna_conc,
+#         obj.dntp_conc, 
+#         obj.tm, 
+#         obj.backbone_file.path, 
+#         obj.insert_file.path, 
+#         db_list(obj.addgene,obj.igem, obj.dnasu), 
+#         min_frag=obj.min_blast, 
+#         max_frag=obj.max_blast, 
+#         min_synth=obj.min_synth, 
+#         max_synth=obj.max_synth,
+#         ovhngs=obj.overhangs,
+#         multi_query=obj.multi_query,
+#         scarless=obj.scarless
+#     )
+
+#     if obj.multi_query:
+#         results, error = assembler.run_multi_query()
+#         assembler.multi_query_solution_building(
+#             results,
+#             assembly_type='goldengate',
+#             part_costs=[
+#                 obj.primer_cost,
+#                 obj.part_cost,
+#                 obj.gene_cost
+#             ],
+#             pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+#             ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+#             restenz_cost=(obj.re_cost / obj.re_n_reacts),
+#             parts_pref=obj.parts_pref,
+#             cost_pref=obj.cost_pref,
+#             pcr_ps=obj.pcr_ps,
+#             goldengate_ps=obj.assembly_ps
+#         )
+#     else:
+#         results, error = assembler.query()
+#         assembler.solution_building(
+#             results,
+#             assembly_type='goldengate',
+#             part_costs=[
+#                 obj.primer_cost,
+#                 obj.part_cost,
+#                 obj.gene_cost
+#             ],
+#             pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+#             ligase_cost=(obj.ligase_cost / obj.ligase_n_reacts),
+#             restenz_cost=(obj.re_cost / obj.re_n_reacts),
+#             parts_pref=obj.parts_pref,
+#             cost_pref=obj.cost_pref,
+#             pcr_ps=obj.pcr_ps,
+#             goldengate_ps=obj.assembly_ps
+#         )
+#     assembly, fragments = assembler.design(solution=0)
+
+#     goldengate_solution_service(obj, assembler, assembly, fragments)
 
 def biobricks_create_service(obj):
     """
@@ -868,69 +864,69 @@ def biobricks_create_service(obj):
 
     biobricks_solution_service(obj, assembler, assembly, fragments)   
 
-def pcr_create_service(obj):
-    """
+# def pcr_create_service(obj):
+#     """
     
 
 
-    Parameters
-    ----------
+#     Parameters
+#     ----------
 
 
 
-    Returns
-    -------
-    """
-    assembler = PCRAssembler(
-        obj.mv_conc,
-        obj.dv_conc,
-        obj.dna_conc,
-        obj.dntp_conc,
-        obj.tm,
-        obj.backbone_file.path,
-        obj.insert_file.path,
-        db_list(obj.addgene, obj.igem, obj.dnasu),
-        min_frag=obj.min_blast,
-        max_frag=obj.max_blast,
-        min_synth=obj.min_synth,
-        max_synth=obj.max_synth,
-        overlap=obj.overlap,
-        multi_query=obj.multi_query
-    )
+#     Returns
+#     -------
+#     """
+#     assembler = PCRAssembler(
+#         obj.mv_conc,
+#         obj.dv_conc,
+#         obj.dna_conc,
+#         obj.dntp_conc,
+#         obj.tm,
+#         obj.backbone_file.path,
+#         obj.insert_file.path,
+#         db_list(obj.addgene, obj.igem, obj.dnasu),
+#         min_frag=obj.min_blast,
+#         max_frag=obj.max_blast,
+#         min_synth=obj.min_synth,
+#         max_synth=obj.max_synth,
+#         overlap=obj.overlap,
+#         multi_query=obj.multi_query
+#     )
 
-    if obj.multi_query:
-        results, error = assembler.run_multi_query()
-        assembler.multi_query_solution_building(
-            results,
-            assembly_type='pcrsoe',
-            part_costs=[
-                obj.primer_cost,
-                obj.part_cost,
-                obj.gene_cost
-            ],
-            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
-            parts_pref=obj.parts_pref,
-            cost_pref=obj.cost_pref,
-            pcr_ps=obj.pcr_ps
-        )
-    else:
-        results, error = assembler.query()
-        assembler.solution_building(
-            results,
-            assembly_type='pcrsoe',
-            part_costs=[
-                obj.primer_cost,
-                obj.part_cost,
-                obj.gene_cost
-            ],
-            pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
-            parts_pref=obj.parts_pref,
-            cost_pref=obj.cost_pref,
-            pcr_ps=obj.pcr_ps
-        )
-    assembly, fragments = assembler.design(solution=0)
+#     if obj.multi_query:
+#         results, error = assembler.run_multi_query()
+#         assembler.multi_query_solution_building(
+#             results,
+#             assembly_type='pcrsoe',
+#             part_costs=[
+#                 obj.primer_cost,
+#                 obj.part_cost,
+#                 obj.gene_cost
+#             ],
+#             pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+#             parts_pref=obj.parts_pref,
+#             cost_pref=obj.cost_pref,
+#             pcr_ps=obj.pcr_ps
+#         )
+#     else:
+#         results, error = assembler.query()
+#         assembler.solution_building(
+#             results,
+#             assembly_type='pcrsoe',
+#             part_costs=[
+#                 obj.primer_cost,
+#                 obj.part_cost,
+#                 obj.gene_cost
+#             ],
+#             pcr_polymerase_cost=(obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+#             parts_pref=obj.parts_pref,
+#             cost_pref=obj.cost_pref,
+#             pcr_ps=obj.pcr_ps
+#         )
+#     assembly, fragments = assembler.design(solution=0)
 
-    pcr_solution_service(obj, assembler, assembly, fragments)
+#     pcr_solution_service(obj, assembler, assembly, fragments)
 
 def slic_create_service(obj):
     """
@@ -1000,319 +996,319 @@ def slic_create_service(obj):
 
     slic_solution_service(obj, assembler, assembly, fragments)    
 
-def gibson_solution_service(obj, assembler, assembly, fragments):
-    # Log based odds of success: risk = log((1 - P_s) / P_s)
-    # pcr: P_s = 0.8
-    # chewback, ligation, repair: P_s = 0.7
+# def gibson_solution_service(obj, assembler, assembly, fragments):
+#     # Log based odds of success: risk = log((1 - P_s) / P_s)
+#     # pcr: P_s = 0.8
+#     # chewback, ligation, repair: P_s = 0.7
 
-    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
-    # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
-    analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-    primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
-    enzyme_orders = []
+#     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
+#     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
+#     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
+#     primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
+#     enzyme_orders = []
     
-    if obj.mastermix_cost > 0.0:
-        enzyme_orders.append('Master mix enzyme')
-        gib_enz_costs = [ obj.mastermix_cost / obj.mastermix_n_reacts ]
-        gib_enz_types = ['Master mix']
-    else:
-        if obj.exonuclease_cost > 0.0:
-            enzyme_orders.append('T5 exonuclease')
-        if obj.ligase_cost > 0.0:
-            enzyme_orders.append('Taq ligase')
-        if obj.polymerase_cost > 0.0:
-            enzyme_orders.append('Phusion polymerase')
-        gib_enz_costs = [
-            obj.exonuclease_cost / obj.exonuclease_n_reacts, 
-            obj.ligase_cost / obj.ligase_n_reacts, 
-            obj.polymerase_cost / obj.polymerase_n_reacts
-        ]
-        gib_enz_types = ['Exonuclease', 'Ligase', 'Polymerase']
+#     if obj.mastermix_cost > 0.0:
+#         enzyme_orders.append('Master mix enzyme')
+#         gib_enz_costs = [ obj.mastermix_cost / obj.mastermix_n_reacts ]
+#         gib_enz_types = ['Master mix']
+#     else:
+#         if obj.exonuclease_cost > 0.0:
+#             enzyme_orders.append('T5 exonuclease')
+#         if obj.ligase_cost > 0.0:
+#             enzyme_orders.append('Taq ligase')
+#         if obj.polymerase_cost > 0.0:
+#             enzyme_orders.append('Phusion polymerase')
+#         gib_enz_costs = [
+#             obj.exonuclease_cost / obj.exonuclease_n_reacts, 
+#             obj.ligase_cost / obj.ligase_n_reacts, 
+#             obj.polymerase_cost / obj.polymerase_n_reacts
+#         ]
+#         gib_enz_types = ['Exonuclease', 'Ligase', 'Polymerase']
 
-    if obj.pcr_polymerase_cost > 0.0:
-        enzyme_orders.append('PCR polymerase')
-        gib_enz_costs.append((len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts))
-        gib_enz_types.append('PCR polymerase')
+#     if obj.pcr_polymerase_cost > 0.0:
+#         enzyme_orders.append('PCR polymerase')
+#         gib_enz_costs.append((len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts))
+#         gib_enz_types.append('PCR polymerase')
 
-    pcr = pcr_time(part_lengths_pcr)
-    gibson_time = gibson_times(pcr, len(fragments))
-    gibson_cost = costs(
-        [obj.primer_cost, obj.part_cost, obj.gene_cost],
-        part_lengths + primer_lengths,
-        plasmid_count,
-        gib_enz_costs,
-        gib_enz_types
-    )
-    gibson_risk = {
-        'total': 0.35,
-        'types': ['PCR', 'Assembly'],
-        'risks': [
-            log10((1 - obj.pcr_ps) / obj.pcr_ps), 
-            log10((1 - obj.assembly_ps) / obj.assembly_ps)
-        ]
-    }
+#     pcr = pcr_time(part_lengths_pcr)
+#     gibson_time = gibson_times(pcr, len(fragments))
+#     gibson_cost = costs(
+#         [obj.primer_cost, obj.part_cost, obj.gene_cost],
+#         part_lengths + primer_lengths,
+#         plasmid_count,
+#         gib_enz_costs,
+#         gib_enz_types
+#     )
+#     gibson_risk = {
+#         'total': 0.35,
+#         'types': ['PCR', 'Assembly'],
+#         'risks': [
+#             log10((1 - obj.pcr_ps) / obj.pcr_ps), 
+#             log10((1 - obj.assembly_ps) / obj.assembly_ps)
+#         ]
+#     }
 
-    gibson_solution = GibsonSolution(
-        name=f'{obj.title} Solution',
-        backbone=assembler.backbone.seq,
-        query=assembler.query_record.seq,
-        solution='',
-        parts_count=len(fragments),
-        primers_count=len(fragments) * 2,
-        match=analysis[0],
-        synth_amount=analysis[1],
-        re_enzymes=False,
-        part_length_average=analysis[2],
-        primer_length_average=analysis[3],
-        tm_average=analysis[4],
-        longest_part=analysis[5],
-        shortest_part=analysis[6],
-        db_parts=analysis[7],
-        synth_parts=analysis[8],
-        solution_length=assembler.query_record.seq.length,
-        assembly=obj,
-        time_summary=json.dumps(gibson_time),
-        cost_summary=json.dumps(gibson_cost),
-        risk_summary=json.dumps(gibson_risk)
-    )
-    gibson_solution.save()
+#     gibson_solution = GibsonSolution(
+#         name=f'{obj.title} Solution',
+#         backbone=assembler.backbone.seq,
+#         query=assembler.query_record.seq,
+#         solution='',
+#         parts_count=len(fragments),
+#         primers_count=len(fragments) * 2,
+#         match=analysis[0],
+#         synth_amount=analysis[1],
+#         re_enzymes=False,
+#         part_length_average=analysis[2],
+#         primer_length_average=analysis[3],
+#         tm_average=analysis[4],
+#         longest_part=analysis[5],
+#         shortest_part=analysis[6],
+#         db_parts=analysis[7],
+#         synth_parts=analysis[8],
+#         solution_length=assembler.query_record.seq.length,
+#         assembly=obj,
+#         time_summary=json.dumps(gibson_time),
+#         cost_summary=json.dumps(gibson_cost),
+#         risk_summary=json.dumps(gibson_risk)
+#     )
+#     gibson_solution.save()
 
-    plasmid_map(gibson_solution, assembly, obj.title, 0, total_len)
-    parts_csv(gibson_solution, assembly)
-    primers_csv(gibson_solution, assembly)
-    order_csv(gibson_solution, assembly, enzyme_orders)
+#     plasmid_map(gibson_solution, assembly, obj.title, 0, total_len)
+#     parts_csv(gibson_solution, assembly)
+#     primers_csv(gibson_solution, assembly)
+#     order_csv(gibson_solution, assembly, enzyme_orders)
 
-    for i, part in enumerate(assembly):
-        gibson_part_entry = GibsonPart(
-            name=part.name,
-            database=part.annotations['db'],
-            length=part.template.seq.length, 
-            length_extended=part.seq.length,
-            seq=part.template.seq,
-            seq_extended=part.seq,
-            position=i,
-            solution=gibson_solution,
-            query_start = part.annotations['query_start'],
-            query_end = part.annotations['query_end'],
-            subject_start = part.annotations['subject_start'],
-            subject_end = part.annotations['subject_end'] 
-        )
-        gibson_part_entry.save()
+#     for i, part in enumerate(assembly):
+#         gibson_part_entry = GibsonPart(
+#             name=part.name,
+#             database=part.annotations['db'],
+#             length=part.template.seq.length, 
+#             length_extended=part.seq.length,
+#             seq=part.template.seq,
+#             seq_extended=part.seq,
+#             position=i,
+#             solution=gibson_solution,
+#             query_start = part.annotations['query_start'],
+#             query_end = part.annotations['query_end'],
+#             subject_start = part.annotations['subject_start'],
+#             subject_end = part.annotations['subject_end'] 
+#         )
+#         gibson_part_entry.save()
 
-        left_index, right_index = part_indexes(i, len(assembly))
+#         left_index, right_index = part_indexes(i, len(assembly))
 
-        part_map(
-            gibson_part_entry, 
-            part, 
-            assembly[left_index], 
-            assembly[right_index], 
-            f'{part.name}-{i}', 
-            0
-        )
+#         part_map(
+#             gibson_part_entry, 
+#             part, 
+#             assembly[left_index], 
+#             assembly[right_index], 
+#             f'{part.name}-{i}', 
+#             0
+#         )
 
-        forward_primer = GibsonPrimer(
-            name= f'{gibson_part_entry.name} forward primer',
-            primer_type='fwd',
-            sequence=part.forward_primer.seq,
-            footprint=part.forward_primer.footprint,
-            tail=part.forward_primer.tail,
-            tm_total=part.annotations['forward_primer']['tm_total'],
-            tm_footprint=part.annotations['forward_primer']['tm_footprint'],
-            gc=part.annotations['forward_primer']['gc'],
-            hairpin=part.annotations['forward_primer']['hairpin'],
-            hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
-            hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
-            hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
-            hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
-            homodimer=part.annotations['forward_primer']['homodimer'],
-            homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
-            homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
-            homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
-            homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
-            part=gibson_part_entry
-        )
-        forward_primer.save()
+#         forward_primer = GibsonPrimer(
+#             name= f'{gibson_part_entry.name} forward primer',
+#             primer_type='fwd',
+#             sequence=part.forward_primer.seq,
+#             footprint=part.forward_primer.footprint,
+#             tail=part.forward_primer.tail,
+#             tm_total=part.annotations['forward_primer']['tm_total'],
+#             tm_footprint=part.annotations['forward_primer']['tm_footprint'],
+#             gc=part.annotations['forward_primer']['gc'],
+#             hairpin=part.annotations['forward_primer']['hairpin'],
+#             hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
+#             hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
+#             hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
+#             hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
+#             homodimer=part.annotations['forward_primer']['homodimer'],
+#             homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
+#             homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
+#             homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
+#             homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
+#             part=gibson_part_entry
+#         )
+#         forward_primer.save()
 
-        reverse_primer = GibsonPrimer(
-            name= f'{gibson_part_entry.name} reverse primer ',
-            primer_type='rvs',
-            sequence=part.reverse_primer.seq,
-            footprint=part.reverse_primer.footprint,
-            tail=part.reverse_primer.tail,
-            tm_total=part.annotations['reverse_primer']['tm_total'],
-            tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
-            gc=part.annotations['reverse_primer']['gc'],
-            hairpin=part.annotations['reverse_primer']['hairpin'],
-            hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
-            hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
-            hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
-            hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
-            homodimer=part.annotations['reverse_primer']['homodimer'],
-            homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
-            homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
-            homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
-            homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
-            part=gibson_part_entry 
-        )
-        reverse_primer.save()
+#         reverse_primer = GibsonPrimer(
+#             name= f'{gibson_part_entry.name} reverse primer ',
+#             primer_type='rvs',
+#             sequence=part.reverse_primer.seq,
+#             footprint=part.reverse_primer.footprint,
+#             tail=part.reverse_primer.tail,
+#             tm_total=part.annotations['reverse_primer']['tm_total'],
+#             tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
+#             gc=part.annotations['reverse_primer']['gc'],
+#             hairpin=part.annotations['reverse_primer']['hairpin'],
+#             hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
+#             hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
+#             hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
+#             hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
+#             homodimer=part.annotations['reverse_primer']['homodimer'],
+#             homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
+#             homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
+#             homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
+#             homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
+#             part=gibson_part_entry 
+#         )
+#         reverse_primer.save()
 
-def goldengate_solution_service(obj, assembler, assembly, fragments):
-    # Log based odds of success: risk = log((1 - P_s) / P_s)
-    # pcr: P_s = 0.8
-    # digestion, ligation: P_s = 0.9
+# def goldengate_solution_service(obj, assembler, assembly, fragments):
+#     # Log based odds of success: risk = log((1 - P_s) / P_s)
+#     # pcr: P_s = 0.8
+#     # digestion, ligation: P_s = 0.9
 
-    space = 0 if obj.scarless else 4
-    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length + space
-    # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
-    analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-    primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
-    enzyme_orders = []
+#     space = 0 if obj.scarless else 4
+#     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length + space
+#     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
+#     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
+#     primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
+#     enzyme_orders = []
 
-    if obj.mastermix_cost > 0.0:
-        enzyme_orders.append('Master mix enzyme')
-        gg_enz_costs = [ obj.mastermix_cost / obj.mastermix_n_reacts ]
-        gg_enz_types = ['Master mix']
-    else:
-        if obj.re_cost > 0.0:
-            enzyme_orders.append('Type2S')
-        if obj.ligase_cost > 0.0:
-            enzyme_orders.append('Ligase')
-        gg_enz_costs = [
-            obj.re_cost / obj.re_n_reacts, 
-            obj.ligase_cost / obj.ligase_n_reacts
-        ]
-        gg_enz_types = ['Type2s RE', 'Ligase']
+#     if obj.mastermix_cost > 0.0:
+#         enzyme_orders.append('Master mix enzyme')
+#         gg_enz_costs = [ obj.mastermix_cost / obj.mastermix_n_reacts ]
+#         gg_enz_types = ['Master mix']
+#     else:
+#         if obj.re_cost > 0.0:
+#             enzyme_orders.append('Type2S')
+#         if obj.ligase_cost > 0.0:
+#             enzyme_orders.append('Ligase')
+#         gg_enz_costs = [
+#             obj.re_cost / obj.re_n_reacts, 
+#             obj.ligase_cost / obj.ligase_n_reacts
+#         ]
+#         gg_enz_types = ['Type2s RE', 'Ligase']
         
-    if obj.pcr_polymerase_cost > 0.0:
-        enzyme_orders.append('PCR polymerase')
-        gg_enz_costs.append((len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts))
-        gg_enz_types.append('PCR polymerase')
+#     if obj.pcr_polymerase_cost > 0.0:
+#         enzyme_orders.append('PCR polymerase')
+#         gg_enz_costs.append((len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts))
+#         gg_enz_types.append('PCR polymerase')
 
-    pcr = pcr_time(part_lengths_pcr)
-    goldengate_time = goldengate_times(pcr, len(fragments))
-    goldengate_cost = costs(
-        [obj.primer_cost, obj.part_cost, obj.gene_cost],
-        part_lengths + primer_lengths,
-        plasmid_count,
-        gg_enz_costs,
-        gg_enz_types
-    )
-    goldengate_risk = {
-        'total': 0.35,
-        'types': ['PCR', 'Assembly'],
-        'risks': [
-            log10((1 - obj.pcr_ps) / obj.pcr_ps), 
-            log10((1 - obj.assembly_ps) / obj.assembly_ps)
-        ]
-    }
+#     pcr = pcr_time(part_lengths_pcr)
+#     goldengate_time = goldengate_times(pcr, len(fragments))
+#     goldengate_cost = costs(
+#         [obj.primer_cost, obj.part_cost, obj.gene_cost],
+#         part_lengths + primer_lengths,
+#         plasmid_count,
+#         gg_enz_costs,
+#         gg_enz_types
+#     )
+#     goldengate_risk = {
+#         'total': 0.35,
+#         'types': ['PCR', 'Assembly'],
+#         'risks': [
+#             log10((1 - obj.pcr_ps) / obj.pcr_ps), 
+#             log10((1 - obj.assembly_ps) / obj.assembly_ps)
+#         ]
+#     }
 
-    # TODO update to have a match % and BLAST solution sequence
-    # TODO add a foreach solution in for the assembly
-    goldengate_solution = GoldenGateSolution(
-        name=f'{obj.title} Solution',
-        backbone=assembler.backbone.seq,
-        query=assembler.query_record.seq,
-        solution='',
-        parts_count=len(fragments),
-        primers_count=len(fragments) * 2,
-        match=analysis[0],
-        synth_amount=analysis[1],
-        re_enzymes=True,
-        part_length_average=analysis[2],
-        primer_length_average=analysis[3],
-        tm_average=analysis[4],
-        longest_part=analysis[5],
-        shortest_part=analysis[6],
-        db_parts=analysis[7],
-        synth_parts=analysis[8],
-        solution_length=assembler.query_record.seq.length,
-        assembly=obj,
-        time_summary=json.dumps(goldengate_time),
-        cost_summary=json.dumps(goldengate_cost),
-        risk_summary=json.dumps(goldengate_risk)
-    )
-    goldengate_solution.save()
+#     # TODO update to have a match % and BLAST solution sequence
+#     # TODO add a foreach solution in for the assembly
+#     goldengate_solution = GoldenGateSolution(
+#         name=f'{obj.title} Solution',
+#         backbone=assembler.backbone.seq,
+#         query=assembler.query_record.seq,
+#         solution='',
+#         parts_count=len(fragments),
+#         primers_count=len(fragments) * 2,
+#         match=analysis[0],
+#         synth_amount=analysis[1],
+#         re_enzymes=True,
+#         part_length_average=analysis[2],
+#         primer_length_average=analysis[3],
+#         tm_average=analysis[4],
+#         longest_part=analysis[5],
+#         shortest_part=analysis[6],
+#         db_parts=analysis[7],
+#         synth_parts=analysis[8],
+#         solution_length=assembler.query_record.seq.length,
+#         assembly=obj,
+#         time_summary=json.dumps(goldengate_time),
+#         cost_summary=json.dumps(goldengate_cost),
+#         risk_summary=json.dumps(goldengate_risk)
+#     )
+#     goldengate_solution.save()
 
-    plasmid_map(goldengate_solution, assembly, obj.title, space, total_len)
-    parts_csv(goldengate_solution, assembly)
-    primers_csv(goldengate_solution, assembly)
-    order_csv(goldengate_solution, assembly, enzyme_orders)
+#     plasmid_map(goldengate_solution, assembly, obj.title, space, total_len)
+#     parts_csv(goldengate_solution, assembly)
+#     primers_csv(goldengate_solution, assembly)
+#     order_csv(goldengate_solution, assembly, enzyme_orders)
 
-    for i, part in enumerate(assembly):
-        goldengate_part_entry = GoldenGatePart(
-            name=part.name,
-            database=part.annotations['db'],
-            length=part.template.seq.length, 
-            length_extended=part.seq.length,
-            seq=part.template.seq,
-            seq_extended=part.seq,
-            position=i,
-            solution=goldengate_solution,
-            query_start = part.annotations['query_start'],
-            query_end = part.annotations['query_end'],
-            subject_start = part.annotations['subject_start'],
-            subject_end = part.annotations['subject_end'],
-            cuts=part.annotations['cuts'],
-            cut_locations=json.dumps(part.annotations['cut_locations'])           
-        )
-        goldengate_part_entry.save()
+#     for i, part in enumerate(assembly):
+#         goldengate_part_entry = GoldenGatePart(
+#             name=part.name,
+#             database=part.annotations['db'],
+#             length=part.template.seq.length, 
+#             length_extended=part.seq.length,
+#             seq=part.template.seq,
+#             seq_extended=part.seq,
+#             position=i,
+#             solution=goldengate_solution,
+#             query_start = part.annotations['query_start'],
+#             query_end = part.annotations['query_end'],
+#             subject_start = part.annotations['subject_start'],
+#             subject_end = part.annotations['subject_end'],
+#             cuts=part.annotations['cuts'],
+#             cut_locations=json.dumps(part.annotations['cut_locations'])           
+#         )
+#         goldengate_part_entry.save()
 
-        left_index, right_index = part_indexes(i, len(assembly))
+#         left_index, right_index = part_indexes(i, len(assembly))
 
-        part_map(
-            goldengate_part_entry, 
-            part, 
-            assembly[left_index], 
-            assembly[right_index], 
-            f'{part.name}-{i}', 
-            space
-        )
+#         part_map(
+#             goldengate_part_entry, 
+#             part, 
+#             assembly[left_index], 
+#             assembly[right_index], 
+#             f'{part.name}-{i}', 
+#             space
+#         )
 
-        forward_primer = GoldenGatePrimer(
-            name= f'{goldengate_part_entry.name} forward primer',
-            primer_type='fwd',
-            sequence=part.forward_primer.seq,
-            footprint=part.forward_primer.footprint,
-            tail=part.forward_primer.tail,
-            tm_total=part.annotations['forward_primer']['tm_total'],
-            tm_footprint=part.annotations['forward_primer']['tm_footprint'],
-            gc=part.annotations['forward_primer']['gc'],
-            hairpin=part.annotations['forward_primer']['hairpin'],
-            hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
-            hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
-            hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
-            hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
-            homodimer=part.annotations['forward_primer']['homodimer'],
-            homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
-            homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
-            homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
-            homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
-            part=goldengate_part_entry
-        )
-        forward_primer.save()
+#         forward_primer = GoldenGatePrimer(
+#             name= f'{goldengate_part_entry.name} forward primer',
+#             primer_type='fwd',
+#             sequence=part.forward_primer.seq,
+#             footprint=part.forward_primer.footprint,
+#             tail=part.forward_primer.tail,
+#             tm_total=part.annotations['forward_primer']['tm_total'],
+#             tm_footprint=part.annotations['forward_primer']['tm_footprint'],
+#             gc=part.annotations['forward_primer']['gc'],
+#             hairpin=part.annotations['forward_primer']['hairpin'],
+#             hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
+#             hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
+#             hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
+#             hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
+#             homodimer=part.annotations['forward_primer']['homodimer'],
+#             homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
+#             homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
+#             homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
+#             homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
+#             part=goldengate_part_entry
+#         )
+#         forward_primer.save()
 
-        reverse_primer = GoldenGatePrimer(
-            name= f'{goldengate_part_entry.name} reverse primer ',
-            primer_type='rvs',
-            sequence=part.reverse_primer.seq,
-            footprint=part.reverse_primer.footprint,
-            tail=part.reverse_primer.tail,
-            tm_total=part.annotations['reverse_primer']['tm_total'],
-            tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
-            gc=part.annotations['reverse_primer']['gc'],
-            hairpin=part.annotations['reverse_primer']['hairpin'],
-            hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
-            hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
-            hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
-            hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
-            homodimer=part.annotations['reverse_primer']['homodimer'],
-            homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
-            homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
-            homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
-            homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
-            part=goldengate_part_entry 
-        )
-        reverse_primer.save()
+#         reverse_primer = GoldenGatePrimer(
+#             name= f'{goldengate_part_entry.name} reverse primer ',
+#             primer_type='rvs',
+#             sequence=part.reverse_primer.seq,
+#             footprint=part.reverse_primer.footprint,
+#             tail=part.reverse_primer.tail,
+#             tm_total=part.annotations['reverse_primer']['tm_total'],
+#             tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
+#             gc=part.annotations['reverse_primer']['gc'],
+#             hairpin=part.annotations['reverse_primer']['hairpin'],
+#             hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
+#             hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
+#             hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
+#             hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
+#             homodimer=part.annotations['reverse_primer']['homodimer'],
+#             homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
+#             homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
+#             homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
+#             homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
+#             part=goldengate_part_entry 
+#         )
+#         reverse_primer.save()
 
 def biobricks_solution_service(obj, assembler, assembly, fragments):
     # Log based odds of success: risk = log((1 - P_s) / P_s)
@@ -1471,146 +1467,146 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         )
         reverse_primer.save()  
 
-def pcr_solution_service(obj, assembler, assembly, fragments):
-    # Log based odds of success: risk = log((1 - P_s) / P_s)
-    # pcr: P_s = 0.8
+# def pcr_solution_service(obj, assembler, assembly, fragments):
+#     # Log based odds of success: risk = log((1 - P_s) / P_s)
+#     # pcr: P_s = 0.8
 
-    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
-    # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
-    analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-    primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
-    enzyme_orders = []
+#     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
+#     # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
+#     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
+#     primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
+#     enzyme_orders = []
     
-    if obj.mastermix_cost > 0.0:
-        enzyme_orders.append('Master mix enzyme') 
-    if obj.pcr_polymerase_cost > 0.0:
-        enzyme_orders.append('Phusion polymerase')
+#     if obj.mastermix_cost > 0.0:
+#         enzyme_orders.append('Master mix enzyme') 
+#     if obj.pcr_polymerase_cost > 0.0:
+#         enzyme_orders.append('Phusion polymerase')
     
-    pcr_enz_costs = [ 
-        obj.mastermix_cost / obj.mastermix_n_reacts,
-        (len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts)
-    ]
-    pcr_enz_types = ['Master mix', 'Polymerase']
+#     pcr_enz_costs = [ 
+#         obj.mastermix_cost / obj.mastermix_n_reacts,
+#         (len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts)
+#     ]
+#     pcr_enz_types = ['Master mix', 'Polymerase']
         
-    pcr_soe_time = pcr_soe_times(part_lengths_pcr)
-    pcr_cost = costs(
-        [obj.primer_cost, obj.part_cost, obj.gene_cost],
-        part_lengths + primer_lengths,
-        plasmid_count,
-        pcr_enz_costs,
-        pcr_enz_types
-    )
-    pcr_risk = {
-        'total': 0.35,
-        'types': ['Assembly'],
-        'risks': [
-            log10((1 - obj.pcr_ps) / obj.pcr_ps)
-        ]
-    }
+#     pcr_soe_time = pcr_soe_times(part_lengths_pcr)
+#     pcr_cost = costs(
+#         [obj.primer_cost, obj.part_cost, obj.gene_cost],
+#         part_lengths + primer_lengths,
+#         plasmid_count,
+#         pcr_enz_costs,
+#         pcr_enz_types
+#     )
+#     pcr_risk = {
+#         'total': 0.35,
+#         'types': ['Assembly'],
+#         'risks': [
+#             log10((1 - obj.pcr_ps) / obj.pcr_ps)
+#         ]
+#     }
 
-    pcr_solution = PCRSolution(
-        name=f'{obj.title} Solution',
-        backbone=assembler.backbone.seq,
-        query=assembler.query_record.seq,
-        solution='',
-        parts_count=len(fragments),
-        primers_count=len(fragments) * 2, 
-        match=analysis[0],
-        synth_amount=analysis[1],
-        re_enzymes=False,
-        part_length_average=analysis[2],
-        primer_length_average=analysis[3],
-        tm_average=analysis[4],
-        longest_part=analysis[5],
-        shortest_part=analysis[6],
-        db_parts=analysis[7],
-        synth_parts=analysis[8],
-        solution_length=assembler.query_record.seq.length,
-        assembly=obj,
-        time_summary=json.dumps(pcr_soe_time),
-        cost_summary=json.dumps(pcr_cost),
-        risk_summary=json.dumps(pcr_risk)
-    )
-    pcr_solution.save()
+#     pcr_solution = PCRSolution(
+#         name=f'{obj.title} Solution',
+#         backbone=assembler.backbone.seq,
+#         query=assembler.query_record.seq,
+#         solution='',
+#         parts_count=len(fragments),
+#         primers_count=len(fragments) * 2, 
+#         match=analysis[0],
+#         synth_amount=analysis[1],
+#         re_enzymes=False,
+#         part_length_average=analysis[2],
+#         primer_length_average=analysis[3],
+#         tm_average=analysis[4],
+#         longest_part=analysis[5],
+#         shortest_part=analysis[6],
+#         db_parts=analysis[7],
+#         synth_parts=analysis[8],
+#         solution_length=assembler.query_record.seq.length,
+#         assembly=obj,
+#         time_summary=json.dumps(pcr_soe_time),
+#         cost_summary=json.dumps(pcr_cost),
+#         risk_summary=json.dumps(pcr_risk)
+#     )
+#     pcr_solution.save()
 
-    plasmid_map(pcr_solution, assembly, obj.title, 0, total_len)
-    parts_csv(pcr_solution, assembly)
-    primers_csv(pcr_solution, assembly)
-    order_csv(pcr_solution, assembly, enzyme_orders)
+#     plasmid_map(pcr_solution, assembly, obj.title, 0, total_len)
+#     parts_csv(pcr_solution, assembly)
+#     primers_csv(pcr_solution, assembly)
+#     order_csv(pcr_solution, assembly, enzyme_orders)
 
-    for i, part in enumerate(assembly):
-        pcr_part_entry = PCRPart(
-            name=part.name,
-            database=part.annotations['db'],
-            length=part.template.seq.length, 
-            length_extended=part.seq.length,
-            seq=part.template.seq,
-            seq_extended=part.seq,
-            position=i,
-            solution=pcr_solution,
-            query_start = part.annotations['query_start'],
-            query_end = part.annotations['query_end'],
-            subject_start = part.annotations['subject_start'],
-            subject_end = part.annotations['subject_end']
-        )
-        pcr_part_entry.save()
+#     for i, part in enumerate(assembly):
+#         pcr_part_entry = PCRPart(
+#             name=part.name,
+#             database=part.annotations['db'],
+#             length=part.template.seq.length, 
+#             length_extended=part.seq.length,
+#             seq=part.template.seq,
+#             seq_extended=part.seq,
+#             position=i,
+#             solution=pcr_solution,
+#             query_start = part.annotations['query_start'],
+#             query_end = part.annotations['query_end'],
+#             subject_start = part.annotations['subject_start'],
+#             subject_end = part.annotations['subject_end']
+#         )
+#         pcr_part_entry.save()
 
-        left_index, right_index = part_indexes(i, len(assembly))
+#         left_index, right_index = part_indexes(i, len(assembly))
 
-        part_map(
-            pcr_part_entry, 
-            part, 
-            assembly[left_index], 
-            assembly[right_index], 
-            f'{part.name}-{i}', 
-            0
-        )
+#         part_map(
+#             pcr_part_entry, 
+#             part, 
+#             assembly[left_index], 
+#             assembly[right_index], 
+#             f'{part.name}-{i}', 
+#             0
+#         )
 
-        forward_primer = PCRPrimer(
-            name= f'{pcr_part_entry.name} forward primer',
-            primer_type='fwd',
-            sequence=part.forward_primer.seq,
-            footprint=part.forward_primer.footprint,
-            tail=part.forward_primer.tail,
-            tm_total=part.annotations['forward_primer']['tm_total'],
-            tm_footprint=part.annotations['forward_primer']['tm_footprint'],
-            gc=part.annotations['forward_primer']['gc'],
-            hairpin=part.annotations['forward_primer']['hairpin'],
-            hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
-            hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
-            hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
-            hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
-            homodimer=part.annotations['forward_primer']['homodimer'],
-            homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
-            homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
-            homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
-            homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
-            part=pcr_part_entry
-        )
-        forward_primer.save()
+#         forward_primer = PCRPrimer(
+#             name= f'{pcr_part_entry.name} forward primer',
+#             primer_type='fwd',
+#             sequence=part.forward_primer.seq,
+#             footprint=part.forward_primer.footprint,
+#             tail=part.forward_primer.tail,
+#             tm_total=part.annotations['forward_primer']['tm_total'],
+#             tm_footprint=part.annotations['forward_primer']['tm_footprint'],
+#             gc=part.annotations['forward_primer']['gc'],
+#             hairpin=part.annotations['forward_primer']['hairpin'],
+#             hairpin_tm=part.annotations['forward_primer']['hairpin_tm'],
+#             hairpin_dg=part.annotations['forward_primer']['hairpin_dg'],
+#             hairpin_dh=part.annotations['forward_primer']['hairpin_dh'],
+#             hairpin_ds=part.annotations['forward_primer']['hairpin_ds'],
+#             homodimer=part.annotations['forward_primer']['homodimer'],
+#             homodimer_tm=part.annotations['forward_primer']['homodimer_tm'],
+#             homodimer_dg=part.annotations['forward_primer']['homodimer_dg'],
+#             homodimer_dh=part.annotations['forward_primer']['homodimer_dh'],
+#             homodimer_ds=part.annotations['forward_primer']['homodimer_ds'],
+#             part=pcr_part_entry
+#         )
+#         forward_primer.save()
 
-        reverse_primer = PCRPrimer(
-            name= f'{pcr_part_entry.name} reverse primer ',
-            primer_type='rvs',
-            sequence=part.reverse_primer.seq,
-            footprint=part.reverse_primer.footprint,
-            tail=part.reverse_primer.tail,
-            tm_total=part.annotations['reverse_primer']['tm_total'],
-            tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
-            gc=part.annotations['reverse_primer']['gc'],
-            hairpin=part.annotations['reverse_primer']['hairpin'],
-            hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
-            hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
-            hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
-            hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
-            homodimer=part.annotations['reverse_primer']['homodimer'],
-            homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
-            homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
-            homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
-            homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
-            part=pcr_part_entry 
-        )
-        reverse_primer.save()
+#         reverse_primer = PCRPrimer(
+#             name= f'{pcr_part_entry.name} reverse primer ',
+#             primer_type='rvs',
+#             sequence=part.reverse_primer.seq,
+#             footprint=part.reverse_primer.footprint,
+#             tail=part.reverse_primer.tail,
+#             tm_total=part.annotations['reverse_primer']['tm_total'],
+#             tm_footprint=part.annotations['reverse_primer']['tm_footprint'],
+#             gc=part.annotations['reverse_primer']['gc'],
+#             hairpin=part.annotations['reverse_primer']['hairpin'],
+#             hairpin_tm=part.annotations['reverse_primer']['hairpin_tm'],
+#             hairpin_dg=part.annotations['reverse_primer']['hairpin_dg'],
+#             hairpin_dh=part.annotations['reverse_primer']['hairpin_dh'],
+#             hairpin_ds=part.annotations['reverse_primer']['hairpin_ds'],
+#             homodimer=part.annotations['reverse_primer']['homodimer'],
+#             homodimer_tm=part.annotations['reverse_primer']['homodimer_tm'],
+#             homodimer_dg=part.annotations['reverse_primer']['homodimer_dg'],
+#             homodimer_dh=part.annotations['reverse_primer']['homodimer_dh'],
+#             homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
+#             part=pcr_part_entry 
+#         )
+#         reverse_primer.save()
 
 def slic_solution_service(obj, assembler, assembly, fragments):
     # Log based odds of success: risk = log((1 - P_s) / P_s)

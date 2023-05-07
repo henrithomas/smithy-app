@@ -1,4 +1,4 @@
-from ..service import gibson_create_service
+from ..services.gibson import gibson_create_service
 from ..models import (
     GibsonAssembly, 
     GibsonPart,

@@ -7,6 +7,10 @@ from pydna.tm import tm_default
 from Bio.SeqUtils import MeltingTemp as _mt
 from datetime import datetime
 
+def gc_content(primer):
+    count = primer.count('c')
+    count = count + primer.count('g')
+    return round((count / len(primer)) * 100, 2) 
 
 def primer_thermo(primer, name, mv_conc, dv_conc, dna_conc, tm_func):
     """
@@ -45,7 +49,7 @@ def primer_thermo(primer, name, mv_conc, dv_conc, dna_conc, tm_func):
                 'id': name,
                 'tm_total': tm_func(primer.seq._data),
                 'tm_footprint': tm_func(primer.footprint._data),
-                'gc': primer.gc(),
+                'gc': gc_content(primer),
                 'hairpin': hp.structure_found,
                 'hairpin_tm': hp.tm,
                 'hairpin_dg': hp.dg,

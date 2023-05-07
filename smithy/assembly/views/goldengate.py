@@ -1,4 +1,4 @@
-from ..service import goldengate_create_service
+from ..services.goldengate import *
 from ..models import (
     GoldenGateAssembly,
     GoldenGatePart,
