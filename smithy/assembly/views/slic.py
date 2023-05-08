@@ -1,4 +1,4 @@
-from ..services.slic import slic_create_service
+from ..services.slic import run_slic
 from ..models import (
     SLICAssembly,
     SLICSolution,
@@ -57,7 +57,7 @@ class SLICCreateView(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        slic_create_service(self.object)
+        run_slic(self.object)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

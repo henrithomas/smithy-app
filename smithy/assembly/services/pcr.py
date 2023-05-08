@@ -175,11 +175,7 @@ def run_pcr(obj):
     make_pcr_solution(obj, assembler, assembly, fragments)
 
 def make_pcr_solution(obj, assembler, assembly, fragments):
-    # Log based odds of success: risk = log((1 - P_s) / P_s)
-    # pcr: P_s = 0.8
-
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
-    # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
     primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
     enzyme_orders, enzyme_costs, enzyme_types = enzymes_data(obj, len(fragments))

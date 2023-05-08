@@ -4,6 +4,48 @@ from assemblies.traditional_re import BioBrickAssembler
 import json
 from math import log10
 
+def calculate_time(fragments, part_lengths_pcr):
+    pcr = pcr_time(part_lengths_pcr)
+    time = assembly_times(pcr, len(fragments))
+    return time 
+
+def assembly_times(pcr, insert_count):
+    # iGEM and Ginko Bioworks protocol 
+    times = {}
+    times_types = ['pcr', 'digestion', 'ligation']
+    time_vals = [pcr, 0.8, 0.5]
+    
+    times.update({'total': round(sum(time_vals), 2)})
+    times.update({'types': times_types})
+    times.update({'times': time_vals})
+
+    return times
+
+def enzymes_data(obj, len_fragments):
+    orders = []
+    costs = [
+        obj.EcoRI_cost / obj.EcoRI_n_reacts, 
+        obj.XbaI_cost / obj.XbaI_n_reacts, 
+        obj.SpeI_cost / obj.SpeI_n_reacts, 
+        obj.PstI_cost / obj.PstI_n_reacts,
+        (len_fragments + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
+        obj.ligase_cost / obj.ligase_n_reacts
+    ]
+    types = ['EcoRI', 'XbaI', 'SpeI', 'PstI', 'PCR polymerase', 'Ligase']
+    
+    if obj.EcoRI_cost > 0.0:
+        orders.append('EcoRI')
+    if obj.XbaI_cost > 0.0:
+        orders.append('XbaI')
+    if obj.SpeI_cost > 0.0:
+        orders.append('SpeI')
+    if obj.PstI_cost > 0.0:
+        orders.append('PstI')
+    if obj.pcr_polymerase_cost > 0.0:
+        orders.append('PCR polymerase')
+
+    return orders, costs, types
+
 def biobricks_create_service(obj):
     """
     
@@ -79,47 +121,17 @@ def biobricks_create_service(obj):
     biobricks_solution_service(obj, assembler, assembly, fragments)   
 
 def biobricks_solution_service(obj, assembler, assembly, fragments):
-    # Log based odds of success: risk = log((1 - P_s) / P_s)
-    # pcr: P_s = 0.8
-    # digestion: P_s = 0.9 
-    # ligation: P_s = 0.8
-    cost_coefficient = 2 * len(fragments) - 1
     total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
-    # match_p, synth_p, part_ave, primer_ave, primer_tm_ave, part_max, part_min, db_parts, synth_parts
     analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
     primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
-    enzyme_orders = []
-    
-    if obj.EcoRI_cost > 0.0:
-        enzyme_orders.append('EcoRI')
-    if obj.XbaI_cost > 0.0:
-        enzyme_orders.append('XbaI')
-    if obj.SpeI_cost > 0.0:
-        enzyme_orders.append('SpeI')
-    if obj.PstI_cost > 0.0:
-        enzyme_orders.append('PstI')
-    if obj.pcr_polymerase_cost > 0.0:
-        enzyme_orders.append('PCR polymerase')
+    enzyme_orders, enzyme_costs, enzyme_types = enzymes_data(obj, len(fragments))
+    nt_costs = [obj.primer_cost, obj.part_cost, obj.gene_cost]
+    nt_lengths = part_lengths + primer_lengths
 
-    bbricks_enz_costs = [
-        obj.EcoRI_cost / obj.EcoRI_n_reacts, 
-        obj.XbaI_cost / obj.XbaI_n_reacts, 
-        obj.SpeI_cost / obj.SpeI_n_reacts, 
-        obj.PstI_cost / obj.PstI_n_reacts,
-        (len(fragments) + 1) * (obj.pcr_polymerase_cost / obj.pcr_polymerase_n_reacts),
-        obj.ligase_cost / obj.ligase_n_reacts
-    ]
-    bbricks_enz_types = ['EcoRI', 'XbaI', 'SpeI', 'PstI', 'PCR polymerase', 'Ligase']
 
-    pcr = pcr_time(part_lengths_pcr)
-    biobricks_time = biobricks_times(pcr, len(fragments))
-    biobricks_cost = costs(
-        [obj.primer_cost, obj.part_cost, obj.gene_cost],
-        part_lengths + primer_lengths,
-        plasmid_count,
-        bbricks_enz_costs,
-        bbricks_enz_types
-    )
+
+    time = calculate_time(fragments, part_lengths_pcr)
+    biobricks_cost = assembly_costs(nt_costs, nt_lengths, plasmid_count, enzyme_costs, enzyme_types)
     biobricks_risk = {
         'total': 0.35,
         'types': ['PCR', 'Digestion', 'Ligation'],
@@ -149,7 +161,7 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
         synth_parts=analysis[8],
         solution_length=assembler.query_record.seq.length,
         assembly=obj,
-        time_summary=json.dumps(biobricks_time),
+        time_summary=json.dumps(time),
         cost_summary=json.dumps(biobricks_cost),
         risk_summary=json.dumps(biobricks_risk)
     )
@@ -233,4 +245,6 @@ def biobricks_solution_service(obj, assembler, assembly, fragments):
             homodimer_ds=part.annotations['reverse_primer']['homodimer_ds'],
             part=biobricks_part_entry 
         )
-        reverse_primer.save()  
+        reverse_primer.save() 
+
+

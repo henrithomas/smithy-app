@@ -2,7 +2,7 @@ from util import *
 from gibson import make_gibson_solution
 from goldengate import make_goldengate_solution
 from pcr import make_pcr_solution
-from slic import slic_solution_service
+from slic import make_slic_solution
 from biobricks import biobricks_solution_service
 from ..models import (
     AssemblyBundle,
@@ -212,7 +212,7 @@ def slic_design(bundle_data, backbone_file_path, insert_file_path, solution_tree
         )
     slic_assembler.solution_tree = solution_tree
     slic_assembly, slic_fragments = slic_assembler.design(solution=0)
-    slic_solution_service(slic_obj, slic_assembler, slic_assembly, slic_fragments)
+    make_slic_solution(slic_obj, slic_assembler, slic_assembly, slic_fragments)
 
 def save_slic_assembly(bundle_data, backbone_file_path, insert_file_path):
     slic_obj = SLICAssembly(

@@ -307,39 +307,6 @@ def pcr_time(nt_lengths):
 
     return round(pcr_total / 60, 2)
 
-def slic_times(pcr, overlap):
-    # slic methods article
-    times = {}
-    times_types = ['pcr', 'chewback', 'ligation']
-    chewback = 0
-    cooling = 0.1
-    ligation = 0.5 + cooling
-
-    if overlap < 40: 
-        chewback = 0.8
-    else:
-        chewback = 1.35
-
-    time_vals = [pcr, chewback, ligation]
-
-    times.update({'total': round(sum(time_vals), 2)})
-    times.update({'types': times_types})
-    times.update({'times': time_vals})
-
-    return times
-
-def biobricks_times(pcr, insert_count):
-    # iGEM and Ginko Bioworks protocol 
-    times = {}
-    times_types = ['pcr', 'digestion', 'ligation']
-    time_vals = [pcr, 0.8, 0.5]
-    
-    times.update({'total': round(sum(time_vals), 2)})
-    times.update({'types': times_types})
-    times.update({'times': time_vals})
-
-    return times
-
 def solution_analysis(assembly, fragments, query_length):
     """
     
