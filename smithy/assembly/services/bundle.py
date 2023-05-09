@@ -1,9 +1,9 @@
-from util import *
-from gibson import make_gibson_solution
-from goldengate import make_goldengate_solution
-from pcr import make_pcr_solution
-from slic import make_slic_solution
-from biobricks import make_biobricks_solution
+from .util import *
+from .gibson import make_gibson_solution
+from .goldengate import make_goldengate_solution
+from .pcr import make_pcr_solution
+from .slic import make_slic_solution
+from .biobricks import make_biobricks_solution
 from ..models import (
     AssemblyBundle,
     GibsonAssembly,
@@ -12,9 +12,11 @@ from ..models import (
     SLICAssembly,
     BioBricksAssembly
 )
-from assemblies.gibson import GibsonAssembler,SLICAssembler, PCRAssembler
+from assemblies.gibson import GibsonAssembler
 from assemblies.goldengate import GoldenGateAssembler
-from assemblies.traditional_re import BioBrickAssembler
+from assemblies.pcr import PCRAssembler
+from assemblies.slic import SLICAssembler
+from assemblies.biobricks import BioBrickAssembler
 from assemblies.assembler import Assembler
 from django.core.files import File
 from django.conf import settings

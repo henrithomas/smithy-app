@@ -1,6 +1,6 @@
 from .util import *
 from ..models import BioBricksPart, BioBricksPrimer, BioBricksSolution
-from assemblies.traditional_re import BioBrickAssembler
+from assemblies.biobricks import BioBrickAssembler
 import json
 from math import log10
 

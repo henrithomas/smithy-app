@@ -1,6 +1,6 @@
 from .util import *
 from ..models import PCRPart, PCRPrimer, PCRSolution
-from assemblies.gibson import PCRAssembler
+from assemblies.pcr import PCRAssembler
 import json
 from math import log10
 

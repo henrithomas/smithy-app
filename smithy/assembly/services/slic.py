@@ -1,6 +1,6 @@
 from .util import *
 from ..models import SLICPart, SLICPrimer, SLICSolution
-from assemblies.gibson import SLICAssembler
+from assemblies.slic import SLICAssembler
 import json
 from math import log10
 
