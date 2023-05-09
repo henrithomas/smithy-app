@@ -121,6 +121,50 @@ def save_parts_and_primers(assembly, solution):
         )
         reverse_primer.save()
 
+def make_slic_solution(obj, assembler, assembly, fragments):
+    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
+    analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
+    primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
+    nt_costs = [obj.primer_cost, obj.part_cost, obj.gene_cost]
+    nt_lengths = part_lengths + primer_lengths
+    enzyme_orders, enzyme_costs, enzyme_types = enzymes_data(obj.pcr_polymerase_cost, obj.pcr_polymerase_n_reacts, len(fragments))
+
+    time = calculate_time(obj, part_lengths_pcr)
+    cost = assembly_costs(nt_costs, nt_lengths, plasmid_count, enzyme_costs, enzyme_types)
+    risk = assembly_risk(obj.pcr_ps, obj.chewback_ps)
+
+    solution = SLICSolution(
+        name=f'{obj.title} Solution',
+        backbone=assembler.backbone.seq,
+        query=assembler.query_record.seq,
+        solution='',
+        parts_count=len(fragments),
+        primers_count=len(fragments) * 2, 
+        match=analysis[0],
+        synth_amount=analysis[1],
+        re_enzymes=False,
+        part_length_average=analysis[2],
+        primer_length_average=analysis[3],
+        tm_average=analysis[4],
+        longest_part=analysis[5],
+        shortest_part=analysis[6],
+        db_parts=analysis[7],
+        synth_parts=analysis[8],
+        solution_length=assembler.query_record.seq.length,
+        assembly=obj,
+        time_summary=json.dumps(time),
+        cost_summary=json.dumps(cost),
+        risk_summary=json.dumps(risk)
+    )
+    solution.save()
+
+    plasmid_map(solution, assembly, obj.title, 0, total_len)
+    parts_csv(solution, assembly)
+    primers_csv(solution, assembly)
+    order_csv(solution, assembly, enzyme_orders)
+
+    save_parts_and_primers(assembly, solution)
+
 def run_slic(obj):
     """
     
@@ -188,47 +232,3 @@ def run_slic(obj):
     assembly, fragments = assembler.design(solution=0)
 
     make_slic_solution(obj, assembler, assembly, fragments)    
-
-def make_slic_solution(obj, assembler, assembly, fragments):
-    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length
-    analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-    primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
-    nt_costs = [obj.primer_cost, obj.part_cost, obj.gene_cost]
-    nt_lengths = part_lengths + primer_lengths
-    enzyme_orders, enzyme_costs, enzyme_types = enzymes_data(obj.pcr_polymerase_cost, obj.pcr_polymerase_n_reacts, len(fragments))
-
-    time = calculate_time(obj, part_lengths_pcr)
-    cost = assembly_costs(nt_costs, nt_lengths, plasmid_count, enzyme_costs, enzyme_types)
-    risk = assembly_risk(obj.pcr_ps, obj.chewback_ps)
-
-    solution = SLICSolution(
-        name=f'{obj.title} Solution',
-        backbone=assembler.backbone.seq,
-        query=assembler.query_record.seq,
-        solution='',
-        parts_count=len(fragments),
-        primers_count=len(fragments) * 2, 
-        match=analysis[0],
-        synth_amount=analysis[1],
-        re_enzymes=False,
-        part_length_average=analysis[2],
-        primer_length_average=analysis[3],
-        tm_average=analysis[4],
-        longest_part=analysis[5],
-        shortest_part=analysis[6],
-        db_parts=analysis[7],
-        synth_parts=analysis[8],
-        solution_length=assembler.query_record.seq.length,
-        assembly=obj,
-        time_summary=json.dumps(time),
-        cost_summary=json.dumps(cost),
-        risk_summary=json.dumps(risk)
-    )
-    solution.save()
-
-    plasmid_map(solution, assembly, obj.title, 0, total_len)
-    parts_csv(solution, assembly)
-    primers_csv(solution, assembly)
-    order_csv(solution, assembly, enzyme_orders)
-
-    save_parts_and_primers(assembly, solution)

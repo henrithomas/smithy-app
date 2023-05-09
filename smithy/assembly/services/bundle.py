@@ -3,7 +3,7 @@ from gibson import make_gibson_solution
 from goldengate import make_goldengate_solution
 from pcr import make_pcr_solution
 from slic import make_slic_solution
-from biobricks import biobricks_solution_service
+from biobricks import make_biobricks_solution
 from ..models import (
     AssemblyBundle,
     GibsonAssembly,
@@ -261,7 +261,7 @@ def biobricks_design(bundle_data, backbone_file_path, insert_file_path, solution
         )
     biobricks_assembler.solution_tree = solution_tree
     biobricks_assembly, biobricks_fragments = biobricks_assembler.design(solution=0)
-    biobricks_solution_service(biobricks_obj, biobricks_assembler, biobricks_assembly, biobricks_fragments)
+    make_biobricks_solution(biobricks_obj, biobricks_assembler, biobricks_assembly, biobricks_fragments)
 
 def save_biobricks_assembly(bundle_data, backbone_file_path, insert_file_path):
     biobricks_obj = BioBricksAssembly(

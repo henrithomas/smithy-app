@@ -1,4 +1,4 @@
-from ..service import biobricks_create_service
+from ..services.biobricks import run_biobricks
 from ..models import (
     BioBricksAssembly,
     BioBricksPart,
@@ -68,7 +68,7 @@ class BioBricksCreateView(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        biobricks_create_service(self.object)
+        run_biobricks(self.object)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):

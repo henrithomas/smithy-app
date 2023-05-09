@@ -27,7 +27,6 @@ def part_indexes(idx, length):
     right = 0 if idx == length - 1 else idx + 1 
     return left, right
 
-
 def pcr_clusters(nt_lengths):
     cluster_bounds = (
         (1, 0, 1000),

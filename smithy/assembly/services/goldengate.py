@@ -142,6 +142,53 @@ def save_parts_and_primers(assembly, space, solution):
         )
         reverse_primer.save()
 
+def make_goldengate_solution(obj, assembler, assembly, fragments):
+    space = 0 if obj.scarless else 4
+    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length + space
+    analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
+    primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
+    enzyme_orders, enzyme_costs, enzyme_types = enzymes_data(obj, len(fragments))
+    nt_costs = [obj.primer_cost, obj.part_cost, obj.gene_cost]
+    nt_lengths = part_lengths + primer_lengths
+    enzyme_orders = []
+
+    cost = assembly_costs(nt_costs, nt_lengths, plasmid_count, enzyme_costs, enzyme_types)
+    time = calculate_time(len(fragments), part_lengths_pcr)
+    risk = assembly_risk(obj.pcr_ps, obj.assembly_ps)
+
+    # TODO update to have a match % and BLAST solution sequence
+    # TODO add a foreach solution in for the assembly
+    goldengate_solution = GoldenGateSolution(
+        name=f'{obj.title} Solution',
+        backbone=assembler.backbone.seq,
+        query=assembler.query_record.seq,
+        solution='',
+        parts_count=len(fragments),
+        primers_count=len(fragments) * 2,
+        match=analysis[0],
+        synth_amount=analysis[1],
+        re_enzymes=True,
+        part_length_average=analysis[2],
+        primer_length_average=analysis[3],
+        tm_average=analysis[4],
+        longest_part=analysis[5],
+        shortest_part=analysis[6],
+        db_parts=analysis[7],
+        synth_parts=analysis[8],
+        solution_length=assembler.query_record.seq.length,
+        assembly=obj,
+        time_summary=json.dumps(time),
+        cost_summary=json.dumps(cost),
+        risk_summary=json.dumps(risk)
+    )
+    goldengate_solution.save()
+
+    plasmid_map(goldengate_solution, assembly, obj.title, space, total_len)
+    parts_csv(goldengate_solution, assembly)
+    primers_csv(goldengate_solution, assembly)
+    order_csv(goldengate_solution, assembly, enzyme_orders)
+
+    save_parts_and_primers(assembly, space, goldengate_solution)
 
 def run_goldengate(obj):
     """
@@ -213,51 +260,3 @@ def run_goldengate(obj):
     assembly, fragments = assembler.design(solution=0)
 
     make_goldengate_solution(obj, assembler, assembly, fragments)
-
-def make_goldengate_solution(obj, assembler, assembly, fragments):
-    space = 0 if obj.scarless else 4
-    total_len = assembler.backbone.seq.length + assembler.query_record.seq.length + space
-    analysis = solution_analysis(assembly, fragments, assembler.query_record.seq.length)
-    primer_lengths, part_lengths, part_lengths_pcr, plasmid_count = lengths_and_plasmids(assembly)
-    enzyme_orders, enzyme_costs, enzyme_types = enzymes_data(obj, len(fragments))
-    nt_costs = [obj.primer_cost, obj.part_cost, obj.gene_cost]
-    nt_lengths = part_lengths + primer_lengths
-    enzyme_orders = []
-
-    cost = assembly_costs(nt_costs, nt_lengths, plasmid_count, enzyme_costs, enzyme_types)
-    time = calculate_time(len(fragments), part_lengths_pcr)
-    risk = assembly_risk(obj.pcr_ps, obj.assembly_ps)
-
-    # TODO update to have a match % and BLAST solution sequence
-    # TODO add a foreach solution in for the assembly
-    goldengate_solution = GoldenGateSolution(
-        name=f'{obj.title} Solution',
-        backbone=assembler.backbone.seq,
-        query=assembler.query_record.seq,
-        solution='',
-        parts_count=len(fragments),
-        primers_count=len(fragments) * 2,
-        match=analysis[0],
-        synth_amount=analysis[1],
-        re_enzymes=True,
-        part_length_average=analysis[2],
-        primer_length_average=analysis[3],
-        tm_average=analysis[4],
-        longest_part=analysis[5],
-        shortest_part=analysis[6],
-        db_parts=analysis[7],
-        synth_parts=analysis[8],
-        solution_length=assembler.query_record.seq.length,
-        assembly=obj,
-        time_summary=json.dumps(time),
-        cost_summary=json.dumps(cost),
-        risk_summary=json.dumps(risk)
-    )
-    goldengate_solution.save()
-
-    plasmid_map(goldengate_solution, assembly, obj.title, space, total_len)
-    parts_csv(goldengate_solution, assembly)
-    primers_csv(goldengate_solution, assembly)
-    order_csv(goldengate_solution, assembly, enzyme_orders)
-
-    save_parts_and_primers(assembly, space, goldengate_solution)
