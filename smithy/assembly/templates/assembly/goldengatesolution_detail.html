@@ -137,7 +137,7 @@
                         <h4 class="card-title">
                             {{part.name}}
                             {% if part.database != 'NONE' %}
-                                <span class="badge bg-info text-dark"">{{ part.database }}</span>
+                                <span class="badge bg-info text-dark">{{ part.database }}</span>
                             {% endif %}
                             <a href="{% url 'goldengate-part-detail' part.pk %}" class="btn btn-outline-primary float-end">
                                 <i class="bi bi-eye"></i> View Part
@@ -151,7 +151,7 @@
                                 {{ part.length }}nt Template
                             </span>
                             {% if part.cuts >= 3 %}
-                                <span class="badge rounded-pill bg-warning text-dark">Internal Cutsite(s)</span>
+                                <span class="badge rounded-pill bg-warning text-dark">Internal Cutsite(s) - Adjust probability of success for future experiments</span>
                             {% endif %}
                         </p>
                         <ul class="list-group">
