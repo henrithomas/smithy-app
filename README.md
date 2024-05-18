@@ -12,7 +12,7 @@ Follow these steps to set up the application on your machine.
 4. Copy the provided BLAST (addgene, dnasu, igem) sequence db files into database folder (same as the BLASTDB environment variable)
     - Example db path: C:\NCBI\db
 5. Add the project path to a PYTHONPATH user environment variable
-    - PYTHONPATH = C:\...\smithy-app
+    - Example: PYTHONPATH = "C:\your\path\smithy-app"
 6. Run a pip install of requirements.txt:
     - pip install -r requirements.txt
 7. In command prompt, navigate to smithy-app/smithy
