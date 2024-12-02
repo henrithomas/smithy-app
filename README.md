@@ -21,5 +21,7 @@ Follow these steps to set up the application on your machine.
     - python manage.py migrate
     - python manage.py makemigrations assembly
     - python manage.py migrate
-9. Run the app:
+9. Prepare static files:
+    - python manage.py collectstatic
+11. Run the app:
     - python manage.py runserver
