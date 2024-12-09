@@ -17,14 +17,18 @@ Follow these steps to set up the application on your machine.
     - Example: PYTHONPATH = "C:\your\path\smithy-app"
 6. Run a pip install of requirements.txt:
     - pip install -r requirements.txt
-7. In command prompt, navigate to smithy-app/smithy
-8. Run the app-setup powershell script, or alternatively run steps 9-10.
-9. Run the django database migrations:
+7. Add the following folders to smithy-app\smithy:
+    - media
+    - media\images
+    - media\csv
+8. In command prompt, navigate to smithy-app/smithy
+9. Run the app-setup powershell script, or alternatively run steps 9-10.
+10. Run the django database migrations:
     - python manage.py makemigrations
     - python manage.py migrate
     - python manage.py makemigrations assembly
     - python manage.py migrate
-10. Prepare static files:
+11. Prepare static files:
     - python manage.py collectstatic
-11. Run the app:
+12. Run the app:
     - python manage.py runserver
