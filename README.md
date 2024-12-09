@@ -1,8 +1,8 @@
 # smithy
 Follow these steps to set up the application on your machine.
 
-1. Install Python 3.8: https://www.python.org/downloads/
-2. Install BLAST 2.16 (newer versions may work): https://blast.ncbi.nlm.nih.gov/Blast.cgi
+1. Install Python 3.11: https://www.python.org/downloads/
+2. Install BLAST 2.16: https://blast.ncbi.nlm.nih.gov/Blast.cgi
     - Install and user manual here: https://www.ncbi.nlm.nih.gov/books/NBK569861/
     - Windows install and configuration instructions here: https://www.ncbi.nlm.nih.gov/books/NBK52637/
     - Download the win64 version: ncbi-blast-2.16.0+-win64.exe 
