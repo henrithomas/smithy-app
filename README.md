@@ -22,7 +22,7 @@ Follow these steps to set up the application on your machine.
     - media\images
     - media\csv
 8. In command prompt, navigate to smithy-app/smithy
-9. Run the app-setup powershell script, or alternatively run steps 9-10.
+9. Run the app-setup powershell script, or alternatively run steps 10-11.
 10. Run the django database migrations:
     - python manage.py makemigrations
     - python manage.py migrate
