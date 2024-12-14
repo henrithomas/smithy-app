@@ -33,7 +33,8 @@ SECRET_KEY = 'django-insecure-)&k^-yh_m+%g%$oyp4i43%ds0koe6fnfj_$wuoq1t2nv3!x90f
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'rs-loy-smithy.concordia.ca',
+    'smithy-dna.com',
+    '172.232.164.18',
     '127.0.0.1',
     'localhost'
     '10.10.11.135', 
