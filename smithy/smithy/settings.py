@@ -36,7 +36,7 @@ ALLOWED_HOSTS = [
     'smithy-dna.com',
     '172.232.164.18',
     '127.0.0.1',
-    'localhost'
+    'localhost',
     '10.10.11.135', 
     '10.10.11.*'
 ]
