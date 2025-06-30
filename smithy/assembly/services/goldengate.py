@@ -7,7 +7,7 @@ from math import log10
 def calculate_time(len_fragments, part_lengths):
     pcr = pcr_time(part_lengths)
     time = assembly_times(pcr, len_fragments)
-    pass
+    return time
 
 def assembly_times(pcr, parts_count):
     # NEB protocol

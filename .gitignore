@@ -22,3 +22,13 @@ smithy/test.py
 uwsgi_params
 venv_smithy/
 smithy/smithy.sock
+*.ndb
+*.nhr
+*.nin
+*.njs
+*.nog
+*.nos
+*.not
+*.nsq
+*.ntf
+*.nto
